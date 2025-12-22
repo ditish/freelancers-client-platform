@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Chatbox from './Chatbox';
+import Mode from './Mode';
 
 const User = () => {
   const [Username, setUsername] = useState('');
@@ -16,6 +17,7 @@ const User = () => {
   }
   return (
     <>
+    <Mode ></Mode>
       {Activechat?<Chatbox Username={Username}></Chatbox>:<div className='  flex flex-col justify-center items-center  h-screen'>
     <div className='text-white font-semibold mb-1 '>enter your user name here</div>
     <form onSubmit={(e)=>handelOnclick(e)}  className=''>

@@ -11,3 +11,11 @@
 .message{
   background-color: greenyellow;
 }
+.scrollbar::-webkit-scrollbar{
+  background: transparent;
+  width: 1px;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+  background-color: white;
+  
+}
