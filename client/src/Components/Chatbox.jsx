@@ -29,7 +29,6 @@ const Chatbox = ({ Username }) => {
       Setmessages(prevMessages => [...prevMessages, Message]);
       
     });
-    console.log("message are ", Messages);
   }, []);
 
   return (
@@ -38,7 +37,11 @@ const Chatbox = ({ Username }) => {
       <div>
         {Messages.map((message, index) => {
           return (
-            <div  className=" text-white" key={index}> <h1> {message.Message }</h1></div>
+            <div  className="border m-2 border-white rounded-2xl flex gap-1.5 text-white" key={index}> <h1   className="text-2xl message font-bold p-2 rounded-2xl "> {message.user.charAt(0).toUpperCase()
+            }</h1>
+              <span  className="text-white bg-amber-300 self-center ">{message.Message}</span>
+              <span className="text-white self-end m-1 text-xs">{message.time }</span>
+            </div>
           )
         })}
       </div>
@@ -46,7 +49,6 @@ const Chatbox = ({ Username }) => {
         <input
           type="text"
           className=" input"
-          value={newMessage}
           name="newMessage"
           onChange={(e) => SetnewMessage(e.target.value)}
         />
