@@ -29,6 +29,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
+  socket.on("send-message", (Message) => {
+    console.log(Message);
+    io.emit("recived-message", Message);
+  });
+ 
 });
 
 app.get("/", (req, res) => {
