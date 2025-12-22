@@ -1,1 +1,10 @@
 @import "tailwindcss";
+*{
+  background-color:black
+}
+.input{
+  background-color: white;
+}
+.submit{
+  background-color: blue;
+}

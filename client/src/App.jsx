@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import socket from "./socket";
+import User from "./Components/User";
 
 function App() {
   useEffect(() => {
@@ -17,7 +18,9 @@ function App() {
     };
   }, []);
 
-  return <h1 className=" text-red-400">React + Socket.IO</h1>;
+  return (<>
+  
+  <User></User></>)
 }
 
 export default App;
