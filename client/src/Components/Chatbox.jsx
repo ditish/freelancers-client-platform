@@ -154,7 +154,7 @@
 // export default Chatbox;
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import socket from "../socket";
 
 const Chatbox = ({ Username, Darkmode }) => {
@@ -193,7 +193,12 @@ const Chatbox = ({ Username, Darkmode }) => {
     return () => {
       socket.off("recived-message", handleMessage);
     };
-  }, []);
+   }, []);
+  const bottomRef = useRef(null);
+  useEffect(() => {
+  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [Messages]);
+
 
   return (
     <div className={`${Darkmode ? "dark-mode" : "light-mode"} flex flex-col justify-center items-center h-screen p-4`}>
@@ -216,6 +221,7 @@ const Chatbox = ({ Username, Darkmode }) => {
             <div className="text-xs text-gray-500 mt-1 ">{msg.time}</div>
           </div>
         ))}
+        <div ref={bottomRef}></div>
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2 mt-4 w-full max-w-md">

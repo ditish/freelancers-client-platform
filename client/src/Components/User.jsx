@@ -55,7 +55,7 @@ const User = () => {
   return (
     <>
       <div className= {`${Darkmode ? "dark-mode" : "light-mode"} flex justify-end`} >
-         <label className={ ` m-1  w-[20vh] border border-black rounded-2xl`}>
+         <label className={ ` m-1  w-[20vh] rounded-2xl`}>
         <input type="checkbox" name="checkbox" className="accent-blue-500" onChange={()=>(setDarkmode(!Darkmode))} />
         {Darkmode?"brightmode":"darkmode" }
       </label>
