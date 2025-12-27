@@ -1,227 +1,225 @@
-// /* eslint-disable react-hooks/exhaustive-deps */
-// import React, { useEffect, useState } from "react";
-// import socket from "../socket";
-
-// const Chatbox = ({ Username }) => {
-//   const [Messages, Setmessages] = useState([]);
-//   const [newMessage, SetnewMessage] = useState("");
-//   const now = new Date();
-//   let hours = now.getHours();
-//   const minutes = now.getMinutes().toString().padStart(2, "0");
-//   const ampm = hours >= 12 ? "PM" : "AM";
-//   hours = hours % 12 || 12;
-
-//   const handleOnsubmit = (e) => {
-//     e.preventDefault();
-//     const Messagedata =
-//       {
-//         Message: newMessage,
-//         user: Username,
-//         time: `${hours}:${minutes} ${ampm}`,
-//       }
-    
-//     socket.emit("send-message", Messagedata);
-//     SetnewMessage(" ");
-//   };
-//   useEffect(() => {
-//     socket.on("recived-message", (Message) => {
-//       console.log("message is received", Message);
-
-//       Setmessages(prevMessages => [...prevMessages, Message]);
-      
-//     });
-//   }, []);
-
-//   return (
-//     <div className="flex flex-col justify-center items-center h-screen  ">
-//       <div className="text-2xl  text-black">your chat is here </div>
-//       <div className="h-[60vh] w-[60vw] scrollbar overflow-y-scroll">
-//   {Messages.map((message, index) => {
-//     return (
-//       <div key={index} className={`flex ${Username === message.user? "justify-start" : "justify-end"}`} >
-//         <div className="inline-flex gap-2 border border-gray-500 rounded-2xl m-2 p-2 dark:text-white text-black max-w-[70%]">
-          
-//           {/* Avatar */}
-//           <h1 className="text-2xl font-bold">
-//             {message.user.charAt(0).toUpperCase()}
-//           </h1>
-
-//           {/* Message text */}
-//           <span className="dark:text-white text-black px-2 py-1 rounded-lg">
-//             {message.Message}
-//           </span>
-
-//           {/* Time */}
-//           <span className="self-end text-xs dark:text-white text-black">
-//             {message.time}
-//           </span>
-
-//         </div>
-//       </div>
-//     );
-//   })}
-// </div>
-
-//       <form onSubmit={(e) => handleOnsubmit(e)}>
-//         <input
-//           type="text"
-//           className=" border border-black "
-//           name="newMessage"
-//           placeholder="type message here "
-//           value ={newMessage}
-//           onChange={(e) => SetnewMessage(e.target.value)}
-          
-//         />
-//         {newMessage== ""? "":<button type="submit" className="  submit dark:text-black p-2 m-1 border text-white font-bold dark:border-white border-black ">
-//           send
-//         </button>}
-       
-//       </form>
-//     </div>
-//   );
-// };
-
-// // export default Chatbox;
-// // import React, { useEffect, useState } from "react";
-// // import socket from "../socket";
-
-// // const Chatbox = ({ Username }) => {
-// //   const [Messages, Setmessages] = useState([]);
-// //   const [newMessage, SetnewMessage] = useState("");
-
-// //   const handleOnsubmit = (e) => {
-// //     e.preventDefault();
-// //     if (newMessage.trim() === "") return;
-
-// //     const now = new Date();
-// //     let hours = now.getHours();
-// //     const minutes = now.getMinutes().toString().padStart(2, "0");
-// //     const ampm = hours >= 12 ? "PM" : "AM";
-// //     hours = hours % 12 || 12;
-
-// //     const Messagedata = {
-// //       Message: newMessage,
-// //       user: Username,
-// //       time: `${hours}:${minutes} ${ampm}`,
-// //     };
-
-// //     socket.emit("send-message", Messagedata);
-// //     SetnewMessage(""); // clear input
-// //   };
-
-// //   useEffect(() => {
-// //     const handleMessage = (Message) => {
-// //       console.log("message is received", Message);
-// //       Setmessages(prev => [...prev, Message]);
-// //     };
-
-
-// //     socket.on("recived-message", handleMessage);
-
-// //     return () => {
-// //       socket.off("recived-message", handleMessage);
-// //     };
-// //   }, []);
-
-// //   return (
-// //     <div className="flex flex-col justify-center items-center h-screen">
-// //       <div className="text-2xl text-white">Your chat is here</div>
-
-// //       <div className="chat-box mt-4 w-full max-w-md">
-// //         {Messages.map((msg, index) => (
-// //           <div key={index} className="text-white mb-1">
-// //             <strong>{msg.user}: </strong> {msg.Message}{" "}
-// //             <span className="text-gray-400 ml-2 text-sm">{msg.time}</span>
-// //           </div>
-// //         ))}
-// //       </div>
-
-// //       <form onSubmit={handleOnsubmit} className="mt-4 flex gap-2">
-// //         <input
-// //           type="text"
-// //           className="flex-1 border rounded p-2"
-// //           value={newMessage}
-// //           onChange={(e) => SetnewMessage(e.target.value)}
-// //         />
-// //         <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-// //           Send
-// //         </button>
-// //       </form>
-// //     </div>
-// //   );
-// // };
-
-// export default Chatbox;
 
 
 import React, { useEffect, useRef, useState } from "react";
 import socket from "../socket";
+import axios from "axios";
 
-const Chatbox = ({ Username, Darkmode }) => {
+
+const Chatbox = ({ Username,email, Darkmode }) => {
   const [Messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [Selectmsg, Setselectmsg] = useState("");
+  const [Menuposition,Setmenuposition] = useState({ x: 0, y: 0 })
+  const [Showmenu, Setshowmenu] = useState(false)
+  const [EditingmsId , setEditingmsgId] = useState(null)
+  const [Edittext, setEdittext] = useState("")
+
+  const HandelonsaveEditmsg = (id) => {
+    if (Edittext == "") {
+      alert("msg is empty")
+      return;
+    }
+    socket.emit("edit-msg", {
+      id,
+      newText:Edittext
+    })
+ setEditingmsgId(null)
+  
+  }
+
+  const HandelonEditmsg = ( Selectmsg) => {
+    setEditingmsgId(Selectmsg._id);
+    setEdittext(Selectmsg.message)
+    Setshowmenu(false)
+  }
+  
+
+ 
+
+  const formatTime = (timestamp) => {
+      const now = new Date(timestamp);
+      let hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12 || 12;
+      return `${hours}:${minutes} ${ampm}`;
+    };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
-
-    const now = new Date();
-    let hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
-
+    // After receiving message from backend
+    
     const msg = {
       user: Username,
       message: newMessage,
-      time: `${hours}:${minutes} ${ampm}`,
+      email:email,
     };
 
-     socket.emit("send-message", msg);
-// //     SetnewMessage(""); // clear input
+    socket.emit("send-message", msg);
     setNewMessage("");
   };
-   useEffect(() => {
-    const handleMessage = (Message) => {
-      console.log("message is received", Message);
-      setMessages(prev => [...prev, Message]);
-    };
-
-
-    socket.on("recived-message", handleMessage);
-
+  const menuref = useRef(null);
+  useEffect(() => {
+  const handleOnCickoutside = (e) => {
+      
+      if (menuref.current && !menuref.current.contains(e.target)) {
+        Setshowmenu(false)
+      }
+    }
+      document.addEventListener("mousedown", handleOnCickoutside)
+    document.addEventListener("touchstart", handleOnCickoutside)
     return () => {
-      socket.off("recived-message", handleMessage);
+       document.removeEventListener('mousedown', handleOnCickoutside)
+          document.removeEventListener("touchstart",handleOnCickoutside)
+    }
+    },[])
+
+
+  useEffect(() => {
+  
+    const fetchHistory = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/chats")
+        setMessages(res.data);
+        
+      } catch (error) {
+        console.log("failed to fetched the chathistory",error)
+      }
+    }
+    fetchHistory();
+    socket.on("received-message", (Message) => {
+      console.log("received msg", Message)
+      setMessages((prev) => [...prev, Message]);
+    });
+    socket.on("msg-deleted", (id) => {
+      setMessages((prev) => prev.filter((m) => m._id !== id))
+    });
+    socket.on("message_updated",(updatedmsg)=>
+    setMessages((prev) =>
+      prev.map((m) => m._id == updatedmsg._id ? updatedmsg : m
+    )
+  ))
+       return () => {
+      socket.off("received-message")
+         socket.off("chat-history")
+         socket.off("msg-deleted")
+         socket.off("updated-msg")
+        
     };
-   }, []);
+  }, []);
+
+  //for editedmsg
+  
+  
   const bottomRef = useRef(null);
   useEffect(() => {
-  bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-}, [Messages]);
-
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [Messages]);
+  const handleContexmenu = (e,msg) => {
+    e.preventDefault();
+    Setselectmsg(msg);
+    Setmenuposition({ x: e.pageX, y: e.pageY });
+    Setshowmenu(true);
+  }
+  const touchref = useRef(null);
+  const handleontouch = (e,msg) => {
+    touchref.current= setTimeout(() => {
+      Setselectmsg(msg);
+      Setmenuposition({
+        x: e.touches[0].pageX,
+        y:e.touches[0].pageY
+      })
+      Setshowmenu(true)
+    },500)
+  }
+  const handeloneEnd = () => {
+    clearTimeout(touchref.current);
+  }
+  const handleonDelete = () => {
+    socket.emit("deleted-msg", Selectmsg._id )
+    Setshowmenu(false);
+  }
 
   return (
-    <div className={`${Darkmode ? "dark-mode" : "light-mode"} flex flex-col justify-center items-center h-screen p-4`}>
-      <div className={`${Darkmode ? "dark-mode" : "light-mode"} text-2xl font-bold mb-4`}>
+    <div
+      className={`${
+        Darkmode ? "dark-mode" : "light-mode"
+      } flex flex-col justify-center items-center h-screen p-4`}
+    >
+      <div
+        className={`${
+          Darkmode ? "dark-mode" : "light-mode"
+        } text-2xl font-bold mb-4`}
+      >
         Your chat is here
       </div>
 
-      <div className={` scroll-bar ${ Darkmode ? "dark-mode" :"light-mode" } w-full max-w-md h-96 overflow-y-scroll  flex flex-col`}>
-        {Messages.map((msg, idx) => (
+      <div
+        // ref={scrollref}
+        className={` scroll-bar ${
+          Darkmode ? "dark-mode" : "light-mode"
+          }  w-full max-w-md h-90 overflow-y-scroll  flex flex-col`}
+        // onScroll={handelOnscroll}
+      >
+        {Messages.map((msg) => (
           <div
-            key={idx}
-            className={`p-2 mb-2 rounded-lg max-w-[70%] ${
+           key={msg._id}
+            className={`p-2 mb-2 rounded-lg max-w-[40%] wrap-break-word
+    whitespace-pre-wrap
+    ${
               msg.user === Username
-                ? `${Darkmode ? "dark-mode" : "light-mode"} ml-auto bg-blue-500 text-white`
-                : `${Darkmode ? "dark-mode" : "light-mode"} bg-gray-300 text-black`
+                ? `${
+                    Darkmode ? "dark-mode" : "light-mode"
+                  } ml-auto bg-blue-500 text-white`
+                : `${
+                    Darkmode ? "dark-mode" : "light-mode"
+                  } bg-gray-300 text-black`
             }`}
           >
-            <strong>{msg.user.charAt(0).toUpperCase() + msg.user.slice(1)}: </strong>
-            {msg.message}
-            <div className="text-xs text-gray-500 mt-1 ">{msg.time}</div>
+            <div  onContextMenu={(e) => { handleContexmenu(e, msg) }}
+            onTouchStart={(e) => { handleontouch(e,msg) }}
+            onTouchEnd={handeloneEnd} className=" p-1 border-2 rounded-2xl ">
+            <strong>
+              {msg.user.charAt(0).toUpperCase() + msg.user.slice(1)}:{" "}
+              </strong>
+              {EditingmsId === msg._id ? <input value={Edittext}
+                onChange={(e)=> setEdittext(e.target.value)}
+                className="border rounded p-1 text-black "
+                onKeyDown={(e) => {
+                  if (e.key == "Enter") {
+                    HandelonsaveEditmsg(msg._id);
+                  }
+                  if (e.key == "Escape") {
+                    setEditingmsgId(null)
+                  }
+              } }
+              ></input> :
+            msg.message}
+              <div className="text-xs text-gray-500 mt-1 ">{formatTime(msg.time)}</div>
+              { msg.edited && <div className="text-black text-xs"> edited</div>}
+              </div>
+            {Showmenu && (
+              <div
+                ref={menuref}
+        className="fixed bg-white rounded p-2 z-50"
+        style={{ top: Menuposition.y, left: Menuposition.x }}
+      >
+         <button onClick={()=>{HandelonEditmsg(Selectmsg)}} className="block w-full text-left">
+          ✏️ Edit
+        </button> 
+        <button
+          onClick={handleonDelete}
+          className="block w-full text-left text-red-500"
+        >
+          🗑 Delete
+        </button>
+      </div>
+    )}
           </div>
         ))}
-        <div ref={bottomRef}></div>
+      
+        <div  ref={bottomRef}></div>
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2 mt-4 w-full max-w-md">
@@ -229,11 +227,15 @@ const Chatbox = ({ Username, Darkmode }) => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className={`${Darkmode ? "dark-mode" : "light-mode"} flex-1 p-2 rounded border`}
+          className={`${
+            Darkmode ? "dark-mode" : "light-mode"
+          } flex-1 p-2 rounded border`}
         />
         <button
           type="submit"
-          className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded font-bold`}
+          className={`${
+            Darkmode ? "dark-mode" : "light-mode"
+          } p-2 rounded font-bold`}
         >
           Send
         </button>
@@ -243,4 +245,3 @@ const Chatbox = ({ Username, Darkmode }) => {
 };
 
 export default Chatbox;
-

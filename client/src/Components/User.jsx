@@ -35,11 +35,12 @@
 // export default User
 
 
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import Chatbox from "./Chatbox";
 
 const User = () => {
   const [Username, setUsername] = useState("");
+  const [email,setemail] = useState('');
   const [Activechat, setActivechat] = useState(false);
   const [Darkmode, setDarkmode] = useState(false);
 
@@ -47,6 +48,11 @@ const User = () => {
     e.preventDefault();
     if (!Username.trim()) {
       alert("Please enter username");
+    
+      return;
+    }
+    if (email.length == 0) {
+      alert("please enter the email");
       return;
     }
     setActivechat(true);
@@ -54,7 +60,7 @@ const User = () => {
 
   return (
     <>
-      <div className= {`${Darkmode ? "dark-mode" : "light-mode"} flex justify-end`} >
+      <div className= {`${Darkmode ? "dark-mode" : "light-mode"}  fixed right-0`} >
          <label className={ ` m-1  w-[20vh] rounded-2xl`}>
         <input type="checkbox" name="checkbox" className="accent-blue-500" onChange={()=>(setDarkmode(!Darkmode))} />
         {Darkmode?"brightmode":"darkmode" }
@@ -62,7 +68,7 @@ const User = () => {
       </div>
       
       {Activechat ? (
-        <Chatbox Username={Username} Darkmode={Darkmode} />
+        <Chatbox email ={email} Username={Username} Darkmode={Darkmode} />
       ) : (
         <div className={`${Darkmode ? "dark-mode" : "light-mode"} flex flex-col justify-center items-center h-screen p-4`}>
           
@@ -76,11 +82,15 @@ const User = () => {
               type="text"
               value={Username}
               onChange={(e) => setUsername(e.target.value)}
-              className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded`}
-            />
+                className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded`}
+                placeholder="enter your username"
+              
+              />
+              <input type="email" value={email} onChange={(e)=> setemail(e.target.value)}   className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded`} placeholder="enter your email" />
             <button
               type="submit"
-              className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded font-bold mt-2`}
+                className={`${Darkmode ? "dark-mode" : "light-mode"} p-2 rounded font-bold mt-2`}
+              
             >
               Submit
             </button>
