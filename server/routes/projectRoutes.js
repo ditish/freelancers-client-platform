@@ -1,8 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { getProjects, create_user_project } = require("../controllers/projectController");
-const { verifytoken } = require("../middleware/verifytoken");
 
-router.route("/").get(verifytoken, getProjects).post(verifytoken, create_user_project);
+const {
+  getproject,
+  create_user_project
+} = require("../controllers/ProjectControllers");
+
+const {verifyToken} = require("../middleware/verifytoken");
+
+router.get("/getproject", verifyToken, getproject);
+router.post("/createproject",  create_user_project);
 
 module.exports = router;

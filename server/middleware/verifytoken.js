@@ -1,5 +1,5 @@
  const jwt = require('jsonwebtoken');
-module.exports.verifyToken = (req, res, next) => { 
+const verifyToken = (req, res, next) => { 
   const token = req.cookies.token || '';
   if (!token) {
     return res.status(401).json({ success: 'fail', message: 'No token provided' });
@@ -13,3 +13,4 @@ module.exports.verifyToken = (req, res, next) => {
     return res.status(401).json({ success: 'fail', message: 'Invalid token' });
   }
 }
+module.exports = {verifyToken}
