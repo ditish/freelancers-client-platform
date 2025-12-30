@@ -1,4 +1,4 @@
-import API from "../../utils/axiosConfig";
+import API from "../../utiles/axiosConfigaxios";
 
 const getTasks = async () => {
   const res = await API.get("/tasks");

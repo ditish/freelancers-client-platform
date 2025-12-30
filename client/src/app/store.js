@@ -1,8 +1,9 @@
+import React from "react";
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../features/auth/authSlice";
-import projectReducer from "../features/projects/projectSlice";
-import taskReducer from "../features/tasks/taskSlice";
-import invoiceReducer from "../features/invoices/invoiceSlice";
+import authReducer from "../features/auth/authslice";
+import projectReducer from "../features/project/projectSlice";
+import taskReducer from "../features/task/taskslice";
+import invoiceReducer from "../features/invoice/invoiceSlice";
 
 export const store = configureStore({
   reducer: {
