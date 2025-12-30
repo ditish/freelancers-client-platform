@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import authService from "./authservice";
+import { resetPassword } from "../../../../server/controllers/authControllers";
 
 // Get user from localStorage
 const user = JSON.parse(localStorage.getItem("user"));
@@ -30,7 +31,6 @@ const authSlice = createSlice({
       state.isError = true;
       state.message = action.payload;
     },
-
     logout: (state) => {
       authService.logout(); // removes user from localStorage
       state.user = null;
@@ -49,10 +49,9 @@ export const loginUser = (userData) => async (dispatch) => {
     const user = await authService.login(userData);
     dispatch(loginSuccess(user));
   } catch (err) {
-    dispatch(loginFailure(err.response?.data?.message || "Login failed"));
+    dispatch(setError(err.response?.data?.message || "Login failed"));
   }
 };
-
 
 export const registerUser = (userData) => async (dispatch) => {
   try {
@@ -60,8 +59,16 @@ export const registerUser = (userData) => async (dispatch) => {
     const user = await authService.register(userData);
     dispatch(loginSuccess(user));
   } catch (err) {
-    dispatch(loginFailure(err.response?.data?.message || "Registration failed"));
+    dispatch(setError(err.response?.data?.message || "Registration failed"));
   }
 };
-
+// export const forgetPassword = (userdata) => async (dispatch) => {
+//   try {
+//     dispatch(setLoading(true));
+//     const user = await authService.resetPassword(userdata)
+//     dispatch(loginSuccess(user))
+//   } catch ({error}) {
+//     dispatch(setError(err.response?.data?.message || "resetPassword fail"))
+//   }
+// }
 export default authSlice.reducer;

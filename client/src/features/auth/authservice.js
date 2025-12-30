@@ -15,25 +15,10 @@ const login = async (userData) => {
 const logout = () => {
   localStorage.removeItem("user");
 };
+const resetPassword = async(userData) => {
+  const res = await API.post("/auth/resetPassword", userData) 
+  return res.data;
+}
 
-export default { register, login, logout };
+export default { register, login, logout,resetPassword };
 
-export const loginUser = (userData) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const user = await authService.login(userData);
-    dispatch(loginSuccess(user));
-  } catch (err) {
-    dispatch(setError(err.response?.data?.message || "Login failed"));
-  }
-};
-
-export const registerUser = (userData) => async (dispatch) => {
-  try {
-    dispatch(setLoading(true));
-    const user = await authService.register(userData);
-    dispatch(loginSuccess(user));
-  } catch (err) {
-    dispatch(setError(err.response?.data?.message || "Registration failed"));
-  }
-};
