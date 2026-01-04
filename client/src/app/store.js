@@ -1,7 +1,7 @@
 import React from "react";
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authslice";
-import projectReducer from "../features/project/projectSlice";
+import projectReducer from "../features/Project/projectSlice"
 import taskReducer from "../features/task/taskslice";
 import invoiceReducer from "../features/invoice/invoiceSlice";
 

@@ -1,15 +1,27 @@
 
-const project = require("../model/project");
+const Project = require("../model/project");
 
 
 // get project from user
 const getproject = async (req, res) => {
-   
+  let user_project;
   try {
-    const user_project = await project.find({ user: req.user._id })
+    if (!req.user._id) {
+      return res.status(404).json({sucess:fail,message:"user is not authenticate"})
+    }
+      if (req.role == "clinet") {
+        user_project = await Project.find({ client: req.user._id }).populate("client", "name email")
+          .populate('freelancer', "name email")
+        
+      }
+       if (req.role == "freelancer") {
+        user_project = await Project.find({freelancer: req.user._id }).populate("client", "name email")
+          .populate('freelancer', "name email")
+        
+    }
     
-    if (!user_project) {
-      return res.status(400).json({ success: 'fail', message: "project not found" });
+   if (!user_project) {
+      return res.status(400).json({ success: 'fail', message: "project not created yet" });
     }
     return res.status(200).json({ success: "true", message: "project found", user_project })
   
@@ -21,16 +33,17 @@ const getproject = async (req, res) => {
 const create_user_project = async (req, res) => {
   try {
    
-    const { name, client, status, deadline } = req.body;
-    const project = new project({
-      name,
-      client,
-      status,
+    const { title,deadline,freelancerId,description } = req.body;
+    const Project = new Project({
+      title,
+      client:req.user._id,
       deadline,
-      user: req.user._id,
+      freelancer: freelancerId,
+      description,
+      
     })
-    await project.save();
-    return res.status(200).json({ success: "true", message: "project created", create_user_project })
+    await Project.save();
+    return res.status(200).json({ success: "true", message: "project created", Project})
   
   } catch (error) {
     

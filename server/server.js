@@ -2,14 +2,18 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config");
+const cookieParser = require("cookie-parser")
 
 dotenv.config();
 connectDB();
-
 const app = express();
-
-app.use(cors());
 app.use(express.json());
+app.use(cookieParser())
+app.use(cors({
+  origin: "http://localhost:5173", // frontend URL
+  credentials: true // allow cookies
+}));
+
 
 // Routes will go here
 app.get("/", (req, res) => res.send("API running"));

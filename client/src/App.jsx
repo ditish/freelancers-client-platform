@@ -4,26 +4,47 @@ import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import ForgotPassword from "../pages/auth/Forgetpassword";
 import VerifyOtp from "../pages/auth/Verifyotp";
-import Dashboard from "../components/Dashboard";
+import Freelancer_Dashboard from "../components/Freelancer_Dashboard";
 import PrivateRoute from "../routes/Privateroutes";
+import Projects from "../pages/Freelancer_Dashboard/Project";
+import Invoices from "../pages/Freelancer_Dashboard/Invoice";
+import Tasks from "../pages/Freelancer_Dashboard/Task.jsx";
 import { ToastContainer } from "react-toastify";
+import ClientDashboard from "../components/Clinet_Dashboard.jsx";
+import ClientProjects from "../pages/client_Dashboard/ClientProject.jsx";
+import ClientInvoice from "../pages/client_Dashboard/ClientInvoice.jsx";
+import ClientTasks from "../pages/client_Dashboard/ClinetTask.js";
 
 function App() {
   return (
     <>
-    <ToastContainer position="top-right" autoClose={3000} />
-    <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <BrowserRouter>
         <Routes>
-         <Route path="/" element={<Dashboard />} /> 
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-        <Route element={<PrivateRoute />}>
-        </Route>
-      </Routes>
-    </BrowserRouter></>
+          <Route element={<PrivateRoute />}>
+                    
+            <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
+                    
+            <Route path="/Client_Dashboard" element={<ClientDashboard />} />
+                    
+            <Route path="/client/projects" element={<ClientProjects />} />
+
+            <Route path="/client/inovices" element={<ClientInvoice />} />
+
+             <Route path="/client/tasks" element={< ClientTasks/>} />
+            
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/Invoice" element={<Invoices />} />
+            <Route path="/Task" element={<Tasks />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

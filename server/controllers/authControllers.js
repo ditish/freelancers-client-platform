@@ -24,6 +24,7 @@ const signup = async (req, res) => {
       email,
       password: hashedPassword
     });
+     
 
     return res.status(201).json({ success: true, message: "Signup successful" });
 
@@ -59,7 +60,15 @@ const login = async (req, res) => {
       secure: false
     });
 
-    return res.status(200).json({ success: true, message: "Login successful" });
+    return res.status(200).json({
+      success: true, message: "Login successful",
+        token,           // <--- include token here
+  // user: {          // optionally send user info
+  //   id: user._id,
+  //   name: user.name,
+  //   email: user.email
+  // }
+     });
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -151,6 +160,19 @@ const getUserProfile = async (req, res) => {
     res.status(404).json({ message: "User not found" });
   }
 };
+const getFreelancer = async (req, res) => {
+  try {
+    const freelancer =  await User.find({ role: freelancer })
+    if (!freelancer) {
+      return res.status(404).json({ success:false, message: "no freelancer found" }) 
+    }
+    return res.status(200).json({ success: true , message:"freelancer found",freelancer})
+    
+  } catch (error) {
+
+     return res.status(500).json({ success: false , message:"this is error:",error})
+  }
+}
 
 
 module.exports = {
@@ -159,5 +181,6 @@ module.exports = {
   getuser,
   resetPassword,
   verifyOtp,
-  getUserProfile
+  getUserProfile,
+  getFreelancer
 };

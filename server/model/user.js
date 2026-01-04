@@ -15,6 +15,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      eum: ["freelancer", "client"],
+      required:true
+    }
   },
   { timestamps: true } // automatic createdAt + updatedAt
 );

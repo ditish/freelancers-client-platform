@@ -16,7 +16,7 @@ const taskSlice = createSlice({
       state.isLoading = action.payload;
     },
     setTasks: (state, action) => {
-      state.tasks = action.payload;
+      state.tasks = action.payload.tasks||[]
       state.isLoading = false;
       state.isError = false;
       state.message = "";

@@ -16,7 +16,7 @@ const invoiceSlice = createSlice({
       state.isLoading = action.payload;
     },
     setInvoices: (state, action) => {
-      state.invoices = action.payload;
+      state.invoices = action.payload.invoice || []
       state.isLoading = false;
       state.isError = false;
       state.message = "";

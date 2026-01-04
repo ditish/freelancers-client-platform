@@ -16,7 +16,7 @@ const projectSlice = createSlice({
       state.isLoading = action.payload;
     },
     setProjects: (state, action) => {
-      state.projects = action.payload;
+      state.projects = action.payload.user_project || []
       state.isLoading = false;
       state.isError = false;
       state.message = "";

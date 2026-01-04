@@ -4,7 +4,8 @@ const {
   verifyOtp,
   getuser,
   login,
-  getUserProfile
+  getUserProfile,
+  getFreelancer
 } = require("../controllers/authControllers.js")
 const { verifyToken } = require("../middleware/verifytoken")
 const express = require("express")
@@ -15,4 +16,5 @@ router.post("/auth/login", login);
 router.get("/auth/getuser",verifyToken, getuser);
 router.post("/auth/resetPassword", resetPassword);
 router.post("/auth/verifyotp", verifyOtp);
+router.get("/client/freelancers",verifyToken,getFreelancer)
 module.exports = router;

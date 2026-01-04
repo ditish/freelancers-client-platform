@@ -2,13 +2,12 @@ import API from "../../utiles/axiosConfigaxios";
 
 const signUp = async (name,email,password) => {
   const res = await API.post("/auth/signup", { name, email, password });
-  if (res.data) localStorage.setItem("user", JSON.stringify(res.data));
   return res.data;
 };
 
 const login = async (email,password) => {
   const res = await API.post("/auth/login", email,password);
-  if (res.data) localStorage.setItem("user", JSON.stringify(res.data));
+  if (res.data.token) localStorage.setItem("user", JSON.stringify(res.data));
   return res.data;
 };
 

@@ -11,9 +11,10 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { user, isError, signupSucess, message } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isError) {
@@ -21,11 +22,11 @@ const Signup = () => {
       toast.error(message);
     
     }
-    if (isSuccess || user) {
+    if (signupSucess) {
       toast.success("Registration successful");
-      navigate("/");
+      navigate("/login");
     }
-  }, [isError, isSuccess, message, user, navigate, dispatch]);
+  }, [isError, message, user, navigate, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -56,6 +57,30 @@ const Signup = () => {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+        <div className="flex gap-6">
+  <label className="flex items-center gap-2">
+    <input
+      type="radio"
+      name="role"
+      value="freelancer"
+      checked={role === "freelancer"}
+      onChange={(e) => setRole(e.target.value)}
+    />
+    Freelancer
+  </label>
+
+  <label className="flex items-center gap-2">
+    <input
+      type="radio"
+      name="role"
+      value="client"
+      checked={role === "client"}
+      onChange={(e) => setRole(e.target.value)}
+    />
+    Client
+  </label>
+</div>
+
         <button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition">
           signup
         </button>

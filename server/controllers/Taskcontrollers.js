@@ -2,8 +2,24 @@ const Task = require("../model/task");
 
 // Get all tasks for a user
 exports.getTasks = async (req, res) => {
-  const tasks = await Task.find({ assignedTo: req.user._id }).populate("project", "name");
-  res.json(tasks);
+  let tasks;
+  try {
+      if (req.role == "clinet") {
+        tasks = await Task.find({ client: req.user._id }).populate("client", "name email")
+          .populate('freelancer', "name email")
+        .populate("project ", "tittle")
+      }
+       if (req.role == "freelancer") {
+        tasks = await Task.find({freelancer: req.user._id }).populate("client", "name email")
+          .populate('freelancer', "name email")
+        .populate("project ", "tittle")
+    }
+     return res.status(200).json({ success: "true", message: "project found", tasks })
+    
+  } catch (error) {
+       return res.status(400).json({ success: 'fail', message: error.message })
+  }
+  
 };
 
 // Create a new task

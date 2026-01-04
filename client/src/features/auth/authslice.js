@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import authService from "./authservice";
 
-const user = JSON.parse(localStorage.getItem("user"));
+// const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
-  user: user || null,
+  user: null,
   isLoading: false,
   isError: false,
+  signupSucess:false,
   isSuccess: false,
   message: "",
 };
@@ -22,7 +23,15 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.isLoading = false;
+      state.isSuccess = true
       state.user = action.payload;
+    },
+
+    signUpSucess:(state, action)=> {
+      state.isLoading = false
+      state.signupSucess= true
+      state.user = action.payload
+
     },
     loginFailure: (state, action) => {
       state.isLoading = false;
@@ -45,6 +54,7 @@ export const {
   loginStart,
   loginSuccess,
   loginFailure,
+  signUpSucess,
   logout,
   otpSuccess
 } = authSlice.actions
@@ -71,7 +81,7 @@ export const signupUser = (name, email, password) => async (dispatch) => {
   try {
     dispatch(loginStart());
     const user = await authService.signUp(name, email, password);
-    dispatch(loginSuccess(user));
+    dispatch(signUpSucess(user));
   } catch (err) {
   
     console.log("this is err",err);
