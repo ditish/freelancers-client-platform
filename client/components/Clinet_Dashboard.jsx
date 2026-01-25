@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { logout } from "../src/features/auth/authslice";
+import { resetLogin } from "../src/features/auth/authslice";
 const ClientDashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -11,8 +11,8 @@ const ClientDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+   dispatch(resetLogin())
+    navigate("/");
   };
 
   return (
@@ -25,7 +25,7 @@ const ClientDashboard = () => {
           <Link to="/client/projects" className="hover:text-indigo-600">My Projects</Link>
           <Link to="/client/freelancers" className="hover:text-indigo-600">Freelancers</Link>
           <Link to="/client/tasks" className="hover:text-indigo-600">Tasks</Link>
-          <Link to="/client/invoices" className="hover:text-indigo-600">Invoices</Link>
+          <Link to="/client/inovices" className="hover:text-indigo-600">Invoices</Link>
 
           <button onClick={handleLogout} className="text-red-600 mt-6">
             Logout

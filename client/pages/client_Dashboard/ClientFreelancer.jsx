@@ -1,5 +1,7 @@
+
 import React, { useEffect, useState } from "react";
-import API from "../../api"; // your axios instance
+import API from "../../src/utiles/axiosConfigaxios";// your axios instance
+import { Link } from "react-router-dom";
 
 const ClientFreelancers = () => {
   const [freelancers, setFreelancers] = useState([]);
@@ -7,7 +9,7 @@ const ClientFreelancers = () => {
 
   const fetchFreelancers = async () => {
     try {
-      const res = await API.get("/users/freelancers");
+      const res = await API.get("/client/freelancers");
       setFreelancers(res.data.freelancers);
     } catch (error) {
       console.log(error);
@@ -32,12 +34,13 @@ const ClientFreelancers = () => {
             Skills: {freelancer.skills?.join(", ") || "Not added"}
           </p>
 
-          <button
-            className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded"
-            onClick={() => alert(`Assign project to ${freelancer.name}`)}
-          >
-            Assign Project
-          </button>
+        <Link
+  to={`/client/freelancerProfile/${freelancer._id}`}
+  className="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded"
+>
+  View Profile
+</Link>
+
         </div>
       ))}
     </div>

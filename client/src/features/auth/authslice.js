@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import authService from "./authservice";
 
+
 // const user = JSON.parse(localStorage.getItem("user"));
 
 const initialState = {
@@ -10,12 +11,21 @@ const initialState = {
   signupSucess:false,
   isSuccess: false,
   message: "",
+  role: "",
+  isloadingUser: true,
+  Showtoast: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload
+      state.role = action.payload.role
+      state.isloadingUser = false
+      state.isSuccess = true;
+    },
     loginStart: (state) => {
       state.isLoading = true;
       state.isError = false;
@@ -23,16 +33,35 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       state.isLoading = false;
-      state.isSuccess = true
+      state.isSuccess = true;
       state.user = action.payload;
+      state.role = action.payload.role;
+      state.Showtoast = true;
     },
+    resetLogin: (state) => {
+      
+      state.isSuccess = false;
+      state.isError = false;
+      state.message = "";
+      state.Showtoast = false;
+      state.user = null;
+      state.isloadingUser = false,
+        state.role = "";
+      },
 
     signUpSucess:(state, action)=> {
       state.isLoading = false
       state.signupSucess= true
       state.user = action.payload
+      state.role = action.payload.role
 
     },
+      resetSignup: (state,action) => {
+    state.signupSucess = false;
+    state.isError = false;
+        state.message = action.payload;
+        
+  },
     loginFailure: (state, action) => {
       state.isLoading = false;
       state.isError = true;
@@ -43,19 +72,18 @@ const authSlice = createSlice({
       state.isSuccess = true;
       state.message = action.payload;
     },
-    logout: (state) => {
-      authService.logout();
-      state.user = null;
-    },
+    
   },
 });
 
 export const {
+  setUser,
   loginStart,
   loginSuccess,
   loginFailure,
   signUpSucess,
-  logout,
+  resetLogin,
+  resetSignup,
   otpSuccess
 } = authSlice.actions
 
@@ -76,15 +104,22 @@ export const loginUser = (email, password) => async (dispatch) => {
     dispatch(loginFailure(message));
   }
 };
+export const logOutuser = () => async(dispatch)=> {
+  try {
+    const logOutuser = await authService.logOut();
+    dispatch(resetLogin(logOutuser))
+  } catch (error) {
+    
+  }
+}
 
-export const signupUser = (name, email, password) => async (dispatch) => {
+export const signupUser = (userdata) => async (dispatch) => {
   try {
     dispatch(loginStart());
-    const user = await authService.signUp(name, email, password);
+    const user = await authService.signUp(userdata);
+    
     dispatch(signUpSucess(user));
   } catch (err) {
-  
-    console.log("this is err",err);
     dispatch(loginFailure(err.response?.data?.message || "Registration failed"));
   }
 };

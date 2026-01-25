@@ -1,20 +1,24 @@
 import API from "../../utiles/axiosConfigaxios";
 
-const signUp = async (name,email,password) => {
-  const res = await API.post("/auth/signup", { name, email, password });
-  return res.data;
+const signUp = async (userdata) => {
+  const res = await API.post("/auth/signup", userdata);
+  return res.data.user;
+  
 };
 
 const login = async (email,password) => {
-  const res = await API.post("/auth/login", email,password);
-  if (res.data.token) localStorage.setItem("user", JSON.stringify(res.data));
-  return res.data;
+  const res = await API.post("/auth/login", email, password)
+  return res.data.user;
 };
 
-const logout = () => {
-  localStorage.removeItem("user");
-};
-const resetPassword = async(email) => {
+const logOut = async () => {
+  const res = await API.post("/auth/logOut")
+  return res.data.message;
+
+}
+
+
+const resetPassword = async (email) => {
   const res = await API.post("/auth/resetPassword", email) 
   return res.data;
 }
@@ -23,5 +27,5 @@ const verifyOtp = async (otp,newpassword) => {
   return res.data
  }
 
-export default { signUp, login, logout,resetPassword,verifyOtp };
+export default { signUp, login,logOut, resetPassword,verifyOtp };
 

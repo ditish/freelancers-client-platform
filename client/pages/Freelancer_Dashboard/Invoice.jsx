@@ -30,8 +30,8 @@ const Invoices = () => {
           <tbody>
             {invoices.map((inv) => (
               <tr key={inv._id} className="border-b">
-                <td className="py-2 px-4">{inv.project}</td>
-                <td className="py-2 px-4">{inv.client}</td>
+                <td className="py-2 px-4">{inv.project.tittle}</td>
+                <td className="py-2 px-4">{inv.client.name}</td>
                 <td className="py-2 px-4">${inv.amount}</td>
                 <td className="py-2 px-4">
                   <span className={`px-3 py-1 rounded-full text-white ${

@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { logout } from "../src/features/auth/authslice";
+import {  logOutuser } from "../src/features/auth/authslice";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+  const handleLogout = async() => {
+    dispatch(logOutuser());
+    navigate("/")
   };
 
   return (

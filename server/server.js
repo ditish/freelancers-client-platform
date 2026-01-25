@@ -20,8 +20,9 @@ app.get("/", (req, res) => res.send("API running"));
 
 // Routes
 app.use("/api", require("./routes/authRoutes"));
+app.use("/api",require("./routes/clientRoutes"))
 app.use("/api/project", require("./routes/projectRoutes"));
-app.use("/api/tasks", require("./routes/taskroutes"));
+app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/invoices", require("./routes/invoiceRoutes"));
 
 const PORT = process.env.PORT || 5000;

@@ -6,9 +6,10 @@ const nodemailer = require("nodemailer");
 /* ================= SIGNUP ================= */
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, skills, company } = req.body;
+    console.log(name,email,password,role)
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !role) {
       return res.status(400).json({ success: false, message: "All fields required" });
     }
 
@@ -19,14 +20,25 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+     const newUser = await User.create({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+       role,
+       skills,
+      company
     });
      
 
-    return res.status(201).json({ success: true, message: "Signup successful" });
+    return res.status(201).json({
+      success: true, message: "Signup successful",
+     user: {
+    _id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    role: newUser.role
+  }
+     });
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -63,11 +75,12 @@ const login = async (req, res) => {
     return res.status(200).json({
       success: true, message: "Login successful",
         token,           // <--- include token here
-  // user: {          // optionally send user info
-  //   id: user._id,
-  //   name: user.name,
-  //   email: user.email
-  // }
+  user: {          // optionally send user info
+   id: user._id,
+     name: user.name,
+    email: user.email,
+    role:user.role
+   }
      });
 
   } catch (error) {
@@ -75,10 +88,21 @@ const login = async (req, res) => {
   }
 };
 
+   const logOut = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false,
+  });
+
+   return res.json({ message: "Logged out" });
+};
+
+
 /* ================= GET USER ================= */
 const getuser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user._id).select("-password");
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -89,6 +113,8 @@ const getuser = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 
 /* ================= RESET PASSWORD ================= */
 const resetPassword = async (req, res) => {
@@ -160,27 +186,16 @@ const getUserProfile = async (req, res) => {
     res.status(404).json({ message: "User not found" });
   }
 };
-const getFreelancer = async (req, res) => {
-  try {
-    const freelancer =  await User.find({ role: freelancer })
-    if (!freelancer) {
-      return res.status(404).json({ success:false, message: "no freelancer found" }) 
-    }
-    return res.status(200).json({ success: true , message:"freelancer found",freelancer})
-    
-  } catch (error) {
 
-     return res.status(500).json({ success: false , message:"this is error:",error})
-  }
-}
 
 
 module.exports = {
   signup,
   login,
+  logOut,
   getuser,
   resetPassword,
   verifyOtp,
   getUserProfile,
-  getFreelancer
+  
 };

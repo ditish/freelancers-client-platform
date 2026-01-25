@@ -16,7 +16,7 @@ exports.getInvoices = async (req, res) => {
     }
 
     console.log("this is invoice ", req.user._id)
-    res.staus(200).json({sucess:true,message:"invoice found",invoices});
+    res.status(200).json({sucess:true,message:"invoice found",invoices});
   } catch (error) {
         console.error(error);
     res.status(500).json({ message: error });

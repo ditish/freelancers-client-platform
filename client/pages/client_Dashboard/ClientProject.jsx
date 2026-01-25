@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProjects, createProject } from "../../features/projects/projectSlice";
-import API from "../../api";
+import {
+  fetchProjects,
+  createProject,
+} from "../../src/features/Project/projectSlice";
+import API from "../../src/utiles/axiosConfigaxios";
+import { useSearchParams } from "react-router-dom";
 
 const ClientProjects = () => {
+  const [params] = useSearchParams();
+  const freelancerId = params.get("freelancer");
   const dispatch = useDispatch();
   const { projects, isLoading } = useSelector((state) => state.projects);
 
@@ -16,7 +22,11 @@ const ClientProjects = () => {
     freelancerId: "",
     deadline: "",
   });
-
+  useEffect(() => {
+    if (freelancerId) {
+      setForm((prev) => ({ ...prev, freelancerId }));
+    }
+  }, [freelancerId]);
   /* ================= FETCH DATA ================= */
 
   useEffect(() => {
@@ -40,8 +50,10 @@ const ClientProjects = () => {
     dispatch(createProject(form));
     setShowModal(false);
     setForm({
-      title: "", description: "", freelancerId: "",
-      deadline:""
+      title: "",
+      description: "",
+      freelancerId,
+      deadline: "",
     });
   };
 
@@ -96,9 +108,7 @@ const ClientProjects = () => {
                 placeholder="Project Title"
                 className="w-full border p-3 rounded"
                 value={form.title}
-                onChange={(e) =>
-                  setForm({ ...form, title: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
                 required
               />
 
@@ -111,14 +121,12 @@ const ClientProjects = () => {
                 }
                 required
               />
-               <input
+              <input
                 type="date"
                 placeholder="deadline"
                 className="w-full border p-3 rounded"
                 value={form.deadline}
-                onChange={(e) =>
-                  setForm({ ...form, deadline: e.target.value })
-                }
+                onChange={(e) => setForm({ ...form, deadline: e.target.value })}
                 required
               />
 

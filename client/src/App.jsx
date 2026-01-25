@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import React from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import ForgotPassword from "../pages/auth/Forgetpassword";
@@ -13,39 +13,49 @@ import { ToastContainer } from "react-toastify";
 import ClientDashboard from "../components/Clinet_Dashboard.jsx";
 import ClientProjects from "../pages/client_Dashboard/ClientProject.jsx";
 import ClientInvoice from "../pages/client_Dashboard/ClientInvoice.jsx";
-import ClientTasks from "../pages/client_Dashboard/ClinetTask.js";
+import ClientTasks from "../pages/client_Dashboard/ClinetTask.jsx";
+import ClientFreelancers from "../pages/client_Dashboard/ClientFreelancer.jsx";
+import LoadUser from "../components/LoadUser.jsx";
+import {  useSelector } from "react-redux";
+import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerprofile.jsx";
 
 function App() {
-  return (
+  const { isloadingUser } = useSelector((state) => state.auth);
+ 
+       return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+        <LoadUser />
 
-          <Route element={<PrivateRoute />}>
-                    
-            <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
-                    
-            <Route path="/Client_Dashboard" element={<ClientDashboard />} />
-                    
-            <Route path="/client/projects" element={<ClientProjects />} />
+        {isloadingUser ? (
+          <div className="flex items-center justify-center h-screen text-xl">
+            Loading...
+          </div>
+        ) : (
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-            <Route path="/client/inovices" element={<ClientInvoice />} />
-
-             <Route path="/client/tasks" element={< ClientTasks/>} />
-            
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/verify-otp" element={<VerifyOtp />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/Invoice" element={<Invoices />} />
-            <Route path="/Task" element={<Tasks />} />
-          </Route>
-        </Routes>
+            <Route element={<PrivateRoute />}>
+              <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
+              <Route path="/Client_Dashboard" element={<ClientDashboard />} />
+              <Route path="/client/projects" element={<ClientProjects />} />
+              <Route path="/client/inovices" element={<ClientInvoice />} />
+              <Route path="/client/tasks" element={<ClientTasks />} />
+               <Route path="/client/freelancers" element={<ClientFreelancers />} />
+              <Route path="/client/freelancerProfile/:id"
+    element={<ClientFreelancerProfile />}
+  />
+            </Route>
+          </Routes>
+        )}
       </BrowserRouter>
     </>
   );
 }
+    
+      
 
 export default App;

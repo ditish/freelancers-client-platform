@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../src/features/auth/authslice"
+import { loginUser,resetLogin } from "../../src/features/auth/authslice"
 import { useNavigate, Link } from "react-router-dom";
 import AuthWrapper from "../../components/Authwrapper";
 import { toast } from "react-toastify";
@@ -11,17 +11,22 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isError, isSuccess, message } = useSelector((state) => state.auth);
+  const { user, isError, isSuccess, message ,role,Showtoast } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isError) {
       toast.error(message)
+      dispatch(resetLogin())
+    }
+    if (Showtoast) {
+            toast.success("Login successful")
     }
     if (isSuccess ) {
-      toast.success("Login successful");
-      navigate("/");
+
+      console.log("role:",role)
+    role === "client"? navigate("/Client_Dashboard") : navigate("/freelance_Dashboard")   
     }
-  }, [isError, isSuccess, message, user, navigate, dispatch]);
+  }, [isError, isSuccess, message, user, navigate, dispatch,role]);
 
   const submitHandler = (e) => {
     e.preventDefault();
