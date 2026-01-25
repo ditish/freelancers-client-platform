@@ -27,15 +27,15 @@ const Freelancer_Dashboard = () => {
           Freelancer Dashboard
         </h2>
         <nav className="flex flex-col space-y-3 mt-6">
-          <Link className="hover:text-indigo-600" to="/Projects">
+          <Link className="hover:text-indigo-600" to="/freelancer/Projects">
             Project
           </Link>
 
-          <Link className="hover:text-indigo-600" to="/Invoice">
+          <Link className="hover:text-indigo-600" to="/freelancer/Invoices">
             Invoices
           </Link>
 
-          <Link className="hover:text-indigo-600" to="/Task">
+          <Link className="hover:text-indigo-600" to="/freelancer/Tasks">
             Task
           </Link>
 

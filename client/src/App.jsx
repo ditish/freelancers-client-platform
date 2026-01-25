@@ -46,8 +46,13 @@ function App() {
               <Route path="/client/tasks" element={<ClientTasks />} />
                <Route path="/client/freelancers" element={<ClientFreelancers />} />
               <Route path="/client/freelancerProfile/:id"
-    element={<ClientFreelancerProfile />}
-  />
+                       element={<ClientFreelancerProfile />} />
+                     <Route path="/freelancer/Projects"
+                       element={<Projects />} />
+                     <Route path="/freelancer/Invoices"
+                       element={<Invoices />} />
+                     <Route path="/freelancer/Tasks"
+                       element={<Tasks />}/>
             </Route>
           </Routes>
         )}
