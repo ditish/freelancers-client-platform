@@ -9,8 +9,7 @@ const projectSchema = new mongoose.Schema({
       ref: "User",
       required: true,
     },
-
-    freelancer: {
+freelancer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

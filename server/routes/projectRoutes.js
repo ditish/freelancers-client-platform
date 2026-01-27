@@ -9,6 +9,6 @@ const {
 const {verifyToken} = require("../middleware/verifytoken");
 
 router.get("/getproject", verifyToken, getproject);
-router.post("/createproject",  create_user_project);
+router.post("/createproject", verifyToken,  create_user_project);
 
 module.exports = router;

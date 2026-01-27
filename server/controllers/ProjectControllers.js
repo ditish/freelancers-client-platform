@@ -9,12 +9,12 @@ const getproject = async (req, res) => {
     if (!req.user._id) {
       return res.status(404).json({sucess:fail,message:"user is not authenticate"})
     }
-      if (req.role == "clinet") {
+      if (req.user.role == "client") {
         user_project = await Project.find({ client: req.user._id }).populate("client", "name email")
           .populate('freelancer', "name email")
         
       }
-       if (req.role == "freelancer") {
+       if (req.user.role == "freelancer") {
         user_project = await Project.find({freelancer: req.user._id }).populate("client", "name email")
           .populate('freelancer', "name email")
         
@@ -26,6 +26,7 @@ const getproject = async (req, res) => {
     return res.status(200).json({ success: "true", message: "project found", user_project })
   
   } catch (error) {
+    console.log("there is err while geting project",error)
     return res.status(400).json({ success: 'fail', message: error.message });
   }
 }
@@ -34,7 +35,7 @@ const create_user_project = async (req, res) => {
   try {
    
     const { title,deadline,freelancerId,description } = req.body;
-    const Project = new Project({
+    const project = new Project({
       title,
       client:req.user._id,
       deadline,
@@ -42,11 +43,11 @@ const create_user_project = async (req, res) => {
       description,
       
     })
-    await Project.save();
-    return res.status(200).json({ success: "true", message: "project created", Project})
+    await project.save();
+    return res.status(200).json({ success: "true", message: "project created", project})
   
   } catch (error) {
-    
+    console.log("there is err while saving projects",error)
    return res.status(400).json({ success: 'fail', message: error.message });
   }
 }

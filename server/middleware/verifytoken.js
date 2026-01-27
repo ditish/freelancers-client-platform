@@ -17,7 +17,7 @@ const verifyToken = async (req, res, next) => {
       name: user.name,
         email: user.email,
      }
-    console.log(req._id)
+    console.log("this is authorized person",req.user._id)
     next();
   } catch (error) {
     return res.status(401).json({ success: 'fail', message: 'Invalid token' });

@@ -30,9 +30,11 @@ const Projects = () => {
           <tbody>
             {projects.map((p) => (
               <tr key={p._id} className="border-b">
-                <td className="py-2 px-4">{p.name}</td>
-                <td className="py-2 px-4">{p.client}</td>
-                <td className="py-2 px-4">{p.status}</td>
+                <td className="py-2 px-4">{p.title}</td>
+                <td className="py-2 px-4">{p.client.name}</td>
+                <td className={
+                  p.status == "Pending"?"text-yellow-500":"text-green-500"
+                }>{p.status}</td>
                 <td className="py-2 px-4">{new Date(p.deadline).toLocaleDateString()}</td>
               </tr>
             ))}

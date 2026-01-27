@@ -113,6 +113,17 @@ const getuser = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+const getAllclient = async (req, res) => {
+  try {
+    const client = await User.find({role:"client"}).select("-password");
+    if (!client) {
+           return res.status(404).json({ success: false, message: "no client are found" });
+    }
+     res.status(200).json({ success: true, client});
+  } catch (error) {
+     res.status(500).json({ success: false, message: error.message });
+  }
+}
 
 
 
@@ -197,5 +208,6 @@ module.exports = {
   resetPassword,
   verifyOtp,
   getUserProfile,
+  getAllclient
   
 };

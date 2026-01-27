@@ -27,8 +27,11 @@ const ClientInvoice = () => {
 
       {invoices.map((inv) => (
         <div key={inv._id} className="bg-white p-4 shadow rounded mb-3">
+          <p>invoicesNumber:{inv.invoiceNumber }</p>
+          <p>freelancer:{ inv.createdBy.name}</p>
           <p>Amount: ${inv.amount}</p>
           <p>Status: {inv.status}</p>
+          <p>dueDate:{inv.dueDate }</p>
 
           {inv.status === "unpaid" && (
             <button

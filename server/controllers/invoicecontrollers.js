@@ -4,18 +4,19 @@ const Invoice = require("../model/invoice");
 exports.getInvoices = async (req, res) => {
   try {
     let invoices;
-    if (req.role == "clinet") {
-      invoices = await Invoice.find({ client: req.user._id }).populate("client", "name email")
-        .populate('freelancer', "name email")
-        .populate("project ", "tittle")
+    console.log("this  is user role",req.user.role)
+    if (req.user.role == "client") {
+      invoices = await Invoice.find({ selectedClient: req.user._id })
+        .populate("selectedClient","name")
+        .populate('createdBy', "name email")
+        .populate("Project", "title")
     }
-    if (req.role == "freelancer") {
-      invoices = await Invoice.find({ freelancer: req.user._id }).populate("client", "name email")
-        .populate('freelancer', "name email")
-        .populate("project ", "tittle")
+    if (req.user.role == "freelancer") {
+      invoices = await Invoice.find({ createdBy: req.user._id }).populate("Project", "title client")
+        .populate("selectedClient","name")
+        .populate('createdBy', "name email")
     }
-
-    console.log("this is invoice ", req.user._id)
+     console.log("these are the invoices", invoices)
     res.status(200).json({sucess:true,message:"invoice found",invoices});
   } catch (error) {
         console.error(error);
@@ -26,18 +27,18 @@ exports.getInvoices = async (req, res) => {
 
 // Create a new invoice
 exports.createInvoice = async (req, res) => {
-  const { client, project, amount, status, dueDate } = req.body;
+  const { invoiceNumber,selectedClient, Project, amount, dueDate } = req.body;
 
   try {
     const invoice = await Invoice.create({
-      client,
-      project,
+      invoiceNumber,
+      selectedClient,
+      Project,
       amount,
-      status,
       dueDate,
       createdBy: req.user._id,
     });
-
+  console.log("this is client",selectedClient)
     res.status(201).json(invoice);
   } catch (error) {
     console.error(error);

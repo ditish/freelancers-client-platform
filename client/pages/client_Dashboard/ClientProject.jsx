@@ -84,6 +84,8 @@ const ClientProjects = () => {
               <h3 className="text-lg font-semibold">{project.title}</h3>
               <p className="text-gray-600">{project.description}</p>
               <p className="text-gray-600">{project.deadline}</p>
+              <span className="text-gray-600">Status:</span>
+              <p className={project.status == "Pending"?"text-yellow-300":"text-green-400" }> {project.status }</p>
 
               <p className="mt-2 text-sm">
                 Freelancer:{" "}
