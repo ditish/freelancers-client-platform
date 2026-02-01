@@ -3,6 +3,7 @@ import taskService from "./taskService";
 
 const initialState = {
   tasks: [],
+  task: [],
   isLoading: false,
   isError: false,
   message: "",
@@ -21,6 +22,13 @@ const taskSlice = createSlice({
       state.isError = false;
       state.message = "";
     },
+       setTaskbyProject: (state, action) => {
+      state.task = action.payload || []
+      state.isLoading = false;
+      state.isError = false;
+      state.message = "";
+    },
+       
     setError: (state, action) => {
       state.isError = true;
       state.isLoading = false;
@@ -29,7 +37,7 @@ const taskSlice = createSlice({
   },
 });
 
-export const { setLoading, setTasks, setError } = taskSlice.actions;
+export const { setLoading, setTasks, setError ,setTaskbyProject } = taskSlice.actions;
 
 export const fetchTasks = () => async (dispatch) => {
   try {
@@ -38,6 +46,22 @@ export const fetchTasks = () => async (dispatch) => {
     dispatch(setTasks(tasks));
   } catch (err) {
     dispatch(setError(err.response?.data?.message || "Failed to fetch tasks"));
+  }
+};
+
+ export const fetchTaskbyProject = (projectId) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+  console.log("from fetchTask",projectId )
+    const task = await taskService.getTaskbyProject(projectId)
+
+    dispatch(setTaskbyProject(task));
+  } catch (err) {
+    dispatch(
+      setError(
+        err.response?.data?.message || "Failed to fetch project details"
+      )
+    );
   }
 };
 

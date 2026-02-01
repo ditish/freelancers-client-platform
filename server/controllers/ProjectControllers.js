@@ -20,7 +20,7 @@ const getproject = async (req, res) => {
         
     }
     
-   if (!user_project) {
+   if (user_project.length === 0) {
       return res.status(400).json({ success: 'fail', message: "project not created yet" });
     }
     return res.status(200).json({ success: "true", message: "project found", user_project })
@@ -30,6 +30,27 @@ const getproject = async (req, res) => {
     return res.status(400).json({ success: 'fail', message: error.message });
   }
 }
+
+const getProjectbyId = async(req, res) => {
+  try {
+    const project = await Project.findById(req.params.projectId)
+    .populate("client", "name email");
+  if (!project) {
+    return res.status(404).json({ message: "Project not found" });
+  }
+
+   return res.json({sucess:true,message:"project is ready", project});
+
+
+  } catch (error) {
+      console.log("there is err while geting projectbyID",error)
+    return res.status(400).json({ success: 'fail', message: error.message });
+  }
+}
+
+
+
+
 // creating new project
 const create_user_project = async (req, res) => {
   try {
@@ -51,7 +72,7 @@ const create_user_project = async (req, res) => {
    return res.status(400).json({ success: 'fail', message: error.message });
   }
 }
- module.exports ={getproject,create_user_project}
+ module.exports ={getproject,getProjectbyId,create_user_project}
 
 
   

@@ -22,16 +22,16 @@ const Tasks = () => {
           <li key={task._id} className="bg-white shadow rounded-lg p-4 flex justify-between items-center">
             <div>
               <h3 className="font-semibold">{task.title}</h3>
-              <p className="text-gray-600">Project: {task.project}</p>
+              <p className="text-gray-600">Project: {task.projectId.title}</p>
+                <p className="text-gray-600">assigned by: {task.client.name}</p>
             </div>
-            <span className={`px-3 py-1 rounded-full text-white ${
+            <span className={`px-3 py-1 rounded-full self-end text-white ${
               task.status === "Completed" ? "bg-green-500" :
               task.status === "Ongoing" ? "bg-yellow-500" :
               "bg-red-500"
             }`}>
               {task.status}
             </span>
-            <span className="px-3 py-1 rounded-2xl text-white">Assign to {task.assignedTo }</span>
           </li>
         ))}
       </ul>

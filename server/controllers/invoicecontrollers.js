@@ -16,7 +16,7 @@ exports.getInvoices = async (req, res) => {
         .populate("selectedClient","name")
         .populate('createdBy', "name email")
     }
-     console.log("these are the invoices", invoices)
+     
     res.status(200).json({sucess:true,message:"invoice found",invoices});
   } catch (error) {
         console.error(error);
@@ -38,7 +38,6 @@ exports.createInvoice = async (req, res) => {
       dueDate,
       createdBy: req.user._id,
     });
-  console.log("this is client",selectedClient)
     res.status(201).json(invoice);
   } catch (error) {
     console.error(error);
@@ -49,20 +48,21 @@ exports.createInvoice = async (req, res) => {
  exports.payInvoice =  async ( req,res) => {
   try {
     const Invoiceid = await req.params.id;
-     const Invoice = await Invoice.findById(Invoiceid);
-    if (!Invoice) {
+     const invoice = await Invoice.findById(Invoiceid);
+    if (!invoice) {
       return res.status(404).json({ sucess: false, message: "user not found" })
     }
-    if (Invoice.client.toString() !== req.user._id.toString())
+    if (invoice.selectedClient.toString() !== req.user._id.toString())
     {
          return res.status(403).json({ success: false, message: "Not authorized to pay this invoice" })
     }
-      Invoice.status = "paid"
-      await Invoice.save();
-       res.status(200).json({ success: true, message: "Invoice paid successfully", Invoice });
+      invoice.status = "Paid"
+      await invoice.save();
+       res.status(200).json({ success: true, message: "Invoice paid successfully", invoice });
 
     
   } catch (error) {
+    console.log("this is invoice err", error)
     res.status(500).json({ success: false, message: error.message });
   }
 }

@@ -13,6 +13,10 @@ freelancer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    task: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Task"
   },
   description: {
       type:String,required:true

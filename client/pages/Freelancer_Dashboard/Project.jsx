@@ -2,8 +2,10 @@ import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../src/features/Project/projectSlice";
+import { useNavigate } from "react-router-dom";
 
 const Projects = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projects, isLoading, isError, message } = useSelector((state) => state.projects);
 
@@ -29,7 +31,8 @@ const Projects = () => {
           </thead>
           <tbody>
             {projects.map((p) => (
-              <tr key={p._id} className="border-b">
+              <tr key={p._id}
+              onClick={() => navigate(`/projects/${p._id}`)}className="border-b">
                 <td className="py-2 px-4">{p.title}</td>
                 <td className="py-2 px-4">{p.client.name}</td>
                 <td className={

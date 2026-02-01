@@ -4,34 +4,51 @@ const Task = require("../model/task");
 exports.getTasks = async (req, res) => {
   let tasks;
   try {
-      if (req.role == "clinet") {
-        tasks = await Task.find({ client: req.user._id }).populate("client", "name email")
-          .populate('freelancer', "name email")
-        .populate("project ", "tittle")
+      if (req.user.role == "client") {
+        tasks = await Task.find({ client: req.user._id })
+          .populate('assignedTo', "name email")
+        .populate("projectId", "title")
       }
-       if (req.role == "freelancer") {
-        tasks = await Task.find({freelancer: req.user._id }).populate("client", "name email")
-          .populate('freelancer', "name email")
-        .populate("project ", "tittle")
+       if (req.user.role == "freelancer") {
+        tasks = await Task.find({assignedTo: req.user._id })
+          .populate('client', "name email")
+        .populate("projectId", "title")
     }
      return res.status(200).json({ success: "true", message: "project found", tasks })
     
   } catch (error) {
-       return res.status(400).json({ success: 'fail', message: error.message })
+    console.log("this is getask message", error);
+    return res.status(400).json({ success: 'fail', message: error.message })
+   
   }
   
 };
 
+ exports.getTaskbyProject= async (req,res) => {
+  try {
+    const tasks = await Task.find({ projectId: req.params.projectId });
+    console.log("this is our task",tasks)
+    if (tasks.length === 0) {
+      return res.status(401).json({ sucess: true, message: "task not created" });
+    }
+     return res.status(200).json({tasks});
+  } catch (error) {
+    console.log("there is err", error)
+      return res.status(400).json({ success: false, message: error.message })
+  }
+}
+
 // Create a new task
 exports.createTask = async (req, res) => {
-  const { title, project, status, deadline, assignedTo } = req.body;
+  const { title, projectId, status, deadline, assignedTo } = req.body;
 
   const task = await Task.create({
     title,
-    project,
+    projectId,
     status,
     deadline,
     assignedTo,
+    client: req.user._id,
   });
 
   res.status(201).json(task);

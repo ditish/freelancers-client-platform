@@ -3,6 +3,7 @@ import projectService from "./projectService";
 
 const initialState = {
   projects: [],
+  project:[],
   isLoading: false,
   isError: false,
   message: "",
@@ -21,6 +22,14 @@ const projectSlice = createSlice({
       state.isError = false;
       state.message = "";
     },
+      
+      setProjectById: (state, action) => {
+      state.project = action.payload || [];
+      state.isLoading = false;
+      state.isError = false;
+      state.message = "";
+    },
+
     setError: (state, action) => {
       state.isError = true;
       state.isLoading = false;
@@ -29,7 +38,7 @@ const projectSlice = createSlice({
   },
 });
 
-export const { setLoading, setProjects, setError } = projectSlice.actions;
+export const { setLoading, setProjects, setError, setProjectById} = projectSlice.actions;
 
 export const fetchProjects = () => async (dispatch) => {
   try {
@@ -38,6 +47,21 @@ export const fetchProjects = () => async (dispatch) => {
     dispatch(setProjects(projects));
   } catch (err) {
     dispatch(setError(err.response?.data?.message || "Failed to fetch projects"));
+  }
+};
+ export const fetchProjectById = (projectId) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+
+    const project = await projectService.getProjectById(projectId);
+
+    dispatch(setProjectById(project));
+  } catch (err) {
+    dispatch(
+      setError(
+        err.response?.data?.message || "Failed to fetch project details"
+      )
+    );
   }
 };
 
@@ -50,5 +74,4 @@ export const createProject = (data) => async (dispatch) => {
     dispatch(setError(err.response?.data?.message || "Failed to create project"));
   }
 };
-
 export default projectSlice.reducer;

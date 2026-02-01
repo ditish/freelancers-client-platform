@@ -18,6 +18,7 @@ import ClientFreelancers from "../pages/client_Dashboard/ClientFreelancer.jsx";
 import LoadUser from "../components/LoadUser.jsx";
 import {  useSelector } from "react-redux";
 import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerprofile.jsx";
+import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -40,7 +41,8 @@ function App() {
 
             <Route element={<PrivateRoute />}>
               <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
-              <Route path="/Client_Dashboard" element={<ClientDashboard />} />
+             <Route path="/Client_Dashboard" element={<ClientDashboard />} />
+                      <Route path="/projects/:projectId" element={<ProjectDetails/>} />
               <Route path="/client/projects" element={<ClientProjects />} />
               <Route path="/client/inovices" element={<ClientInvoice />} />
               <Route path="/client/tasks" element={<ClientTasks />} />

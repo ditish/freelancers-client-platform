@@ -30,10 +30,9 @@ const ClientInvoice = () => {
           <p>invoicesNumber:{inv.invoiceNumber }</p>
           <p>freelancer:{ inv.createdBy.name}</p>
           <p>Amount: ${inv.amount}</p>
-          <p>Status: {inv.status}</p>
-          <p>dueDate:{inv.dueDate }</p>
+         <p>dueDate:{inv.dueDate }</p>
 
-          {inv.status === "unpaid" && (
+          {inv.status === "Pending" && (
             <button
               onClick={() => payInvoice(inv._id)}
               className="bg-green-600 text-white px-3 py-1 rounded"

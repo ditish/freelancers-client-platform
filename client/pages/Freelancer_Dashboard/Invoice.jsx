@@ -11,7 +11,6 @@ const Invoices = () => {
   useEffect(() => {
     dispatch(fetchInvoices());
   }, [dispatch]);
-  console.log("this is invoices", invoices);
   if (isLoading) return <p className="text-center mt-10 text-gray-500">Loading invoices...</p>;
   if (isError) return <p className="text-center mt-10 text-red-500">{message}</p>;
 const formatDate = (date) => new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
