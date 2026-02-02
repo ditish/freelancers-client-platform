@@ -11,13 +11,13 @@ const ProjectDetails = () => {
   const dispatch = useDispatch();
 
   const { project } = useSelector((state) => state.projects);
-  const { task, isLoading } = useSelector((state) => state.tasks);
-
+  const { task, isLoading
+   } = useSelector((state) => state.tasks);
   useEffect(() => {
     dispatch(fetchProjectById(projectId));
     dispatch(fetchTaskbyProject(projectId));
   }, [dispatch, projectId]);
-
+  console.log("this is task1", task);
   if (isLoading) return <p>Loading...</p>;
 
   return (

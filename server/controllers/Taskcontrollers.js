@@ -25,13 +25,17 @@ exports.getTasks = async (req, res) => {
 };
 
  exports.getTaskbyProject= async (req,res) => {
-  try {
-    const tasks = await Task.find({ projectId: req.params.projectId });
-    console.log("this is our task",tasks)
-    if (tasks.length === 0) {
-      return res.status(401).json({ sucess: true, message: "task not created" });
+   try {
+       const userId = req.user._id
+    const tasks = await Task.find({ projectId: req.params.projectId ,assignedTo:userId});
+ 
+    if (tasks.length === 0 ) {
+      return res.status(400).json({ sucess: true, message: "task not created" });
     }
-     return res.status(200).json({tasks});
+   
+      return res.status(200).json({ tasks })
+    
+
   } catch (error) {
     console.log("there is err", error)
       return res.status(400).json({ success: false, message: error.message })

@@ -4,10 +4,10 @@ const getTasks = async () => {
   const res = await API.get("/tasks/gettask");
   return res.data;
 };
-const getTaskbyProject = async (projectId) => {
+const getTaskbyProject = async(projectId,) => {
   console.log("🔥 getTaskbyProject CALLED with:", projectId);
   try {
-     const res = await API.get(`/tasks/TaskbyProject/${projectId}`, {
+     const res = await API.get(`/tasks/TaskbyProject/${projectId}`,   {
     withCredentials: true,
      });
     if (res.status === 401) {

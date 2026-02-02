@@ -49,11 +49,11 @@ export const fetchTasks = () => async (dispatch) => {
   }
 };
 
- export const fetchTaskbyProject = (projectId) => async (dispatch) => {
+export const fetchTaskbyProject = ( projectId ) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
   console.log("from fetchTask",projectId )
-    const task = await taskService.getTaskbyProject(projectId)
+    const task = await taskService.getTaskbyProject( projectId)
 
     dispatch(setTaskbyProject(task));
   } catch (err) {

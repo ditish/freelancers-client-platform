@@ -93,6 +93,12 @@ const ClientProjects = () => {
                   {project.freelancer?.name || "Not assigned"}
                 </span>
               </p>
+                   <p className="mt-2 text-sm">
+                client:{" "}
+                <span className="font-semibold">
+                  {project.client?.name || "Not assigned"}
+                </span>
+              </p>
             </div>
           ))}
         </div>
