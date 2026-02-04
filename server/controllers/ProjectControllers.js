@@ -55,12 +55,11 @@ const getProjectbyId = async(req, res) => {
 const create_user_project = async (req, res) => {
   try {
    
-    const { title,deadline,freelancerId,description } = req.body;
+    const { title,deadline,description } = req.body;
     const project = new Project({
       title,
       client:req.user._id,
       deadline,
-      freelancer: freelancerId,
       description,
       
     })
@@ -72,7 +71,29 @@ const create_user_project = async (req, res) => {
    return res.status(400).json({ success: 'fail', message: error.message });
   }
 }
- module.exports ={getproject,getProjectbyId,create_user_project}
+
+const deleteProjectbyId = async(req,res) => {
+    try {
+      const { projectId } = req.params;
+      console.log("this is deleted", projectId);
+
+    const project = await Project.findByIdAndDelete(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    res.status(200).json({ message: "Project and related tasks deleted" });
+
+    } catch (error) {
+      console.log("there is problem while delteing the project", error);
+    res.status(500).json({ message: error.message });
+  }
+
+}
+
+
+module.exports = { getproject, getProjectbyId, create_user_project, deleteProjectbyId };
 
 
   

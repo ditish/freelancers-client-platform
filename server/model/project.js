@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Task = require("./task");
 
 const projectSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -9,20 +10,26 @@ const projectSchema = new mongoose.Schema({
       ref: "User",
       required: true,
     },
-freelancer: {
+freelancer: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
-    },
-    task: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"Task"
-  },
+    }],
+  //   task: {
+  //       type: mongoose.Schema.Types.ObjectId,
+  //       ref:"Task"
+  // },
   description: {
       type:String,required:true
     }
   
 
-}, { timestamps: true });
+}, { timestamps: true },
+);
+
+projectSchema.pre("findOneAndDelete", async function (next) {
+  const projectId = this.getQuery()._id;
+
+  await Task.deleteMany({ projectId });
+});
 
 module.exports = mongoose.model("Project", projectSchema);

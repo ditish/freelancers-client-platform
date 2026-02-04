@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProjects,
   createProject,
+  deleteProjectbyID,
 } from "../../src/features/Project/projectSlice";
 import API from "../../src/utiles/axiosConfigaxios";
 import { useSearchParams } from "react-router-dom";
-
 const ClientProjects = () => {
   const [params] = useSearchParams();
   const freelancerId = params.get("freelancer");
@@ -22,6 +22,14 @@ const ClientProjects = () => {
     freelancerId: "",
     deadline: "",
   });
+
+
+  const HandleonDelete = (projectID) => {
+  console.log("this this deleted projectID", projectID)
+    dispatch(deleteProjectbyID(projectID));
+
+}
+
   useEffect(() => {
     if (freelancerId) {
       setForm((prev) => ({ ...prev, freelancerId }));
@@ -88,19 +96,17 @@ const ClientProjects = () => {
               <p className={project.status == "Pending"?"text-yellow-300":"text-green-400" }> {project.status }</p>
 
               <p className="mt-2 text-sm">
-                Freelancer:{" "}
-                <span className="font-semibold">
-                  {project.freelancer?.name || "Not assigned"}
-                </span>
-              </p>
-                   <p className="mt-2 text-sm">
-                client:{" "}
-                <span className="font-semibold">
-                  {project.client?.name || "Not assigned"}
-                </span>
-              </p>
+  Freelancer:{" "}
+  <span className="font-semibold">
+    {project.freelancer?.length > 0
+      ? project.freelancer.map(f => f.name).join(", ")
+      : "Not assigned"}
+  </span>
+</p>
+             <button onClick={()=>HandleonDelete(project._id)} className="bg-red-500 px-3 mt-2  py-1  rounded-md ">delete</button>      
             </div>
           ))}
+         
         </div>
       )}
 
@@ -138,21 +144,6 @@ const ClientProjects = () => {
                 required
               />
 
-              <select
-                className="w-full border p-3 rounded"
-                value={form.freelancerId}
-                onChange={(e) =>
-                  setForm({ ...form, freelancerId: e.target.value })
-                }
-                required
-              >
-                <option value="">Select Freelancer</option>
-                {freelancers.map((f) => (
-                  <option key={f._id} value={f._id}>
-                    {f.name}
-                  </option>
-                ))}
-              </select>
 
               <div className="flex justify-end gap-3">
                 <button

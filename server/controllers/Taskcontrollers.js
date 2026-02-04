@@ -1,3 +1,4 @@
+const Project = require("../model/project");
 const Task = require("../model/task");
 
 // Get all tasks for a user
@@ -44,7 +45,9 @@ exports.getTasks = async (req, res) => {
 
 // Create a new task
 exports.createTask = async (req, res) => {
-  const { title, projectId, status, deadline, assignedTo } = req.body;
+
+  try {
+     const { title, projectId, status, deadline, assignedTo } = req.body;
 
   const task = await Task.create({
     title,
@@ -55,5 +58,22 @@ exports.createTask = async (req, res) => {
     client: req.user._id,
   });
 
+    if (assignedTo) {
+      await Project.findByIdAndUpdate(
+        projectId,
+        {
+          $addToSet: { freelancer: assignedTo },
+        }
+      );
+    }
+
+    console.log("this is assigned freelancer", assignedTo);
+
   res.status(201).json(task);
+    
+  } catch (error) {
+     console.log("there is err", error)
+      return res.status(400).json({ success: false, message: error.message })
+  }
+ 
 };

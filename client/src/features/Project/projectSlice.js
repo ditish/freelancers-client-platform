@@ -74,4 +74,20 @@ export const createProject = (data) => async (dispatch) => {
     dispatch(setError(err.response?.data?.message || "Failed to create project"));
   }
 };
+ export const deleteProjectbyID = (projectId) => async (dispatch) => {
+  try {
+    dispatch(setLoading(true));
+
+     await projectService.deleteProject(projectId);
+    return;
+
+  } catch (err) {
+    dispatch(
+      setError(
+        err.response?.data?.message || "Failed to delete project"
+      )
+    );
+  }
+};
+
 export default projectSlice.reducer;
