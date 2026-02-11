@@ -2,7 +2,7 @@ import API from "../../utiles/axiosConfigaxios.js";
 
 const getInvoices = async () => {
   const res = await API.get("/invoices/getInvoice");
-  return res.data.invoices;
+  return res.data;
 }
 
 const createInvoice = async (data) => {

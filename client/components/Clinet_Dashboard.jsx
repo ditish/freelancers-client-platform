@@ -1,19 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { resetLogin } from "../src/features/auth/authslice";
+import { fetchTasks } from "../src/features/task/taskslice";
+import { fetchInvoices } from "../src/features/invoice/invoiceSlice";
+import { fetchProjects } from "../src/features/Project/projectSlice";
+import API from "../src/utiles/axiosConfigaxios";
 const ClientDashboard = () => {
+  const [Totalfreelancer, setTotalfreelancer] = useState(0);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { totalTasks } = useSelector((state) => state.tasks);
+    const { totalProjects } = useSelector((state) => 
+      state.projects
+  )
+  const { totalPendingAmount } = useSelector((state) =>
+    state.invoices);
+const fetchFreelancers = async () => {
+    try {
+      const res = await API.get("/client/freelancers");
+      setTotalfreelancer(res.data.freelancers.length || 0);
+      console.log("this are freelancer ", res.data.freelancers);
+    } catch (error) {
+      console.log(error);
+    } 
+  };
 
+  useEffect(() => {
+    fetchFreelancers();
+  }, []);
+  
+  
+  
   const handleLogout = () => {
    dispatch(resetLogin())
     navigate("/");
   };
+
+   useEffect(() => {
+       dispatch(fetchTasks());
+       dispatch(fetchInvoices());
+       dispatch(fetchProjects());
+  }, [dispatch]);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -52,22 +84,22 @@ const ClientDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white p-6 shadow rounded">
             <h3>Total Projects</h3>
-            <p className="text-2xl font-bold text-indigo-600">6</p>
+            <p className="text-2xl font-bold text-indigo-600">{totalProjects }</p>
           </div>
 
           <div className="bg-white p-6 shadow rounded">
             <h3>Active Freelancers</h3>
-            <p className="text-2xl font-bold text-green-600">4</p>
+            <p className="text-2xl font-bold text-green-600">{ Totalfreelancer }</p>
           </div>
 
           <div className="bg-white p-6 shadow rounded">
             <h3>Pending Tasks</h3>
-            <p className="text-2xl font-bold text-yellow-600">9</p>
+            <p className="text-2xl font-bold text-yellow-600">{totalTasks }</p>
           </div>
 
           <div className="bg-white p-6 shadow rounded">
             <h3>Pending Payments</h3>
-            <p className="text-2xl font-bold text-red-600">₹12,000</p>
+            <p className="text-2xl font-bold text-red-600">₹{totalPendingAmount}</p>
           </div>
         </div>
       </div>

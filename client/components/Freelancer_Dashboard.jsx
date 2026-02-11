@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {  logOutuser } from "../src/features/auth/authslice";
+import { logOutuser } from "../src/features/auth/authslice";
+import { fetchTasks } from "../src/features/task/taskslice"
+import {fetchInvoices} from "../src/features/invoice/invoiceSlice"
+import {  fetchProjects  } from "../src/features/Project/projectSlice";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { totalTasks } = useSelector((state) => state.tasks);
+  const { Totalinvoices } = useSelector((state) => state.invoices);
+  const { totalProjects } = useSelector((state) => 
+    state.projects
+  )
 
   const handleLogout = async() => {
     dispatch(logOutuser());
     navigate("/")
   };
+   useEffect(() => {
+     dispatch(fetchTasks());
+     dispatch(fetchInvoices());
+     dispatch(fetchProjects());
+}, [dispatch]);
 
+  
+  console.log(" toataltask", totalTasks);
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -65,17 +80,17 @@ const Freelancer_Dashboard = () => {
             <h3 className="text-lg font-semibold text-gray-700">
               Total Projects
             </h3>
-            <p className="text-2xl font-bold text-indigo-600">12</p>
+            <p className="text-2xl font-bold text-indigo-600">{ totalProjects }</p>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-700">Total Tasks</h3>
-            <p className="text-2xl font-bold text-green-600">24</p>
+            <p className="text-2xl font-bold text-green-600">{ totalTasks }</p>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-700">
               Total Invoices
             </h3>
-            <p className="text-2xl font-bold text-purple-600">8</p>
+            <p className="text-2xl font-bold text-purple-600">{Totalinvoices }</p>
           </div>
         </div>
 

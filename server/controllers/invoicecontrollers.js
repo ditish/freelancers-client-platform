@@ -16,8 +16,14 @@ exports.getInvoices = async (req, res) => {
         .populate("selectedClient","name")
         .populate('createdBy', "name email")
     }
+    const Totalinvoices = invoices.length;
+    
+    const totalPendingAmount = invoices
+  .filter(inv => inv.status === "Pending")
+  .reduce((sum, inv) => sum + inv.amount, 0);
+
      
-    res.status(200).json({sucess:true,message:"invoice found",invoices});
+    res.status(200).json({sucess:true,message:"invoice found",invoices,Totalinvoices,totalPendingAmount});
   } catch (error) {
         console.error(error);
     res.status(500).json({ message: error });

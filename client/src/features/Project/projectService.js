@@ -8,7 +8,7 @@ const getProjectById = async (projectId) => {
   const res = await API.get(`/project/${projectId}`, {
     withCredentials: true,
   });
-  return res.data.project;
+  return res.data;
 };
 
 

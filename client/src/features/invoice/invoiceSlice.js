@@ -4,6 +4,8 @@ import invoiceService from "./invoiceService";
 const initialState = {
   invoices: [],
   isLoading: false,
+  Totalinvoices: 0,
+  totalPendingAmount: 0,
   isError: false,
   message: "",
 };
@@ -16,7 +18,9 @@ const invoiceSlice = createSlice({
       state.isLoading = action.payload;
     },
     setInvoices: (state, action) => {
-      state.invoices = action.payload|| []
+      state.invoices = action.payload.invoices || []
+      state.Totalinvoices = action.payload.Totalinvoices || 0;
+      state.totalPendingAmount = action.payload.totalPendingAmount;
       state.isLoading = false;
       state.isError = false;
       state.message = "";

@@ -3,7 +3,8 @@ import projectService from "./projectService";
 
 const initialState = {
   projects: [],
-  project:[],
+  project: [],
+  totalProjects:0,
   isLoading: false,
   isError: false,
   message: "",
@@ -18,13 +19,14 @@ const projectSlice = createSlice({
     },
     setProjects: (state, action) => {
       state.projects = action.payload.user_project || []
+      state.totalProjects = action.payload.totalProject || 0;
       state.isLoading = false;
       state.isError = false;
       state.message = "";
     },
       
       setProjectById: (state, action) => {
-      state.project = action.payload || [];
+        state.project = action.payload.project || [];
       state.isLoading = false;
       state.isError = false;
       state.message = "";

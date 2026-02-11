@@ -15,7 +15,8 @@ exports.getTasks = async (req, res) => {
           .populate('client', "name email")
         .populate("projectId", "title")
     }
-     return res.status(200).json({ success: "true", message: "project found", tasks })
+    const totalTasks = tasks.length;
+    return res.status(200).json({ success: "true", message: "project found", tasks, totalTasks });
     
   } catch (error) {
     console.log("this is getask message", error);

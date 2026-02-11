@@ -4,6 +4,7 @@ import taskService from "./taskService";
 const initialState = {
   tasks: [],
   task: [],
+  totalTasks: 0,
   isLoading: false,
   isError: false,
   message: "",
@@ -17,7 +18,8 @@ const taskSlice = createSlice({
       state.isLoading = action.payload;
     },
     setTasks: (state, action) => {
-      state.tasks = action.payload.tasks||[]
+      state.tasks = action.payload.tasks || [],
+      state.totalTasks = action.payload.totalTasks || 0,
       state.isLoading = false;
       state.isError = false;
       state.message = "";
@@ -43,6 +45,7 @@ export const fetchTasks = () => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const tasks = await taskService.getTasks();
+    console.log("this is tasks data", tasks);
     dispatch(setTasks(tasks));
   } catch (err) {
     dispatch(setError(err.response?.data?.message || "Failed to fetch tasks"));
