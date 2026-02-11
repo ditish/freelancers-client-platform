@@ -119,7 +119,8 @@ const getAllclient = async (req, res) => {
     if (!client) {
            return res.status(404).json({ success: false, message: "no client are found" });
     }
-     res.status(200).json({ success: true, client});
+    const totalClient = client.length;
+     res.status(200).json({ success: true, client,totalClient});
   } catch (error) {
      res.status(500).json({ success: false, message: error.message });
   }

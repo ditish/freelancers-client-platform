@@ -1,0 +1,36 @@
+import React from 'react'
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
+export const Paymentpiechart = ({totalPaidAmount,totalPendingAmount}) => {
+
+    const COLORS = ["#00C49F", "#FF8042"];
+  const paymentData = [
+  { name: "Paid", value: totalPaidAmount },
+  { name: "Pending", value: totalPendingAmount },
+];
+  return (
+      <div className="bg-white p-6 shadow rounded mt-6 ">
+          <h3 className="text-xl font-bold mb-4"> payement Overview</h3>
+    
+          <ResponsiveContainer width="100%" height={175}>
+            <PieChart>
+              <Pie
+                data={paymentData}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={70}
+                paddingAngle={3}
+                dataKey="value"
+              >
+                {paymentData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+  )
+}

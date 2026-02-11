@@ -9,16 +9,23 @@ import {
   Tooltip
 } from "recharts";
 
-const Bargraph = ({ totalTasks, totalProjects, Totalfreelancer }) => {
+const Bargraph = ({ totalTasks, totalProjects, Totalfreelancer ,Totalclient }) => {
 
   const barData = [
     { name: "Projects", value: totalProjects || 0 },
-    { name: "Freelancers", value: Totalfreelancer || 0 },
+   
+    {
+      name: "freelancers", value: Totalfreelancer || 0
+    },
+    {
+      name: "clients", value: Totalclient || 0
+    },
+   
     { name: "Tasks", value: totalTasks || 0 },
   ];
 
   return (
-    <div className="bg-white  p-4 shadow rounded ">
+    <div className="bg-white  p-4 shadow rounded mt-6 ">
       <h3 className="text-lg font-bold mb-2">Platform Overview</h3>
 
       <ResponsiveContainer width="100%" height={225}>

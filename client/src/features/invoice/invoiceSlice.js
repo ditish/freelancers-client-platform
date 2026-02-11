@@ -6,6 +6,7 @@ const initialState = {
   isLoading: false,
   Totalinvoices: 0,
   totalPendingAmount: 0,
+  totalPaidAmount:0,
   isError: false,
   message: "",
 };
@@ -21,6 +22,7 @@ const invoiceSlice = createSlice({
       state.invoices = action.payload.invoices || []
       state.Totalinvoices = action.payload.Totalinvoices || 0;
       state.totalPendingAmount = action.payload.totalPendingAmount;
+      state.totalPaidAmount = action.payload.totalPaidAmount;
       state.isLoading = false;
       state.isError = false;
       state.message = "";

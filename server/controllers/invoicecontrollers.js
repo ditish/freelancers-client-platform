@@ -21,9 +21,11 @@ exports.getInvoices = async (req, res) => {
     const totalPendingAmount = invoices
   .filter(inv => inv.status === "Pending")
   .reduce((sum, inv) => sum + inv.amount, 0);
-
+  const totalPaidAmount = invoices
+  .filter(inv => inv.status === "Paid")
+  .reduce((sum, inv) => sum + inv.amount, 0);
      
-    res.status(200).json({sucess:true,message:"invoice found",invoices,Totalinvoices,totalPendingAmount});
+    res.status(200).json({sucess:true,message:"invoice found",invoices,Totalinvoices,totalPendingAmount,totalPaidAmount});
   } catch (error) {
         console.error(error);
     res.status(500).json({ message: error });

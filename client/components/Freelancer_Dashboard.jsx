@@ -7,6 +7,10 @@ import { logOutuser } from "../src/features/auth/authslice";
 import { fetchTasks } from "../src/features/task/taskslice"
 import {fetchInvoices} from "../src/features/invoice/invoiceSlice"
 import {  fetchProjects  } from "../src/features/Project/projectSlice";
+import { Paymentpiechart } from "../pages/client_Dashboard/Paymentpiechart";
+import { Piechart } from "../pages/client_Dashboard/Piechart";
+import Bargraph from "../pages/client_Dashboard/Bargraph";
+import API from "../src/utiles/axiosConfigaxios";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -14,14 +18,44 @@ const Freelancer_Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { totalTasks } = useSelector((state) => state.tasks);
   const { Totalinvoices } = useSelector((state) => state.invoices);
+  const { totalPendingAmount } = useSelector((state) => state.invoices);
+    const { totalPaidAmount  } = useSelector((state) => state.invoices);
   const { totalProjects } = useSelector((state) => 
     state.projects
   )
+
+  const [Totalclient, setTotalClient] = useState(0)
+   const [Totalfreelancer,setTotalfreelancer] =useState(0)
 
   const handleLogout = async() => {
     dispatch(logOutuser());
     navigate("/")
   };
+
+const fetchAllClient = async () => {
+    try {
+      const res = await API.get("/auth/getAllclient");
+      setTotalClient(res.data.totalClient || 0);
+      console.log("this is clinet data", res.data)
+    } catch (error) {
+      console.log(error);
+    } 
+  }
+ const fetchFreelancers = async () => {
+    try {
+      const res = await API.get("/client/freelancers");
+      setTotalfreelancer(res.data.freelancers.length || 0);
+   
+    } catch (error) {
+      console.log(error);
+    } 
+  };
+
+    useEffect(() => {
+      fetchAllClient();
+      fetchFreelancers();
+    }, []);
+
    useEffect(() => {
      dispatch(fetchTasks());
      dispatch(fetchInvoices());
@@ -75,7 +109,7 @@ const Freelancer_Dashboard = () => {
         </div>
 
         {/* Freelancer_Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-700">
               Total Projects
@@ -92,9 +126,36 @@ const Freelancer_Dashboard = () => {
             </h3>
             <p className="text-2xl font-bold text-purple-600">{Totalinvoices }</p>
           </div>
+
+                <div className="bg-white shadow rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Pending payemnts
+            </h3>
+            <p className="text-2xl font-bold text-red-400"> RS{totalPendingAmount }</p>
+          </div>
+           
+               <div className="col-span-1 ">
+              <Piechart totalTasks={totalTasks} />
+            </div>
+
+           <div className="col-span-1 ">
+                        <Paymentpiechart
+                          totalPaidAmount={totalPaidAmount}
+                          totalPendingAmount ={totalPendingAmount}
+                        ></Paymentpiechart>
+          </div> 
+             <div className="col-span-1 md:col-span-2">
+    <Bargraph
+      totalTasks={totalTasks}
+              totalProjects={totalProjects}
+              Totalclient={Totalclient}
+              Totalfreelancer={Totalfreelancer}
+              
+    />
+            </div>
+          
         </div>
 
-        {/* Charts can go here later */}
       </div>
     </div>
   );

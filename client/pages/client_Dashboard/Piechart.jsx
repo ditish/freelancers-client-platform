@@ -9,7 +9,7 @@ const taskData = [
   const COLORS = ["#FFBB28", "#00C49F"];
 
   return (
-    <div className="bg-white p-6 shadow rounded ">
+    <div className="bg-white p-6 shadow rounded  mt-6">
       <h3 className="text-xl font-bold mb-4">Task Overview</h3>
 
       <ResponsiveContainer width="100%" height={200}>
