@@ -8,6 +8,8 @@ import { fetchTasks } from "../src/features/task/taskslice";
 import { fetchInvoices } from "../src/features/invoice/invoiceSlice";
 import { fetchProjects } from "../src/features/Project/projectSlice";
 import API from "../src/utiles/axiosConfigaxios";
+import { Piechart } from "../pages/client_Dashboard/Piechart";
+import Bargraph from "../pages/client_Dashboard/Bargraph";
 const ClientDashboard = () => {
   const [Totalfreelancer, setTotalfreelancer] = useState(0);
   const { user } = useSelector((state) => state.auth);
@@ -48,7 +50,8 @@ const fetchFreelancers = async () => {
   }, [dispatch]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <>
+    <div className="flex  h-screen bg-gray-100">
       {/* Sidebar */}
       <div className={`bg-white shadow-lg p-6 w-64 ${sidebarOpen ? "block" : "hidden"} md:block`}>
         <h2 className="text-2xl font-bold text-indigo-600">Client Dashboard</h2>
@@ -100,10 +103,23 @@ const fetchFreelancers = async () => {
           <div className="bg-white p-6 shadow rounded">
             <h3>Pending Payments</h3>
             <p className="text-2xl font-bold text-red-600">₹{totalPendingAmount}</p>
-          </div>
-        </div>
+            </div>
+          <div className="col-span-1 md:col-span-2">
+    <Piechart totalTasks={totalTasks} />
+  </div>
+
+  <div className="col-span-1 md:col-span-2">
+    <Bargraph
+      totalTasks={totalTasks}
+      totalProjects={totalProjects}
+      Totalfreelancer={Totalfreelancer}
+    />
+  </div>
+              </div>
       </div>
     </div>
+      
+      </>
   );
 };
 
