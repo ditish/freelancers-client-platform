@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInvoices } from "../../src/features/invoice/invoiceSlice";
 import CreateInvoiceModal from "./Createinovices";
+import { MdMenu } from "react-icons/md";
+import Sidebar from "../../components/Sidebar";
 
-const Invoices = () => {
+const Invoices = ({toggleSidebar,sidebarOpen}) => {
   const [showModel, setShowModal] = useState(false)
   const dispatch = useDispatch();
   const { invoices, isLoading, isError, message } = useSelector((state) => state.invoices);
@@ -26,13 +28,10 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
   };
 
   return (
-    <div>
-  <button
-          onClick={() => setShowModal(true)}
-          className="bg-purple-600 text-white px-4 py-2 rounded"
-        >
-          + Create Invoice
-      </button>
+    <div className=" h-screen bg-gray-100">
+    
+
+
       {
         showModel && (
            <CreateInvoiceModal
@@ -41,9 +40,22 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
         )
       }
 
-
-    <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800">Invoices</h2>
+        <div className="flex justify-between">
+            <span
+                   onClick={toggleSidebar}
+                   className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
+                 >
+                   <MdMenu />
+                 </span>
+ <h2 className="text-3xl font-bold mb-6 text-gray-800">Invoices</h2>
+          <button
+          onClick={() => setShowModal(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded mb-3"
+        >
+          + Create Invoice
+      </button>
+        </div>
+       
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg shadow-md">
           <thead className="bg-purple-600 text-white">
@@ -77,7 +89,7 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
           </tbody>
         </table>
       </div>
-      </div>
+      
               </div>
   );
 };

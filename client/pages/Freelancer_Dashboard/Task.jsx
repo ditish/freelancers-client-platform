@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks } from "../../src/features/task/taskslice";
+import { MdMenu } from "react-icons/md";
 
-const Tasks = () => {
+
+const Tasks = ({toggleSidebar,sidebarOpen}) => {
   const dispatch = useDispatch();
   const { tasks,isError,isLoading,message} = useSelector((state) => state.tasks);
 
@@ -16,7 +18,16 @@ const Tasks = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Tasks</h2>
+    
+        <div className="flex gap-4 items-baseline">
+    <span
+           onClick={toggleSidebar}
+           className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
+         >
+           <MdMenu />
+         </span>
+          <h2 className="text-2xl font-bold mb-4">Tasks</h2>
+            </div>
       <ul className="space-y-4">
         {tasks.map((task) => (
           <li key={task._id} className="bg-white shadow rounded-lg p-4 flex justify-between items-center">

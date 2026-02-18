@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { logOutuser } from "../src/features/auth/authslice";
 import { fetchTasks } from "../src/features/task/taskslice"
 import {fetchInvoices} from "../src/features/invoice/invoiceSlice"
 import {  fetchProjects  } from "../src/features/Project/projectSlice";
@@ -11,10 +9,11 @@ import { Paymentpiechart } from "../pages/client_Dashboard/Paymentpiechart";
 import { Piechart } from "../pages/client_Dashboard/Piechart";
 import Bargraph from "../pages/client_Dashboard/Bargraph";
 import API from "../src/utiles/axiosConfigaxios";
+import { MdMenu } from "react-icons/md";
+import Sidebar from "./Sidebar";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { totalTasks } = useSelector((state) => state.tasks);
   const { Totalinvoices } = useSelector((state) => state.invoices);
@@ -26,11 +25,6 @@ const Freelancer_Dashboard = () => {
 
   const [Totalclient, setTotalClient] = useState(0)
    const [Totalfreelancer,setTotalfreelancer] =useState(0)
-
-  const handleLogout = async() => {
-    dispatch(logOutuser());
-    navigate("/")
-  };
 
 const fetchAllClient = async () => {
     try {
@@ -66,46 +60,24 @@ const fetchAllClient = async () => {
   console.log(" toataltask", totalTasks);
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div
-        className={`bg-white shadow-lg p-6 w-64 space-y-6 ${
-          sidebarOpen ? "block" : "hidden"
-        } md:block`}
-      >
-        <h2 className="text-2xl font-bold text-indigo-600">
-          Freelancer Dashboard
-        </h2>
-        <nav className="flex flex-col space-y-3 mt-6">
-          <Link className="hover:text-indigo-600" to="/freelancer/Projects">
-            Project
-          </Link>
-
-          <Link className="hover:text-indigo-600" to="/freelancer/Invoices">
-            Invoices
-          </Link>
-
-          <Link className="hover:text-indigo-600" to="/freelancer/Tasks">
-            Task
-          </Link>
-
-          <button className="hover:text-red-600 mt-6" onClick={handleLogout}>
-            Logout
-          </button>
-        </nav>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-6">
+      <Sidebar sidebarOpen={sidebarOpen}
+      setSidebarOpen ={setSidebarOpen}
+      ></Sidebar>
+ <div  className={`
+    flex-1 p-6
+    transition-all duration-300 ease-in-out
+    ${sidebarOpen ? "md:ml-0" : "md:-ml-60"}
+  `}>
+        <div className="flex gap-4 items-center mb-6">
+          <span
+          onClick={()=>setSidebarOpen(!sidebarOpen)}
+            className={`text-2xl transition-all ease-in-out duration-300
+              ${sidebarOpen ? "hidden" : ""}`}><MdMenu /></span>
           <h1 className="text-3xl font-bold">
+              
             Welcome, {user?.name || "User"}!
           </h1>
-          <button
-            className="md:hidden bg-gray-200 p-2 rounded"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            Toggle Sidebar
-          </button>
+       
         </div>
 
         {/* Freelancer_Dashboard Cards */}

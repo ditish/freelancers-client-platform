@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../src/features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
+import { MdMenu } from "react-icons/md";
 
-const Projects = () => {
+
+const Projects = ({ toggleSidebar,sidebarOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projects, isLoading, isError, message } = useSelector((state) => state.projects);
@@ -17,8 +19,19 @@ const Projects = () => {
   if (isError) return <p>{message}</p>;
 
   return (
-    <div className="p-6">
+    <div className=" h-screen bg-gray-100">
+  
+  
+        <div className="flex gap-4 items-baseline">
+       <span
+        onClick={toggleSidebar}
+        className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
+      >
+        <MdMenu />
+      </span>
       <h2 className="text-2xl font-bold mb-4">Projects</h2>
+        </div>
+       
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-lg shadow">
           <thead className="bg-indigo-600 text-white">
@@ -44,7 +57,8 @@ const Projects = () => {
           </tbody>
         </table>
       </div>
-    </div>
+      
+      </div>
   );
 };
 
