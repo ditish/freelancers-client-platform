@@ -3,9 +3,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks } from "../../src/features/task/taskslice";
 import { MdMenu } from "react-icons/md";
+import { useSidebar } from "../../Context/SidebarContext";
 
 
-const Tasks = ({toggleSidebar,sidebarOpen}) => {
+const Tasks = () => {
+   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const dispatch = useDispatch();
   const { tasks,isError,isLoading,message} = useSelector((state) => state.tasks);
 
@@ -20,11 +22,13 @@ const Tasks = ({toggleSidebar,sidebarOpen}) => {
     <div className="p-6">
     
         <div className="flex gap-4 items-baseline">
-    <span
-           onClick={toggleSidebar}
-           className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
-         >
-           <MdMenu />
+    <span>
+             {!sidebarOpen && (
+        <MdMenu
+          className="text-2xl cursor-pointer"
+          onClick={() => setSidebarOpen(true)}
+        />
+      )}
          </span>
           <h2 className="text-2xl font-bold mb-4">Tasks</h2>
             </div>

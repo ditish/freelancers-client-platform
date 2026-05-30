@@ -43,32 +43,26 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
              <Route path="/Client_Dashboard" element={<ClientDashboard />} />
-                      <Route path="/projects/:projectId" element={<ProjectDetails/>} />
-              <Route path="/client/projects" element={<ClientProjects />} />
+                     <Route path="/projects/:projectId" element={<ProjectDetails />} />
+                     <Route path="/client" element={<DashboardLayout />}>
+                         <Route path="projects" element={<ClientProjects />} />
+  <Route path="invoices" element={<ClientInvoice />} />
+                       <Route path="tasks" element={<ClientTasks />} />
+                       <Route path="freelancers" element={<ClientFreelancers />} />
+                        <Route path="freelancerProfile/:id" element={<ClientFreelancerProfile />} />
+                     </Route>   
+              {/* <Route path="/client/projects" element={<ClientProjects />} />
               <Route path="/client/inovices" element={<ClientInvoice />} />
               <Route path="/client/tasks" element={<ClientTasks />} />
                <Route path="/client/freelancers" element={<ClientFreelancers />} />
               <Route path="/client/freelancerProfile/:id"
-                       element={<ClientFreelancerProfile />} />
-                     <Route path="/freelancer/Projects"
-                       element={
-                         <DashboardLayout>
-                           <Projects />
-                           </DashboardLayout>
-                       } />
-                     <Route path="/freelancer/Invoices"
-                       element={
-                         <DashboardLayout>
-                            <Invoices />
-                         </DashboardLayout>
-                        
-                        } />
-                     <Route path="/freelancer/Tasks"
-                       element=
-                       {<DashboardLayout>
-                          <Tasks />
-                       </DashboardLayout>
-                        } />
+                       element={<ClientFreelancerProfile />} /> */}
+                     <Route path="/freelancer" element={<DashboardLayout />}>
+  <Route path="Projects" element={<Projects />} />
+  <Route path="Invoices" element={<Invoices />} />
+  <Route path="Tasks" element={<Tasks />} />
+</Route>
+
             </Route>
           </Routes>
         )}

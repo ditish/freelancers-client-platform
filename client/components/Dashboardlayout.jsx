@@ -1,12 +1,18 @@
 
 import React from "react";
+import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+// SidebarContext.js
+import { SidebarContext } from "../Context/SidebarContext"
 
-const DashboardLayout = ({ children }) => {
+
+const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
+    <>
+   <SidebarContext.Provider value={{ sidebarOpen, setSidebarOpen }}>
     <div className="flex h-screen bg-gray-100">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
@@ -17,14 +23,13 @@ const DashboardLayout = ({ children }) => {
         `}
       >
              <div className="flex-1 p-6">
-         {React.isValidElement(children) &&
-          React.cloneElement(children, {
-            toggleSidebar: () => setSidebarOpen((v) => !v),
-            sidebarOpen,
-          })}
+       <Outlet></Outlet>
       </div>
       </div>
-    </div>
+      </div>
+       </SidebarContext.Provider>
+    </>
+
   );
 };
 

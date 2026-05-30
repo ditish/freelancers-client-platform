@@ -49,6 +49,9 @@ const authSlice = createSlice({
         state.role = "";
       },
 
+    toastDisable: (state) => {
+    state.Showtoast = false
+  },
     signUpSucess:(state, action)=> {
       state.isLoading = false
       state.signupSucess= true
@@ -84,17 +87,18 @@ export const {
   signUpSucess,
   resetLogin,
   resetSignup,
-  otpSuccess
+  otpSuccess,
+  toastDisable
 } = authSlice.actions
 
 export default authSlice.reducer;
 
 // ================= THUNKS =================
 
-export const loginUser = (email, password) => async (dispatch) => {
+export const loginUser = (email, password,role) => async (dispatch) => {
   try {
     dispatch(loginStart());
-    const user = await authService.login(email, password);
+    const user = await authService.login(email, password,role);
     dispatch(loginSuccess(user));
   } catch (err) {
      let message = "Login failed"; // default

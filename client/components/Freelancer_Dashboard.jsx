@@ -5,9 +5,9 @@ import { useState } from "react";
 import { fetchTasks } from "../src/features/task/taskslice"
 import {fetchInvoices} from "../src/features/invoice/invoiceSlice"
 import {  fetchProjects  } from "../src/features/Project/projectSlice";
-import { Paymentpiechart } from "../pages/client_Dashboard/Paymentpiechart";
-import { Piechart } from "../pages/client_Dashboard/Piechart";
-import Bargraph from "../pages/client_Dashboard/Bargraph";
+import { Paymentpiechart } from "../src/features/Charts/Paymentspiecharts";
+import { Piechart } from "../src/features/Charts/Taskpiecharts";
+import Bargraph from "../src/features/Charts/Bargarphs";
 import API from "../src/utiles/axiosConfigaxios";
 import { MdMenu } from "react-icons/md";
 import Sidebar from "./Sidebar";

@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../src/features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
+import { useSidebar } from "../../Context/SidebarContext";
 
 
-const Projects = ({ toggleSidebar,sidebarOpen }) => {
+const Projects = () => {
+   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projects, isLoading, isError, message } = useSelector((state) => state.projects);
@@ -23,12 +25,14 @@ const Projects = ({ toggleSidebar,sidebarOpen }) => {
   
   
         <div className="flex gap-4 items-baseline">
-       <span
-        onClick={toggleSidebar}
-        className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
-      >
-        <MdMenu />
-      </span>
+        <span>
+   {!sidebarOpen && (
+        <MdMenu
+          className="text-2xl cursor-pointer"
+          onClick={() => setSidebarOpen(true)}
+        />
+      )}
+     </span>
       <h2 className="text-2xl font-bold mb-4">Projects</h2>
         </div>
        

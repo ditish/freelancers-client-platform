@@ -7,7 +7,12 @@ import {
 } from "../../src/features/Project/projectSlice";
 import API from "../../src/utiles/axiosConfigaxios";
 import { useSearchParams } from "react-router-dom";
+import { useSidebar } from "../../Context/SidebarContext";
+import { MdMenu } from "react-icons/md";
+
+
 const ClientProjects = () => {
+   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [params] = useSearchParams();
   const freelancerId = params.get("freelancer");
   const dispatch = useDispatch();
@@ -69,8 +74,17 @@ const ClientProjects = () => {
 
   return (
     <div className="p-6">
+      
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
+        <span>
+           {!sidebarOpen && (
+                <MdMenu
+                  className="text-2xl cursor-pointer"
+                  onClick={() => setSidebarOpen(true)}
+                />
+              )}
+             </span>
         <h2 className="text-2xl font-bold">My Projects</h2>
         <button
           className="bg-indigo-600 text-white px-4 py-2 rounded"

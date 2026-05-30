@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchInvoices } from "../../src/features/invoice/invoiceSlice";
 import CreateInvoiceModal from "./Createinovices";
 import { MdMenu } from "react-icons/md";
-import Sidebar from "../../components/Sidebar";
+import { useSidebar } from "../../Context/SidebarContext";
 
-const Invoices = ({toggleSidebar,sidebarOpen}) => {
+const Invoices = () => {
+    const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [showModel, setShowModal] = useState(false)
   const dispatch = useDispatch();
   const { invoices, isLoading, isError, message } = useSelector((state) => state.invoices);
@@ -41,12 +42,14 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
       }
 
         <div className="flex justify-between">
-            <span
-                   onClick={toggleSidebar}
-                   className={`text-2xl cursor-pointer  ${sidebarOpen ? "hidden" :"" }`}
-                 >
-                   <MdMenu />
-                 </span>
+        <span>
+             {!sidebarOpen && (
+        <MdMenu
+          className="text-2xl cursor-pointer"
+          onClick={() => setSidebarOpen(true)}
+        />
+      )}
+           </span>
  <h2 className="text-3xl font-bold mb-6 text-gray-800">Invoices</h2>
           <button
           onClick={() => setShowModal(true)}
@@ -75,8 +78,8 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
             {invoices.map((inv) => (
               <tr key={inv._id} className="border-b hover:bg-gray-50 transition-colors">
                 <td className="py-3 px-6">{inv.invoiceNumber }</td>
-                <td className="py-3 px-6">{inv.Project.title || "N/A"}</td>
-                <td className="py-3 px-6">{inv.selectedClient.name|| "N/A"}</td>
+                <td className="py-3 px-6">{inv.Project?.title || "N/A"}</td>
+                <td className="py-3 px-6">{inv.selectedClient?.name|| "N/A"}</td>
                 <td className="py-3 px-6 text-right font-medium">{formatAmount(inv.amount)}</td>
                 <td className="py-3 px-6">
                   <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusClass(inv.status)}`}>

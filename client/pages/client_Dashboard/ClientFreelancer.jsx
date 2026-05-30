@@ -2,8 +2,11 @@
 import React, { useEffect, useState } from "react";
 import API from "../../src/utiles/axiosConfigaxios";// your axios instance
 import { Link } from "react-router-dom";
+import { useSidebar } from "../../Context/SidebarContext";
+import { MdMenu } from "react-icons/md";
 
 const ClientFreelancers = () => {
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,6 +29,18 @@ const ClientFreelancers = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <span className="fixed top-10 left-5 p-4"> 
+         {!sidebarOpen && (
+              <MdMenu
+                className="text-2xl cursor-pointer"
+                onClick={() => setSidebarOpen(true)}
+              />
+            )}
+      </span>
+      <div>
+          <h6 className="text-2xl font-bold mb-10 ml-10">freelancer</h6>
+          
       {freelancers.map((freelancer) => (
         <div key={freelancer._id} className="bg-white p-6 shadow rounded">
           <h3 className="text-xl font-bold">{freelancer.name}</h3>
@@ -43,7 +58,10 @@ const ClientFreelancers = () => {
 
         </div>
       ))}
-    </div>
+        </div>
+        </div>
+      
+   
   );
 };
 

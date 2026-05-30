@@ -7,12 +7,14 @@ export const Paymentpiechart = ({totalPaidAmount,totalPendingAmount}) => {
   const paymentData = [
   { name: "Paid", value: totalPaidAmount },
   { name: "Pending", value: totalPendingAmount },
-];
+  ];
+  const screenHeight = window.innerHeight; // total viewport height
+const chartHeight = screenHeight * 0.35; // 25% of screen height
   return (
       <div className="bg-white p-6 shadow rounded mt-6 ">
           <h3 className="text-xl font-bold mb-4"> payement Overview</h3>
     
-          <ResponsiveContainer width="100%" height={175}>
+          <ResponsiveContainer width="100%" height={chartHeight}>
             <PieChart>
               <Pie
                 data={paymentData}

@@ -4,8 +4,11 @@ import API from "../../src/utiles/axiosConfigaxios";
 import { fetchInvoices } from "../../src/features/invoice/invoiceSlice";
 
 import { useDispatch, useSelector } from "react-redux";
+import { useSidebar } from "../../Context/SidebarContext";
+import { MdMenu } from "react-icons/md";
 
 const ClientInvoice = () => {
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
   const invoices
 = useSelector((state) => state.invoices.invoices);
   
@@ -23,7 +26,17 @@ const ClientInvoice = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Invoices</h2>
+      <div className="flex items-center gap-60">
+      <span>
+         {!sidebarOpen && (
+              <MdMenu
+                className="text-2xl cursor-pointer "
+                onClick={() => setSidebarOpen(true)}
+              />
+            )}
+           </span>
+        <h2 className="text-2xl font-bold ">Invoices</h2>
+        </div>
 
       {invoices.map((inv) => (
         <div key={inv._id} className="bg-white p-4 shadow rounded mb-3">

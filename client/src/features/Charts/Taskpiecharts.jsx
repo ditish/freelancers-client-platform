@@ -7,12 +7,14 @@ const taskData = [
   ];
 
   const COLORS = ["#FFBB28", "#00C49F"];
+  const screenHeight = window.innerHeight; // total viewport height
+const chartHeight = screenHeight * 0.35; // 25% of screen height
 
   return (
     <div className="bg-white p-6 shadow rounded  mt-6">
       <h3 className="text-xl font-bold mb-4">Task Overview</h3>
 
-      <ResponsiveContainer width="100%" height={200}>
+      <ResponsiveContainer width="100%" height={chartHeight}>
         <PieChart>
           <Pie
             data={taskData}

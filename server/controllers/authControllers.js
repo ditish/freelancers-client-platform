@@ -13,9 +13,9 @@ const signup = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields required" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email ,role});
     if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists" });
+      return res.status(400).json({ success: false, message: `email already exist as ${role}` });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -48,9 +48,8 @@ const signup = async (req, res) => {
 /* ================= LOGIN ================= */
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
+    const { email, password, role } = req.body;
+    const user = await User.findOne({ email,role });
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -85,6 +84,7 @@ const login = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+    console.log("this is login error", error.message);
   }
 };
 

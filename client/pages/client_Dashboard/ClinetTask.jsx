@@ -4,7 +4,10 @@ import API from "../../src/utiles/axiosConfigaxios";
 import { createTask, fetchTasks } from "../../src/features/task/taskslice"
 import {fetchProjects} from "../../src/features/Project/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useSidebar } from "../../Context/SidebarContext";
+import { MdMenu } from "react-icons/md";
 const ClientTasks = () => {
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [showForm, SetshowForm] = useState(false);
   const [createdTask, SetcreatedTask] = useState(null);
    const [title, setTitle] = useState("");
@@ -82,7 +85,15 @@ const ClientTasks = () => {
   return (
    <div className="p-6">
   {/* Header */}
-  <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6">
+        <span>
+           {!sidebarOpen && (
+                <MdMenu
+                  className="text-2xl cursor-pointer"
+                  onClick={() => setSidebarOpen(true)}
+                />
+              )}
+             </span>
     <h2 className="text-2xl font-bold">My Tasks</h2>
     <button
       onClick={() => SetshowForm(true)}
