@@ -28,5 +28,19 @@ const createTask = async (data) => {
   const res = await API.post("tasks/createtask", data);
   return res.data;
 };
+const updateTask = async (taskId, taskData) => {
+  const res = await API.put(`/tasks/update/${taskId}`, taskData);
+  return res.data;
+};
+const deleteTask = async (taskId) => {
+  const res = await API.delete(`/tasks/delete/${taskId}`);
+  return res.data;
+};
 
-export default { getTasks, createTask ,getTaskbyProject }
+const assignDirectTasks = async (taskIds, assignedTo) => {
+  const res = await API.put("/tasks/assignDirect", { taskIds, assignedTo });
+  console.log("this is assign direct mssage", res.data);
+  return res.data;
+};
+
+export default { getTasks, createTask, getTaskbyProject, updateTask, deleteTask, assignDirectTasks };

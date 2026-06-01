@@ -4,7 +4,8 @@ import projectService from "./projectService";
 const initialState = {
   projects: [],
   project: [],
-  totalProjects:0,
+  totalProjects: 0,
+  totalTask:0,
   isLoading: false,
   isError: false,
   message: "",
@@ -20,6 +21,7 @@ const projectSlice = createSlice({
     setProjects: (state, action) => {
       state.projects = action.payload.user_project || []
       state.totalProjects = action.payload.totalProject || 0;
+      state.totalTask = action.payload.totalTask;
       state.isLoading = false;
       state.isError = false;
       state.message = "";
@@ -80,8 +82,8 @@ export const createProject = (data) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
 
-     await projectService.deleteProject(projectId);
-    return;
+    await projectService.deleteProject(projectId);
+    await dispatch(fetchProjects());
 
   } catch (err) {
     dispatch(

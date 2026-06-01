@@ -78,3 +78,45 @@ exports.createTask = async (req, res) => {
   }
  
 };
+
+exports.updateTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findByIdAndUpdate(
+      taskId, 
+      req.body, 
+      { new: true }  // 👈 returns updated task
+    );
+    console.log("this is updated task", req.body)
+    if (!task) return res.status(404).json({ message: "Task not found" });
+    res.status(200).json({ success: true, task });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.deleteTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const task = await Task.findByIdAndDelete(taskId);
+    if (!task) return res.status(404).json({ message: "Task not found" });
+    res.status(200).json({ success: true, message: "Task deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.assignDirectTasks = async (req, res) => {
+  try {
+    const { taskIds, assignedTo } = req.body;
+
+    // update all selected tasks at once
+    await Task.updateMany(
+      { _id: { $in: taskIds } },        //  find all selected tasks
+      { $set: { assignedTo } }           //  set new freelancer
+    );
+
+    res.status(200).json({ success: true, message: "Tasks assigned successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}

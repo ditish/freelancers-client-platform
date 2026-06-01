@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { MdCancel } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { logOutuser } from "../src/features/auth/authslice";
@@ -33,6 +33,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   // ✅ Pick links based on role
   const navLinks = role === "client" ? clientLinks : freelancerLinks;
   const dashboardTitle = role === "client" ? "Client Dashboard" : "Freelancer Dashboard";
+
 
   return (
     <div

@@ -14,10 +14,6 @@ freelancer: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     }],
-  //   task: {
-  //       type: mongoose.Schema.Types.ObjectId,
-  //       ref:"Task"
-  // },
   description: {
       type:String,required:true
     }
@@ -25,7 +21,7 @@ freelancer: [{
 
 }, { timestamps: true },
 );
-
+//all task delete related to particular project
 projectSchema.pre("findOneAndDelete", async function (next) {
   const projectId = this.getQuery()._id;
 

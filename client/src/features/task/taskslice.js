@@ -77,5 +77,32 @@ export const createTask = (data) => async (dispatch) => {
     dispatch(setError(err.response?.data?.message || "Failed to create task"));
   }
 };
+export const updateTask = ({ taskId, taskData }) => async (dispatch) => {
+  try {
+    await taskService.updateTask(taskId, taskData);
+    console.log("msg form updatetaskslice", taskId, taskData);
+  } catch (err) {
+    dispatch(setError(err.response?.data?.message || "Failed to update task"));
+  }
+};
+export const deleteTask = (taskId) => async (dispatch) => {
+  try {
+    await taskService.deleteTask(taskId);
+    await dispatch(fetchTasks()); // 👈 re-fetch after delete
+  } catch (err) {
+    dispatch(setError(err.response?.data?.message || "Failed to delete task"));
+  }
+};
+
+export const assignDirectTasks = ({ taskIds, assignedTo }) => async (dispatch) => {
+  try {
+    await taskService.assignDirectTasks(taskIds, assignedTo);
+    console.log("thus is handleslice",taskIds,assignedTo)
+    await dispatch(fetchTasks()); // 👈 re-fetch after assign
+  } catch (err) {
+    dispatch(setError(err.response?.data?.message || "Failed to assign tasks"));
+  }
+};
+
 
 export default taskSlice.reducer;

@@ -1,5 +1,7 @@
 
+const { default: mongoose } = require("mongoose");
 const Project = require("../model/project");
+const Task = require("../model/task");
 
 
 // get project from user
@@ -21,11 +23,25 @@ const getproject = async (req, res) => {
     }
     
    if (user_project.length === 0) {
-      return res.status(400).json({ success: 'fail', message: "project not created yet" });
+      return res.status(200).json({ success: 'fail', message: "project not created yet" });
     }
+    const projectsWithTaskCount = await Promise.all(
+      user_project.map(async (project) => {
+        const totalTask = await Task.countDocuments({ projectId: project._id })
+           const tasks = await Task.find({ projectId: project._id })
+      .populate("assignedTo", "name");
+          const taskFreelancers = [...new Set(
+        tasks
+          .filter(t => t.assignedTo)
+          .map(t => t.assignedTo.name)
+      )];
+        return { ...project.toObject(), totalTask,taskFreelancers };
+      })
+    );
+
 
     const totalProject = user_project.length;
-    return res.status(200).json({ success: "true", message: "project found", user_project , totalProject})
+    return res.status(200).json({ success: "true", message: "project found", user_project:projectsWithTaskCount , totalProject})
    
 
 
@@ -82,11 +98,16 @@ const deleteProjectbyId = async(req,res) => {
       const { projectId } = req.params;
       console.log("this is deleted", projectId);
 
+       if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      return res.status(400).json({ message: "Invalid project ID" });
+    }
+
     const project = await Project.findByIdAndDelete(projectId);
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
-    }
+      }
+      
 
     res.status(200).json({ message: "Project and related tasks deleted" });
 
