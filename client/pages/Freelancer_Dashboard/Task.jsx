@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks } from "../../src/features/task/taskslice";
+import { fetchTasks, updateTask, updateTaskStatus } from "../../src/features/task/taskslice";
 import { MdMenu } from "react-icons/md";
 import { useSidebar } from "../../Context/SidebarContext";
 
@@ -17,6 +17,13 @@ const Tasks = () => {
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>{message}</p>;
+
+  const toggleTaskStatus = (task) => {
+    const newStatus = task.status === "Completed" ? "Pending" : "Completed";
+    console.log("this is toggleatask", task._id, task.status
+    )
+  dispatch(updateTaskStatus({ taskId: task._id, status: newStatus }));
+};
 
   return (
     <div className="p-6">
@@ -40,13 +47,16 @@ const Tasks = () => {
               <p className="text-gray-600">Project: {task.projectId.title}</p>
                 <p className="text-gray-600">assigned by: {task.client.name}</p>
             </div>
-            <span className={`px-3 py-1 rounded-full self-end text-white ${
+            <button
+              
+              onClick={()=>toggleTaskStatus(task)}
+              className={` hover:cursor-pointerpx-3 py-1 px-2 rounded-full self-end text-white ${
               task.status === "Completed" ? "bg-green-500" :
               task.status === "Ongoing" ? "bg-yellow-500" :
               "bg-red-500"
             }`}>
               {task.status}
-            </span>
+            </button>
           </li>
         ))}
       </ul>

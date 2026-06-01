@@ -95,6 +95,33 @@ exports.updateTask = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+ exports.updateTaskStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // validate status value
+    if (!["Pending", "Completed"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      id,
+      { status },        // ← only update status field
+      { new: true }      // ← return updated document
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+     return res.status(200).json(updatedTask);
+
+  } catch (error) {
+     return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 exports.deleteTask = async (req, res) => {
   try {
     const { taskId } = req.params;

@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import taskService from "./taskService";
 
+
 const initialState = {
   tasks: [],
   task: [],
@@ -24,6 +25,15 @@ const taskSlice = createSlice({
       state.isError = false;
       state.message = "";
     },
+    
+    updateTaskinStatus: (state,action) => {
+      const { taskId, status } = action.payload;
+      const task = state.tasks.find((t => t._id === taskId))
+        if (task) {
+          task.status = status
+        }
+
+    },
        setTaskbyProject: (state, action) => {
       state.task = action.payload || []
       state.isLoading = false;
@@ -39,7 +49,7 @@ const taskSlice = createSlice({
   },
 });
 
-export const { setLoading, setTasks, setError ,setTaskbyProject } = taskSlice.actions;
+export const { setLoading, setTasks, setError ,setTaskbyProject,updateTaskinStatus } = taskSlice.actions;
 
 export const fetchTasks = () => async (dispatch) => {
   try {
@@ -79,12 +89,26 @@ export const createTask = (data) => async (dispatch) => {
 };
 export const updateTask = ({ taskId, taskData }) => async (dispatch) => {
   try {
-    await taskService.updateTask(taskId, taskData);
+    await taskService.updateTask(taskId, taskData );
     console.log("msg form updatetaskslice", taskId, taskData);
+    dispacth(fetchTasks());
   } catch (err) {
     dispatch(setError(err.response?.data?.message || "Failed to update task"));
   }
 };
+
+export const updateTaskStatus =  ({ taskId, status}) => async (dispatch) => {
+  try {
+    await taskService.updateTaskStatus(taskId, status);
+    console.log("msg form updatetaskStatusSlice", taskId, status);
+      dispatch(updateTaskinStatus({ taskId, status }));
+      //  dispatch(fetchTasks()); 
+  } catch (err) {
+    console.log("full err", err);
+    dispatch(setError(err.response?.data?.message || "Failed to update task status"));
+  }
+};
+
 export const deleteTask = (taskId) => async (dispatch) => {
   try {
     await taskService.deleteTask(taskId);

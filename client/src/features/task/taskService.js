@@ -32,6 +32,12 @@ const updateTask = async (taskId, taskData) => {
   const res = await API.put(`/tasks/update/${taskId}`, taskData);
   return res.data;
 };
+const updateTaskStatus = async ( taskId, status ) => {
+  console.log("this is updatetaskId status", taskId, status);
+   const res = await API.patch(`/tasks/${taskId}/status`,{status});
+  return res.data;
+  
+}
 const deleteTask = async (taskId) => {
   const res = await API.delete(`/tasks/delete/${taskId}`);
   return res.data;
@@ -43,4 +49,4 @@ const assignDirectTasks = async (taskIds, assignedTo) => {
   return res.data;
 };
 
-export default { getTasks, createTask, getTaskbyProject, updateTask, deleteTask, assignDirectTasks };
+export default { getTasks, createTask, getTaskbyProject, updateTask, deleteTask, assignDirectTasks ,updateTaskStatus };
