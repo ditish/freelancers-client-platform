@@ -16,15 +16,16 @@ import ClientInvoice from "../pages/client_Dashboard/ClientInvoice.jsx";
 import ClientTasks from "../pages/client_Dashboard/ClinetTask.jsx";
 import ClientFreelancers from "../pages/client_Dashboard/ClientFreelancer.jsx";
 import LoadUser from "../components/LoadUser.jsx";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerprofile.jsx";
 import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 import DashboardLayout from "../components/Dashboardlayout.jsx";
+import NotificationBell from "../components/NotificationBell.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
- 
-       return (
+
+  return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <BrowserRouter>
@@ -41,28 +42,30 @@ function App() {
             <Route path="/signup" element={<Signup />} />
 
             <Route element={<PrivateRoute />}>
-              <Route path="/freelance_Dashboard" element={<Freelancer_Dashboard />} />
-             <Route path="/Client_Dashboard" element={<ClientDashboard />} />
-                     <Route path="/projects/:projectId" element={<ProjectDetails />} />
-                     <Route path="/client" element={<DashboardLayout />}>
-                         <Route path="projects" element={<ClientProjects />} />
-  <Route path="invoices" element={<ClientInvoice />} />
-                       <Route path="tasks" element={<ClientTasks />} />
-                       <Route path="freelancers" element={<ClientFreelancers />} />
-                        <Route path="freelancerProfile/:id" element={<ClientFreelancerProfile />} />
-                     </Route>   
-              {/* <Route path="/client/projects" element={<ClientProjects />} />
-              <Route path="/client/inovices" element={<ClientInvoice />} />
-              <Route path="/client/tasks" element={<ClientTasks />} />
-               <Route path="/client/freelancers" element={<ClientFreelancers />} />
-              <Route path="/client/freelancerProfile/:id"
-                       element={<ClientFreelancerProfile />} /> */}
-                     <Route path="/freelancer" element={<DashboardLayout />}>
-  <Route path="Projects" element={<Projects />} />
-  <Route path="Invoices" element={<Invoices />} />
-  <Route path="Tasks" element={<Tasks />} />
-</Route>
+              <Route
+                path="/freelance_Dashboard"
+                element={<Freelancer_Dashboard />}
+              />
+              <Route path="/Client_Dashboard" element={<ClientDashboard />} />
+              <Route path="/projects/:projectId" element={<ProjectDetails />} />
+              <Route path="/client" element={<DashboardLayout />}>
+                <Route path="projects" element={<ClientProjects />} />
+                <Route path="invoices" element={<ClientInvoice />} />
+                <Route path="tasks" element={<ClientTasks />} />
+                <Route path="freelancers" element={<ClientFreelancers />} />
+                <Route
+                  path="freelancerProfile/:id"
+                  element={<ClientFreelancerProfile />}
+                />
+                <Route path="NotificationBell" element={<NotificationBell />} />
+              </Route>
 
+              <Route path="/freelancer" element={<DashboardLayout />}>
+                <Route path="Projects" element={<Projects />} />
+                <Route path="Invoices" element={<Invoices />} />
+                <Route path="Tasks" element={<Tasks />} />
+                <Route path="NotificationBell" element={<NotificationBell />} />
+              </Route>
             </Route>
           </Routes>
         )}
@@ -70,7 +73,5 @@ function App() {
     </>
   );
 }
-    
-      
 
 export default App;

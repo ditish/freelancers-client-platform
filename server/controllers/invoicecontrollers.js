@@ -1,4 +1,7 @@
 const Invoice = require("../model/invoice");
+const Notification = require("../model/notification");
+const { getConnectedUsers } = require("../socket");
+
 
 // Get all invoices for a user
 exports.getInvoices = async (req, res) => {
@@ -46,6 +49,20 @@ exports.createInvoice = async (req, res) => {
       dueDate,
       createdBy: req.user._id,
     });
+     const notification = await Notification.create({
+      userId: invoice.selectedClient,
+      message: `New invoice of $${invoice.amount} has been created for you`,
+      type: "invoice",
+      isRead: false,
+     });
+    
+       // send real-time if client is online
+    const clientSocketId = getConnectedUsers()[invoice.selectedClient.toString()];
+    if (clientSocketId) {
+      io.to(clientSocketId).emit("newNotification", notification);
+    }
+
+
     res.status(201).json(invoice);
   } catch (error) {
     console.error(error);
@@ -64,7 +81,18 @@ exports.createInvoice = async (req, res) => {
     {
          return res.status(403).json({ success: false, message: "Not authorized to pay this invoice" })
     }
-      invoice.status = "Paid"
+    const populatedInvoice = await Invoice.findById(Invoiceid).populate("selectedClient", "name email");
+    invoice.status = "Paid"
+     const notification = await Notification.create({
+      userId: invoice.createdBy,
+      message: `${invoice.invoiceNumber} has been paid by ${populatedInvoice.selectedClient.name}`,
+      type: "invoice",
+      isRead: false,
+     });
+        const freelancerSocketId = getConnectedUsers()[invoice.createdBy.toString()];
+    if (freelancerSocketId) {
+      io.to(freelancerSocketId).emit("newNotification", notification);
+    }
       await invoice.save();
        res.status(200).json({ success: true, message: "Invoice paid successfully", invoice });
 
