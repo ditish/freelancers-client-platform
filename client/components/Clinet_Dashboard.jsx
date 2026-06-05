@@ -12,6 +12,9 @@ import Bargraph from "../src/features/Charts/Bargarphs";
 import { Paymentpiechart } from "../src/features/Charts/Paymentspiecharts";
 import Sidebar from "./Sidebar";
 import { MdMenu } from "react-icons/md"; // ✅ Added missing import
+import NotificationBell from "./NotificationBell";
+import { FaFacebookMessenger } from "react-icons/fa6";
+import ChatPage from "./ChatPage";
 
 const ClientDashboard = () => {
   const [Totalfreelancer, setTotalfreelancer] = useState(0);
@@ -83,6 +86,14 @@ const ClientDashboard = () => {
           <h1 className="text-3xl font-bold">
             Welcome, {user?.name || "Client"} 👋
           </h1>
+          <span>
+            <NotificationBell></NotificationBell>
+          </span>
+          <span>
+            <FaFacebookMessenger onClick={() =>
+              navigate("/Chatpage")
+            } />
+          </span>
         </div>
 
         {/* Stats Cards */}

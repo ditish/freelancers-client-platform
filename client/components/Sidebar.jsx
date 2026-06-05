@@ -10,7 +10,7 @@ const freelancerLinks = [
   { label: "Projects", to: "/freelancer/Projects" },
   { label: "Invoices", to: "/freelancer/Invoices" },
   { label: "Tasks", to: "/freelancer/Tasks" },
-   {label:"notification" ,to :"NotificationBell"},
+  
 ];
 
 const clientLinks = [
@@ -19,7 +19,7 @@ const clientLinks = [
   { label: "Invoices",    to: "/client/invoices" },
   { label: "Tasks",       to: "/client/tasks" },
   { label: "Freelancers", to: "/client/freelancers" },
-  {label:"notification" ,to :"NotificationBell"},
+ 
 ];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {

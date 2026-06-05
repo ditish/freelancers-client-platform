@@ -11,6 +11,7 @@ import Bargraph from "../src/features/Charts/Bargarphs";
 import API from "../src/utiles/axiosConfigaxios";
 import { MdMenu } from "react-icons/md";
 import Sidebar from "./Sidebar";
+import NotificationBell from "./NotificationBell";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -77,6 +78,10 @@ const fetchAllClient = async () => {
               
             Welcome, {user?.name || "User"}!
           </h1>
+
+          <span>
+           <NotificationBell></NotificationBell>
+          </span>
        
         </div>
 

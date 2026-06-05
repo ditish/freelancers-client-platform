@@ -21,6 +21,7 @@ import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerp
 import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 import DashboardLayout from "../components/Dashboardlayout.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
+import ChatPage from "../components/ChatPage.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -37,7 +38,8 @@ function App() {
           </div>
         ) : (
           <Routes>
-            <Route path="/" element={<Login />} />
+              <Route path="/" element={<Login />} />
+               <Route path="/Chatpage" element={<ChatPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
@@ -57,14 +59,14 @@ function App() {
                   path="freelancerProfile/:id"
                   element={<ClientFreelancerProfile />}
                 />
-                <Route path="NotificationBell" element={<NotificationBell />} />
+              
               </Route>
 
               <Route path="/freelancer" element={<DashboardLayout />}>
                 <Route path="Projects" element={<Projects />} />
                 <Route path="Invoices" element={<Invoices />} />
                 <Route path="Tasks" element={<Tasks />} />
-                <Route path="NotificationBell" element={<NotificationBell />} />
+               
               </Route>
             </Route>
           </Routes>

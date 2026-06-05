@@ -31,6 +31,17 @@ io.on("connection", (socket) => {
     console.log("user joined", userId);
   });
 
+   socket.on("join-chat", (conversationId) => {
+    socket.join(conversationId);
+  });
+ 
+
+  socket.on("send-message", (message) => {
+    io.to(message.conversationId)
+      .emit("receive-message", message);
+  });
+
+
   socket.on("disconnect", () => {
     Object.keys(connectedUsers).forEach(key => {
       if (connectedUsers[key] === socket.id) {
