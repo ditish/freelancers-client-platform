@@ -1,7 +1,7 @@
 // NotificationBell.jsx
 import React, { useEffect } from "react";
 import { useState } from "react";
-import socket from "../socket";
+import socket from "../src/utiles/Socket"
 import { MdNotifications } from "react-icons/md";
 import API from "../src/utiles/axiosConfigaxios";
 

@@ -56,7 +56,7 @@ const getFreelancerProfile = async (req, res) => {
   }
 };
 
-module.exports = { getFreelancerProfile };
+
 
 module.exports = {
   getFreelancer,

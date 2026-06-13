@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import authService from "./authservice";
-import socket from "../../../Socket";
+import socket from "../../utiles/Socket"
 
 
 // const user = JSON.parse(localStorage.getItem("user"));
@@ -101,7 +101,15 @@ export const loginUser = (email, password,role) => async (dispatch) => {
     dispatch(loginStart());
     const user = await authService.login(email, password, role);
      console.log("user data", user); 
-     socket.emit("join", user._id); // ← join with userId
+    // ✅ Wait for connection before emitting
+    if (socket.connected) {
+      console.log("this is userId", user.id);
+      socket.emit("join", user.id);
+    } else {
+      socket.on("connect", () => {
+        socket.emit("join", user._id);
+      });
+    }  //  socket.emit("join", user._id); // ← join with userId
     dispatch(loginSuccess(user));
   } catch (err) {
      let message = "Login failed"; // default

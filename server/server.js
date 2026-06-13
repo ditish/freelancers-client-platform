@@ -24,21 +24,23 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("user connected", socket.id);
+  console.log("user connected from socket", socket.id);
 
   socket.on("join", (userId) => {
     connectedUsers[userId] = socket.id;
-    console.log("user joined", userId);
+    console.log("user joined from socket", userId);
   });
 
    socket.on("join-chat", (conversationId) => {
-    socket.join(conversationId);
+     socket.join(conversationId);
+     console.log("user join coneversation")
   });
  
 
   socket.on("send-message", (message) => {
     io.to(message.conversationId)
       .emit("receive-message", message);
+    console.log("user send message")
   });
 
 
@@ -46,6 +48,7 @@ io.on("connection", (socket) => {
     Object.keys(connectedUsers).forEach(key => {
       if (connectedUsers[key] === socket.id) {
         delete connectedUsers[key];
+        console.log("user gone")
       }
     });
   });
@@ -58,7 +61,10 @@ app.use("/api", require("./routes/clientRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/invoices", require("./routes/invoiceRoutes"));
+app.use("/api/conversations", require("./routes/conversationRoutes"));
+app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`)); 

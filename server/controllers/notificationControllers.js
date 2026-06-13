@@ -7,7 +7,7 @@ exports.getNotifications = async (req, res) => {
   try {
     const notifications = await Notification.find({ userId: req.user._id })
       .sort({ createdAt: -1 }); // ← newest first
-    console.log("this is notification from backend", notifications);
+    // console.log("this is notification from backend", notifications);
     return res.status(200).json(notifications);
   } catch (error) {
     return res.status(500).json({ message: error.message });

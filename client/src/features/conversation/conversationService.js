@@ -1,13 +1,15 @@
 import API from "../../utiles/axiosConfigaxios";
 // GET conversations
 const getConversation = async () => {
-  const res = await API.get("/getConversation");
+  const res = await API.get("/conversations/getConversations");
   return res.data;
 };
 
 // CREATE conversation
-const createConversation = async (data) => {
-  const res = await API.patch("/createConversation", data);
+const createConversation = async (receiverId) => {
+  const res = await API.post("/conversations/create", {
+    receiverId
+  },);
   return res.data;
 };
 
@@ -19,10 +21,16 @@ const deleteConversation = async (conversationId) => {
   return res.data;
 };
 
+const updateLastConversation = async (conversationId) => {
+  const response = await API.patch('/conversations/last-conversation', { conversationId });
+  return response.data;
+};
+
 const conversationService = {
   getConversation,
   createConversation,
   deleteConversation,
+  updateLastConversation,
 };
 
 export default conversationService;

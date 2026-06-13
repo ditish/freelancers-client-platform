@@ -4,39 +4,49 @@ import conversationService from "./conversationService";
 const initialState = {
   conversations: [],
   selectedConversation: null,
-  isLoading: false,
+  lastOpenedConversation: null,
+  isLoading: true,
   isError: false,
   message: "",
 };
 
 const conversationSlice = createSlice({
   name: "conversations",
-  initialState,
-
-  reducers: {
+  initialState,reducers: {
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
 
     setConversations: (state, action) => {
       state.conversations = action.payload.conversations || [];
-
       state.isLoading = false;
       state.isError = false;
       state.message = "";
     },
 
-    addConversation: (state, action) => {
-      state.conversations.unshift(action.payload);
+addConversation: (state, action) => {
+  const exists = state.conversations.find(
+    (c) => c._id === action.payload._id
+  );
 
-      state.isLoading = false;
-      state.isError = false;
-      state.message = "";
-    },
+  if (!exists) {
+    // ✅ new conversation — add to top
+    state.conversations.unshift(action.payload);
+  } else {
+    // ✅ already exists — update it with fresh populated data
+    state.conversations = state.conversations.map((c) =>
+      c._id === action.payload._id ? action.payload : c
+    );
+  }
+
+  state.isLoading = false;
+  state.isError = false;
+  state.message = "";
+},
 
     setSelectedConversation: (state, action) => {
       state.selectedConversation = action.payload;
-
+  localStorage.setItem("selectedConversation", JSON.stringify(action.payload));
       state.isLoading = false;
       state.isError = false;
       state.message = "";
@@ -57,6 +67,10 @@ const conversationSlice = createSlice({
 
       state.isLoading = false;
     },
+    setLastConversation: (state, action) => {
+  const { conversationId } = action.payload;
+  state.lastOpenedConversation = conversationId;
+},
 
     setError: (state, action) => {
       state.isError = true;
@@ -72,6 +86,7 @@ export const {
   addConversation,
   setSelectedConversation,
   deleteConversation,
+  setLastConversation,
   setError,
 } = conversationSlice.actions;
 
@@ -81,10 +96,12 @@ export const fetchConversations =
       dispatch(setLoading(true));
 
       const conversations =
-        await conversationService.getConversations();
+        await conversationService.getConversation();
+          console.log("API response:", conversations);
 
       dispatch(setConversations(conversations));
     } catch (err) {
+       console.log("API error:", err)
       dispatch(
         setError(
           err.response?.data?.message ||
@@ -97,6 +114,7 @@ export const fetchConversations =
   export const createConversation =
   (receiverId) => async (dispatch) => {
     try {
+      console.log("this is recievr id on conevrsationslice", receiverId);
       dispatch(setLoading(true));
 
       const conversation =
@@ -105,6 +123,7 @@ export const fetchConversations =
         );
 
       dispatch(addConversation(conversation));
+      return conversation
     } catch (err) {
       dispatch(
         setError(
@@ -114,6 +133,21 @@ export const fetchConversations =
       );
     }
   };
+export const updateLastConversation =
+  (conversationId) => async (dispatch) => {
+    try {
+      await conversationService.updateLastConversation(conversationId);
+      dispatch(setLastConversation({ conversationId }));
+    } catch (err) {
+      dispatch(
+        setError(
+          err.response?.data?.message ||
+            "Failed to update last conversation"
+        )
+      );
+    }
+  };
+
   export const deleteConversationById =
   (conversationId) => async (dispatch) => {
     try {

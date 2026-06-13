@@ -1,14 +1,19 @@
 
 import React, { useEffect, useState } from "react";
 import API from "../../src/utiles/axiosConfigaxios";// your axios instance
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from "../../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { createConversation, setSelectedConversation } from "../../src/features/conversation/convesationSlice";
+import { fetchMessages } from "../../src/features/message/messageSlice";
 
 const ClientFreelancers = () => {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fetchFreelancers = async () => {
     try {
@@ -23,7 +28,23 @@ const ClientFreelancers = () => {
 
   useEffect(() => {
     fetchFreelancers();
+
   }, []);
+
+ const handleOnclickmessage = async (receiverId) => {
+  try {
+    // works because thunk returns the conversation directly
+    const conversation = await dispatch(createConversation(receiverId));
+
+    console.log(" this is clientFreelancer conversation", conversation);
+ if (conversation?._id) {
+      await dispatch(setSelectedConversation(conversation));
+      navigate("/Chatpage");
+    }
+} catch (error) {
+    console.error("Failed to create conversation:", error);
+  }
+};
 
   if (loading) return <p>Loading freelancers...</p>;
 
@@ -48,13 +69,22 @@ const ClientFreelancers = () => {
           <p className="text-sm mt-2">
             Skills: {freelancer.skills?.join(", ") || "Not added"}
           </p>
-
+        
+         
         <Link
   to={`/client/freelancerProfile/${freelancer._id}`}
   className="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded"
 >
   View Profile
-</Link>
+          </Link>
+          <button
+            onClick={() => {
+              handleOnclickmessage(freelancer._id)
+            }}
+            className="rounded-2xl  bg-blue-400 text-white font-semibold  px-2 py-1 ml-3">
+             message 
+            </button>
+           
 
         </div>
       ))}

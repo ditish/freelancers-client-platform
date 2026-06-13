@@ -60,14 +60,15 @@ export const fetchMessages =
   (conversationId) => async (dispatch) => {
     try {
       dispatch(setLoading(true));
-
+  console.log("calling getMessages with", conversationId); // ← add this
       const messages =
-        await messageService.getMessages(
+        await messageService.getMessage(
           conversationId
         );
-
+console.log("this is fetchmessage in slice",messages)
       dispatch(setMessages(messages));
     } catch (err) {
+          console.log("FULL ERROR", err);
       dispatch(
         setError(
           err.response?.data?.message ||
@@ -81,7 +82,7 @@ export const fetchMessages =
   (messageData) => async (dispatch) => {
     try {
       dispatch(setLoading(true));
-
+console.log("this is message", messageData)
       const newMessage =
         await messageService.sendMessage(
           messageData
@@ -90,6 +91,7 @@ export const fetchMessages =
       dispatch(addMessage(newMessage));
 
       dispatch(setLoading(false));
+      return newMessage;
     } catch (err) {
       dispatch(
         setError(

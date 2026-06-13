@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchTasks } from "../src/features/task/taskslice"
 import {fetchInvoices} from "../src/features/invoice/invoiceSlice"
 import {  fetchProjects  } from "../src/features/Project/projectSlice";
@@ -12,9 +13,12 @@ import API from "../src/utiles/axiosConfigaxios";
 import { MdMenu } from "react-icons/md";
 import Sidebar from "./Sidebar";
 import NotificationBell from "./NotificationBell";
+import { FaFacebookMessenger } from "react-icons/fa6";
+import { setSelectedConversation, updateLastConversation } from "../src/features/conversation/convesationSlice";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+   const navigate = useNavigate(); 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { totalTasks } = useSelector((state) => state.tasks);
   const { Totalinvoices } = useSelector((state) => state.invoices);
@@ -23,6 +27,7 @@ const Freelancer_Dashboard = () => {
   const { totalProjects } = useSelector((state) => 
     state.projects
   )
+  const { conversations} = useSelector((state) => state.conversations);
 
   const [Totalclient, setTotalClient] = useState(0)
    const [Totalfreelancer,setTotalfreelancer] =useState(0)
@@ -82,6 +87,13 @@ const fetchAllClient = async () => {
           <span>
            <NotificationBell></NotificationBell>
           </span>
+
+          <span>
+            <FaFacebookMessenger onClick={() => 
+              navigate("/Chatpage")
+ 
+} />
+                    </span>
        
         </div>
 

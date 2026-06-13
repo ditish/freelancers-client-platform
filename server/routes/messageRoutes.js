@@ -1,19 +1,16 @@
-import express from "express";
-import {
+ const express =  require( "express");
+const {
   sendMessage,
   getMessages,
   editMessage,
   deleteMessage,
-} from "../controllers/messageController.js";
+} = require( "../controllers/messageControllers");
 
 const { verifyToken } = require("../middleware/verifytoken");
-
-
 const router = express.Router();
-
-router.post("/", verifyToken, sendMessage);
+router.post("/sendMessage", verifyToken, sendMessage);
 router.get("/:conversationId", verifyToken, getMessages);
 router.patch("/:messageId", verifyToken, editMessage);
 router.delete("/:messageId", verifyToken, deleteMessage);
 
-export default router;
+module.exports = router;

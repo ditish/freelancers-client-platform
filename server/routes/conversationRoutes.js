@@ -1,17 +1,17 @@
-import express from "express";
-import {
+const express = require ("express");
+const {
   getConversations,
   createConversation,
   deleteConversation,
   getConversationById,
-} from "../controllers/conversationController.js";
+}= require ("../controllers/conversationControllers");
 
 const { verifyToken } = require("../middleware/verifytoken");
 
 const router = express.Router();
-router.get("/", verifyToken, getConversations);
-router.post("/", verifyToken, createConversation);
+router.get("/getConversations", verifyToken, getConversations);
+router.post("/create", verifyToken, createConversation);
 router.delete("/:conversationId", verifyToken, deleteConversation);
 router.get("/:conversationId", verifyToken, getConversationById);
 
-export default router;
+module.exports = router;

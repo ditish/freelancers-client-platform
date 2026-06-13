@@ -1,8 +1,8 @@
-import message from "../model/message";
-import conversation from "../model/conversation";
+const message = require("../model/message");
+const conversation = require("../model/conversation")
 
 
-export const sendMessage = async (req, res) => {
+ const sendMessage = async (req, res) => {
   try {
     const { conversationId, text } = req.body;
 
@@ -11,6 +11,7 @@ export const sendMessage = async (req, res) => {
       sender: req.user._id, // from auth middleware
       text,
     });
+     const populatedMessage = await newMessage.populate("sender", "name email");
 
     // update conversation metadata (important)
     await conversation.findByIdAndUpdate(conversationId, {
@@ -18,18 +19,31 @@ export const sendMessage = async (req, res) => {
       updatedAt: Date.now(),
     });
 
-    res.status(201).json(newMessage);
+    res.status(201).json(populatedMessage);
   } catch (error) {
+    console.log("full erorr",error)
     res.status(500).json({ message: error.message });
   }
 };
-export const getMessages = async (req, res) => {
+const getMessages = async (req, res) => {
   try {
     const { conversationId } = req.params;
+  
 
     const messages = await message.find({ conversationId })
       .sort({ createdAt: 1 })
-      .populate("sender", "name email");
+      .populate("sender", "name email")
+    
+     
+    
+        if (!messages || messages.length === 0) {
+      return res.status(200).json({
+        messages: [],
+        isEmpty: true,
+        message: "No messages yet. Start the conversation!",
+      });
+    }
+
 
     res.status(200).json({
       messages,
@@ -39,7 +53,7 @@ export const getMessages = async (req, res) => {
   }
 };
 
-export const editMessage = async (req, res) => {
+ const editMessage = async (req, res) => {
   try {
     const { messageId } = req.params;
     const { text } = req.body;
@@ -65,7 +79,7 @@ export const editMessage = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-export const deleteMessage = async (req, res) => {
+const deleteMessage = async (req, res) => {
   try {
     const { messageId } = req.params;
 
@@ -92,4 +106,7 @@ export const deleteMessage = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+module.exports = {
+  sendMessage,getMessages,editMessage,deleteMessage
+}
 

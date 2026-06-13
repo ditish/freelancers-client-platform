@@ -26,7 +26,12 @@ const userSchema = mongoose.Schema(
     ],
     company: {
       type:String,
-    }
+    },
+    lastOpenedConversation: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Conversation",
+  default: null
+}
   },
   { timestamps: true } // automatic createdAt + updatedAt
 );

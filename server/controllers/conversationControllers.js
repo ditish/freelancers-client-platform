@@ -1,7 +1,9 @@
-import Conversation from "../models/Conversation.js";
-import Message from "../models/Message.js";
+const Conversation = require('../model/conversation.js');
+const message = require('../model/message.js');
+const Message = require("../model/message.js");
+const user = require('../model/user.js');
 
-export const getConversations = async (req, res) => {
+const getConversations = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -9,19 +11,20 @@ export const getConversations = async (req, res) => {
       participants: userId,
     })
       .populate("participants", "name email")
-      .populate("lastMessage")
       .sort({ updatedAt: -1 });
-
     res.status(200).json({
       conversations,
     });
+  
   } catch (err) {
+   console.log("this is conversation err", err);
     res.status(500).json({ message: err.message });
   }
 };
-export const createConversation = async (req, res) => {
-  try {
-    const { receiverId } = req.body;
+const createConversation = async (req, res) => {
+   try {
+     const {receiverId
+   } = req.body;
     const senderId = req.user._id;
 
     // check if conversation already exists
@@ -31,22 +34,25 @@ export const createConversation = async (req, res) => {
       },
     });
 
-    if (conversation) {
+     if (conversation) {
+       conversation = await conversation.populate("participants", "name email");
       return res.status(200).json(conversation);
     }
 
     // create new conversation
-    conversation = await Conversation.create({
-      participants: [senderId, receiverId],
-    });
-
+     conversation = await Conversation.create({
+       participants: [senderId, receiverId],
+     })
+    conversation = await conversation.populate("participants", "name email");
     res.status(201).json(conversation);
+  
   } catch (err) {
+    console.log("this is full error of the conversation",err )
     res.status(500).json({ message: err.message });
   }
 };
 
-export const getConversationById = async (req, res) => {
+ const getConversationById = async (req, res) => {
   try {
     const { conversationId } = req.params;
 
@@ -66,7 +72,7 @@ export const getConversationById = async (req, res) => {
   }
 };
 
-export const deleteConversation = async (req, res) => {
+ const deleteConversation = async (req, res) => {
   try {
     const { conversationId } = req.params;
     const userId = req.user._id;
@@ -105,3 +111,14 @@ export const deleteConversation = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+const updateLastConversation = async (req, res) => {
+  const { conversationId } = req.body;
+  await user.findByIdAndUpdate(userId, {
+    lastOpenedConversation: conversationId
+  });
+  return res.status(200).json({ success: true });
+};
+
+module.exports = {
+  getConversationById, getConversations,createConversation,deleteConversation,updateLastConversation
+}

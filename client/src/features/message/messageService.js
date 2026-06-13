@@ -2,12 +2,13 @@ import API from "../../utiles/axiosConfigaxios";
 
 // SEND MESSAGE
 const sendMessage = async (data) => {
-  const res = await API.post("/messages", data);
+  const res = await API.post("/messages/sendMessage", data);
   return res.data;
 };
 
 // GET MESSAGES (by conversationId)
 const getMessage = async (conversationId) => {
+  
   const res = await API.get(`/messages/${conversationId}`);
   return res.data;
 };
