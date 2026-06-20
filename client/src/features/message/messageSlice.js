@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import messageService from "./messageService";
+import { updateLastmessage } from "../conversation/convesationSlice";
 
 const initialState = {
   messages: [],
@@ -30,11 +31,19 @@ const messageSlice = createSlice({
 
     updateMessage: (state, action) => {
       const updated = action.payload;
-
+      console.log("updating message", updated);
       state.messages = state.messages.map((msg) =>
         msg._id === updated._id ? updated : msg
       );
     },
+    updateDeleteMessage: (state, action) => {
+      console.log("payload received:", action.payload);
+  const messageId = action.payload;
+  const msg = state.messages.find(m => m._id === messageId);
+  if (msg) {
+    msg.isDeleted = true;
+  }
+},
 
     clearMessages: (state) => {
       state.messages = [];
@@ -52,6 +61,8 @@ export const {
   setLoading,
   setMessages,
   addMessage,
+  updateMessage,
+  updateDeleteMessage,
   clearMessages,
   setError,
 } = messageSlice.actions;
@@ -79,20 +90,23 @@ console.log("this is fetchmessage in slice",messages)
   };
 
   export const sendMessage =
-  (messageData) => async (dispatch) => {
+    ({ conversationId, text, replyTo }) => async (dispatch) => {
+
     try {
       dispatch(setLoading(true));
-console.log("this is message", messageData)
+console.log("this is message", conversationId, text, replyTo )
       const newMessage =
         await messageService.sendMessage(
-          messageData
+          {conversationId, text, replyTo}
         );
-
-      dispatch(addMessage(newMessage));
-
+       dispatch(addMessage(newMessage));
+      dispatch(updateLastmessage({ 
+        conversationId, text
+      }));
       dispatch(setLoading(false));
       return newMessage;
     } catch (err) {
+      console.log("thus is full err", err);
       dispatch(
         setError(
           err.response?.data?.message ||
@@ -102,18 +116,24 @@ console.log("this is message", messageData)
     }
   };
 
-  export const editMessage =
-  ({ messageId, data }) =>
-  async (dispatch) => {
+export const editMessage =
+  ({ messageId, text,conversationId }) =>
+  
+    async (dispatch) => {
+      console.log("thus is text", text);
+      console.log("this is conversation id in edit", conversationId);
     try {
       const updated =
         await messageService.editMessage({
           messageId,
-          data,
+          text,
+          conversationId
         });
 
       dispatch(updateMessage(updated));
+       dispatch(updateLastmessage({ conversationId,text }));
     } catch (err) {
+      console.log("there is err while editing",err)
       dispatch(
         setError(
           err.response?.data?.message ||
@@ -124,13 +144,23 @@ console.log("this is message", messageData)
     };
   
     export const deleteMessage =
-  (messageId) => async (dispatch) => {
+  (messageId,conversationId) => async (dispatch) => {
     try {
-      await messageService.deleteMessage(
-        messageId
+      console.log("thus is delted conversation id", conversationId);
+      const deletedMessage = await messageService.deleteMessage({
+        messageId, conversationId}
       );
+      console.log("delted message are", deletedMessage.
+deletedMessageId
+);
 
-      dispatch(removeMessage(messageId));
+      dispatch(updateDeleteMessage(deletedMessage.
+        deletedMessageId
+      ));
+         dispatch(updateLastmessage({ 
+      conversationId, 
+      text: "This message was deleted" 
+    }));
     } catch (err) {
       dispatch(
         setError(

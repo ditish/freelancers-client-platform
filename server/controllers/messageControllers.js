@@ -4,14 +4,24 @@ const conversation = require("../model/conversation")
 
  const sendMessage = async (req, res) => {
   try {
-    const { conversationId, text } = req.body;
+    const { conversationId, text,replyTo } = req.body;
 
     const newMessage = await message.create({
       conversationId,
       sender: req.user._id, // from auth middleware
+      replyTo: replyTo || null,
       text,
     });
-     const populatedMessage = await newMessage.populate("sender", "name email");
+   const populatedMessage = await message
+      .findById(newMessage._id)
+      .populate("sender", "name email")
+      .populate({
+        path: "replyTo",
+        populate: {
+          path: "sender",
+          select: "name _id",
+        },
+      })
 
     // update conversation metadata (important)
     await conversation.findByIdAndUpdate(conversationId, {
@@ -56,53 +66,68 @@ const getMessages = async (req, res) => {
  const editMessage = async (req, res) => {
   try {
     const { messageId } = req.params;
-    const { text } = req.body;
+    const { text,conversationId } = req.body;
+   const Foundmessage = await message.findById(messageId);
 
-    const message = await message.findById(messageId);
-
-    if (!message) {
+    if (!Foundmessage) {
       return res.status(404).json({ message: "Message not found" });
     }
 
     // optional security: only sender can edit
-    if (message.sender.toString() !== req.user._id.toString()) {
+    if (Foundmessage.sender.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
-    message.text = text;
-    message.isEdited = true;
+    Foundmessage.text = text;
+  Foundmessage.isEdited = true;
 
-    await message.save();
+    await Foundmessage.save();
+ await Foundmessage.populate("sender", "name email");
+   await conversation.findByIdAndUpdate(conversationId, {
+      lastMessage: text,
+      updatedAt: Date.now(),
+    });
 
-    res.status(200).json(message);
+    res.status(200).json(
+      Foundmessage
+    );
+ // update conversation metadata (important)
+  
+
   } catch (error) {
+    console.log("full error on edit", error);
     res.status(500).json({ message: error.message });
   }
 };
 const deleteMessage = async (req, res) => {
   try {
-    const { messageId } = req.params;
+    const { messageId, } = req.params;
+    const { conversationId } = req.body;
 
-    const message = await Message.findById(messageId);
+    const Message = await message.findById(messageId);
 
-    if (!message) {
+    if (!Message) {
       return res.status(404).json({ message: "Message not found" });
     }
 
     // only sender can delete
-    if (message.sender.toString() !== req.user._id.toString()) {
+    if (Message.sender.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
-    message.isDeleted = true;
-    message.text = ""; // optional: clear text
-    await message.save();
+    Message.isDeleted = true;
+    Message.text = ""; // optional: clear text
+    await Message.save();
+    await conversation.findByIdAndUpdate(conversationId, {
+  lastMessage: "This message was deleted",
+});
 
     res.status(200).json({
       message: "Message deleted successfully",
       deletedMessageId: messageId,
     });
   } catch (err) {
+    console.log("there is err while deleting message", err);
     res.status(500).json({ message: err.message });
   }
 };

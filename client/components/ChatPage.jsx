@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearMessages, fetchMessages, sendMessage,addMessage } from "../src/features/message/messageSlice";
+import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage } from "../src/features/message/messageSlice";
 import { fetchConversations, setSelectedConversation } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
 
@@ -11,7 +11,9 @@ const ChatPage = () => {
   const { user, isloadingUser } = useSelector((state) => state.auth);
   const { conversations, selectedConversation, isLoading } = useSelector((state) => state.conversations);
   const { messages } = useSelector((state) => state.messages);
-
+  const [contextMenu, setContextMenu] = useState(null);
+  const [replyTo, setReplyTo] = useState(null);
+const [Editmessage, setEditmessage] = useState(null);
   const [text, setText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesContainerRef = useRef(null);
@@ -24,6 +26,19 @@ const ChatPage = () => {
   useEffect(() => {
     dispatch(fetchConversations());
   }, [dispatch]);
+
+
+  useEffect(() => {
+  if (conversations.length === 0) return;
+    if (selectedConversation?._id) return;
+  const latestConversation = conversations[0];
+
+  if (latestConversation) {
+      dispatch(setSelectedConversation(latestConversation));
+    }
+    
+
+}, [conversations]);
 
   useEffect(() => {
     if (selectedConversation?._id) {
@@ -82,7 +97,14 @@ return () => {
 
   const handleSend = async() => {
     if (!text.trim() || !selectedConversation?._id) return;
- const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConversation._id, text }))
+  if (Editmessage) {
+    // Handle edit
+    dispatch(editMessage({ messageId: Editmessage._id, text,conversationId:selectedConversation._id }));
+    setEditmessage(null);
+    setText("");
+    return;
+  }
+const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConversation._id, text, replyTo: replyTo?._id || null, }))
     // Emit to other participants via socket
       if (savedMessage) {
     console.log("savedMessage to emit:", savedMessage);
@@ -136,7 +158,9 @@ return () => {
               >
                 <p className="font-semibold">{getDisplayName(otherParticipant)}</p>
                 <p className="text-sm text-gray-500 truncate">
-                  {conv?.lastMessage || "No messages yet"}
+                   {conv?.lastMessage !== undefined && conv?.lastMessage !== "" 
+    ? conv.lastMessage 
+    : "No messages yet"}
                 </p>
               </div>
             );
@@ -195,7 +219,13 @@ return () => {
                   });
 
                   return (
-                    <div key={msg._id} className={`mb-3 flex flex-col ${isOther ? "items-start" : "items-end"}`}>
+                    <div key={msg._id} className={`mb-3 flex flex-col ${isOther ? "items-start" : "items-end"}`}
+                     onContextMenu={(e) => {
+    e.preventDefault();
+    setContextMenu({ x: e.clientX, y: e.clientY, msg });
+  }}
+                    
+                    >
                       {isOther && (
                         <span className="text-xs text-gray-500 mb-1 ml-1">
                           {msg.sender?.name || "User"}
@@ -208,7 +238,7 @@ return () => {
                       }`}>
                         <p className="text-sm">
                           {msg.isDeleted ? (
-                            <span className="italic text-gray-400">This message was deleted</span>
+                            <span className="italic text-white">This message was deleted</span>
                           ) : (
                             msg.text
                           )}
@@ -231,7 +261,28 @@ return () => {
                 </button>
               )}
               <div ref={messagesEndRef} />
-            </div>
+              </div>
+              
+ {replyTo && (
+    <div className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded mb-2 text-sm">
+      <span className="text-gray-500">
+        Replying to: <span className="font-medium">{replyTo.text}</span>
+      </span>
+      <button onClick={() => setReplyTo(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+    </div>
+  )}
+
+  {/* Edit preview */}
+  {Editmessage && (
+    <div className="flex items-center justify-between bg-yellow-50 px-3 py-2 rounded mb-2 text-sm">
+      <span className="text-gray-500">
+        Editing: <span className="font-medium">{Editmessage.text}</span>
+      </span>
+      <button onClick={() => { setEditmessage(null); setText(""); }} className="text-gray-400 hover:text-gray-600">✕</button>
+    </div>
+  )}
+
+
 
             {/* Input */}
             <div className="p-3 border-t flex">
@@ -240,19 +291,86 @@ return () => {
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 className="flex-1 border rounded px-3 py-2"
-                placeholder="Type a message..."
+                  placeholder={Editmessage ? "Edit message..." : "Type a message..."}
               />
               <button
                 onClick={handleSend}
-                className="ml-2 bg-blue-600 text-white px-4 py-2 rounded"
+                  className="ml-2 bg-blue-600 text-white px-4 py-2 rounded"
+                  
               >
-                Send
+                   {Editmessage ? "Update" : "Send"}
               </button>
             </div>
           </>
         )}
       </div>
+ {contextMenu && (
+  <>
+    {/* Backdrop — click outside to close */}
+    <div
+      className="fixed inset-0 z-10"
+      onClick={() => setContextMenu(null)}
+    />
 
+    {/* Menu */}
+    <div
+      className="fixed z-20 bg-white rounded-lg shadow-xl border py-1 w-48"
+      style={{ top: contextMenu.y, left: contextMenu.x }}
+    >
+      {/* Reply */}
+      <button
+        onClick={() => {
+          setReplyTo(contextMenu.msg);
+          setContextMenu(null);
+        }}
+        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+      >
+        ↩️ Reply
+      </button>
+
+      {/* Copy */}
+      <button
+        onClick={() => {
+          navigator.clipboard.writeText(contextMenu.msg.text);
+          setContextMenu(null);
+        }}
+        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+      >
+        📋 Copy
+      </button>
+
+      {/* Edit — only for your own messages */}
+      {contextMenu.msg.sender?._id?.toString() === getUserId(user)?.toString() && (
+        <button
+          onClick={() => {
+            setEditmessage(contextMenu.msg);
+            setText(contextMenu.msg.text);
+            setContextMenu(null);
+          }}
+          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+        >
+          ✏️ Edit
+        </button>
+      )}
+
+      {/* Delete — only for your own messages */}
+      {contextMenu.msg.sender?._id?.toString() === getUserId(user)?.toString() && (
+        <button
+          onClick={() => {
+            dispatch(deleteMessage(contextMenu.msg._id,selectedConversation._id));
+            setContextMenu(null);
+          }}
+          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+        >
+          🗑️ Delete
+        </button>
+      )}
+    </div>
+  </>
+      )}
+
+
+      
     </div>
   );
 };

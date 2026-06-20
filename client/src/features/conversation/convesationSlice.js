@@ -70,8 +70,16 @@ addConversation: (state, action) => {
     setLastConversation: (state, action) => {
   const { conversationId } = action.payload;
   state.lastOpenedConversation = conversationId;
-},
-
+    },
+    updateLastmessage: (state, action) => {
+    const { conversationId, text } = action.payload;
+        console.log("this is text", text);
+      console.log("this is converstaionId ", conversationId)
+    const convo = state.conversations.find(c => c._id === conversationId);
+    if (convo) {
+      convo.lastMessage = text;
+    }
+    },
     setError: (state, action) => {
       state.isError = true;
       state.isLoading = false;
@@ -87,6 +95,7 @@ export const {
   setSelectedConversation,
   deleteConversation,
   setLastConversation,
+  updateLastmessage,
   setError,
 } = conversationSlice.actions;
 

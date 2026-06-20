@@ -22,7 +22,7 @@ const deleteConversation = async (conversationId) => {
 };
 
 const updateLastConversation = async (conversationId) => {
-  const response = await API.patch('/conversations/last-conversation', { conversationId });
+  const response = await API.patch('/conversations/upadateLast-conversation', { conversationId });
   return response.data;
 };
 

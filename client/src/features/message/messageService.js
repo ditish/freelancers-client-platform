@@ -1,8 +1,7 @@
 import API from "../../utiles/axiosConfigaxios";
-
 // SEND MESSAGE
-const sendMessage = async (data) => {
-  const res = await API.post("/messages/sendMessage", data);
+const sendMessage = async ({ conversationId, text, replyTo }) => {
+  const res = await API.post("/messages/sendMessage", { conversationId, text, replyTo });
   return res.data;
 };
 
@@ -14,19 +13,22 @@ const getMessage = async (conversationId) => {
 };
 
 // EDIT MESSAGE
-const editMessage = async ({ messageId, data }) => {
+const editMessage = async ({ messageId, text ,conversationId }) => {
   const res = await API.patch(
     `/messages/${messageId}`,
-    data
+    {text,conversationId}
   );
+  console.log("thus is data come from edit ", res.data);
   return res.data;
 };
 
+
+
 // DELETE MESSAGE
-const deleteMessage = async (messageId) => {
-  const res = await API.delete(
-    `/messages/${messageId}`
-  );
+const deleteMessage = async ({ messageId, conversationId }) => {
+  const res = await API.delete(`/messages/${messageId}`, { 
+    data: { conversationId } 
+  });
   return res.data;
 };
 
