@@ -115,6 +115,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
     }
     ;
     setText("");
+    setReplyTo(null);
   };
 
   const getOtherParticipant = (conv) => {
@@ -220,7 +221,8 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
 
                   return (
                     <div key={msg._id} className={`mb-3 flex flex-col ${isOther ? "items-start" : "items-end"}`}
-                     onContextMenu={(e) => {
+                      onContextMenu={(e) => {
+                        if (msg.isDeleted) return; 
     e.preventDefault();
     setContextMenu({ x: e.clientX, y: e.clientY, msg });
   }}
@@ -235,7 +237,24 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
                         isOther
                           ? "bg-white text-gray-800 rounded-tl-none"
                           : "bg-green-500 text-white rounded-tr-none"
-                      }`}>
+                        }`}>
+                        
+   {/*  Reply preview inside the bubble */}
+  {msg.replyTo && !msg.isDeleted && (
+    <div className={`text-xs px-2 py-1 rounded mb-1 border-l-2 ${
+      isOther
+        ? "bg-gray-100 border-gray-400 text-gray-500"
+        : "bg-green-600 border-green-200 text-green-100"
+    }`}>
+      <p className="font-semibold">
+        {msg.replyTo.sender?.name || "User"}
+      </p>
+      <p className="truncate">
+        {msg.replyTo.text || "Original message deleted"}
+      </p>
+    </div>
+  )}
+
                         <p className="text-sm">
                           {msg.isDeleted ? (
                             <span className="italic text-white">This message was deleted</span>
@@ -282,9 +301,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
     </div>
   )}
 
-
-
-            {/* Input */}
+{/* Input */}
             <div className="p-3 border-t flex">
               <input
                 value={text}

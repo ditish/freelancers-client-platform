@@ -29,6 +29,8 @@ const conversation = require("../model/conversation")
       updatedAt: Date.now(),
     });
 
+    console.log("this is populatedMessage", populatedMessage);
+
     res.status(201).json(populatedMessage);
   } catch (error) {
     console.log("full erorr",error)
@@ -43,6 +45,10 @@ const getMessages = async (req, res) => {
     const messages = await message.find({ conversationId })
       .sort({ createdAt: 1 })
       .populate("sender", "name email")
+      .populate({
+    path: "replyTo",
+    populate: { path: "sender", select: "name" }
+  });
     
      
     
@@ -83,6 +89,10 @@ const getMessages = async (req, res) => {
 
     await Foundmessage.save();
  await Foundmessage.populate("sender", "name email");
+await Foundmessage.populate({
+  path: "replyTo",
+  populate: { path: "sender", select: "name" }
+});
    await conversation.findByIdAndUpdate(conversationId, {
       lastMessage: text,
       updatedAt: Date.now(),
