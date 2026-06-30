@@ -113,9 +113,11 @@ const deleteConversation = async (req, res) => {
     if (existingEntry) {
       // ✅ update existing entry's timestamp
       existingEntry.deletedAt = new Date();
+      conversation.lastMessage = "";
     } else {
       // ✅ first time deleting — push new entry
       conversation.deletedBy.push({ user: userId, deletedAt: new Date() });
+      conversation.lastMessage = "";
     }
 
     await conversation.save();

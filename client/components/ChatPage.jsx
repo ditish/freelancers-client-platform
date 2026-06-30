@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage } from "../src/features/message/messageSlice";
-import { deleteConversationById, fetchConversations, setSelectedConversation } from "../src/features/conversation/convesationSlice"; 
+import { deleteConversationById, fetchConversations, setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
 
 const ChatPage = () => {
@@ -19,6 +19,7 @@ const [Editmessage, setEditmessage] = useState(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesContainerRef = useRef(null);
   const messagesEndRef = useRef(null);
+   const conversationsRef = useRef(conversations);
 
   const getUserId = (user) => user?._id || user?.id;
 // Join conversation room when selected
@@ -28,6 +29,9 @@ const [Editmessage, setEditmessage] = useState(null);
     dispatch(fetchConversations());
   }, [dispatch]);
 
+  useEffect(() => {
+  conversationsRef.current = conversations;
+}, [conversations]);
 
   useEffect(() => {
   if (conversations.length === 0) return;
@@ -37,8 +41,7 @@ const [Editmessage, setEditmessage] = useState(null);
   if (latestConversation) {
       dispatch(setSelectedConversation(latestConversation));
     }
-    
-
+  
 }, [conversations]);
 
   useEffect(() => {
@@ -77,8 +80,8 @@ useEffect(() => {
     if (senderId?.toString() !== myId?.toString()) {
         
  // check if this conversation exists in current sidebar list
-    const convExists = conversations.some(
-      c => c._id?.toString() === message.conversationId?.toString()
+      const convExists = conversationsRef.current.some( // ✅ always fresh via ref
+        c => c._id?.toString() === message.conversationId?.toString()
       );
       
          if (!convExists) {
