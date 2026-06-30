@@ -37,10 +37,10 @@ const ClientFreelancers = () => {
     const conversation = await dispatch(createConversation(receiverId));
 
     console.log(" this is clientFreelancer conversation", conversation);
- if (conversation?._id) {
-      await dispatch(setSelectedConversation(conversation));
+//  if (conversation?._id) {
+//       await dispatch(setSelectedConversation(conversation));
       navigate("/Chatpage");
-    }
+    // }
 } catch (error) {
     console.error("Failed to create conversation:", error);
   }

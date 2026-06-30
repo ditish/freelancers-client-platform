@@ -7,8 +7,8 @@ const sendMessage = async ({ conversationId, text, replyTo }) => {
 
 // GET MESSAGES (by conversationId)
 const getMessage = async (conversationId) => {
-  
   const res = await API.get(`/messages/${conversationId}`);
+  console.log("raw response from getmessage:", res.data); // ← add this
   return res.data;
 };
 

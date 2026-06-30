@@ -15,9 +15,11 @@ const createConversation = async (receiverId) => {
 
 // DELETE conversation
 const deleteConversation = async (conversationId) => {
+  console.log("this is conversationdelte service");
   const res = await API.delete(
-    `/deleteconversation/${conversationId}`
+    `/conversations/${conversationId}`
   );
+  console.log("this is res", res);
   return res.data;
 };
 

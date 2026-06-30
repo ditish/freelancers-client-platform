@@ -8,6 +8,7 @@ const initialState = {
   isLoading: true,
   isError: false,
   message: "",
+   deletedAtMap: {},// { conversationId: deletedAt }
 };
 
 const conversationSlice = createSlice({
@@ -16,24 +17,24 @@ const conversationSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
-
-    setConversations: (state, action) => {
+setConversations: (state, action) => {
       state.conversations = action.payload.conversations || [];
       state.isLoading = false;
       state.isError = false;
       state.message = "";
     },
 
-addConversation: (state, action) => {
+  addConversation: (state, action) => {
   const exists = state.conversations.find(
     (c) => c._id === action.payload._id
   );
-
   if (!exists) {
     // ✅ new conversation — add to top
+    console.log("new conversation is added");
     state.conversations.unshift(action.payload);
   } else {
     // ✅ already exists — update it with fresh populated data
+    console.log("converstaion is already exist");
     state.conversations = state.conversations.map((c) =>
       c._id === action.payload._id ? action.payload : c
     );
@@ -104,17 +105,16 @@ export const fetchConversations =
     try {
       dispatch(setLoading(true));
 
-      const conversations =
+      const response =
         await conversationService.getConversation();
-          console.log("API response:", conversations);
-
-      dispatch(setConversations(conversations));
-    } catch (err) {
+      console.log("API response:", response);
+ dispatch(setConversations(response));
+       } catch (err) {
        console.log("API error:", err)
       dispatch(
         setError(
           err.response?.data?.message ||
-            "Failed to fetch conversations"
+          "Failed to fetch conversations"
         )
       );
     }
@@ -126,12 +126,15 @@ export const fetchConversations =
       console.log("this is recievr id on conevrsationslice", receiverId);
       dispatch(setLoading(true));
 
-      const conversation =
+      const response =
         await conversationService.createConversation(
           receiverId
         );
-
+      const { conversation, deletedAt } = response;
+      console.log("thus is deletedAt createconversations", deletedAt);
+      console.log("this is conversation from the create ", conversation);
       dispatch(addConversation(conversation));
+       dispatch(setSelectedConversation(conversation));
       return conversation
     } catch (err) {
       dispatch(
@@ -161,13 +164,16 @@ export const updateLastConversation =
   (conversationId) => async (dispatch) => {
     try {
       dispatch(setLoading(true));
-
+   
+      const response=
       await conversationService.deleteConversation(
         conversationId
-      );
-
-      dispatch(
-        removeConversation(conversationId)
+        );
+      const { conversation, message } = response
+      console.log("this is response",response);
+      console.log("this is delted conversations from slice ", conversation);
+     dispatch(
+        deleteConversation(conversationId)
       );
     } catch (err) {
       dispatch(

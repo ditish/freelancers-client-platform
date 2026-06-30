@@ -1,3 +1,5 @@
+const { Schema, model } = require("mongoose");
+const { ObjectId } = Schema.Types;
 const mongoose = require("mongoose");
 const conversationSchema = new mongoose.Schema(
   {
@@ -8,8 +10,15 @@ const conversationSchema = new mongoose.Schema(
       }
     ],
 
-      lastMessage: { type: String, default: "" } 
+    lastMessage: { type: String, default: "" },
+    deletedBy: [
+      {
+        user: { type: ObjectId, ref: "User" },
+
+        deletedAt: { type: Date, default: Date.now }
+      }],
   },
+   
   { timestamps: true }
 );
 module.exports = mongoose.model("Conversation", conversationSchema);

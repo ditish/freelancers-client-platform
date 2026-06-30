@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage } from "../src/features/message/messageSlice";
-import { fetchConversations, setSelectedConversation } from "../src/features/conversation/convesationSlice"; 
+import { deleteConversationById, fetchConversations, setSelectedConversation } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
 
 const ChatPage = () => {
@@ -11,6 +11,7 @@ const ChatPage = () => {
   const { user, isloadingUser } = useSelector((state) => state.auth);
   const { conversations, selectedConversation, isLoading } = useSelector((state) => state.conversations);
   const { messages } = useSelector((state) => state.messages);
+  console.log("this is message in chatpage", messages);
   const [contextMenu, setContextMenu] = useState(null);
   const [replyTo, setReplyTo] = useState(null);
 const [Editmessage, setEditmessage] = useState(null);
@@ -44,7 +45,10 @@ const [Editmessage, setEditmessage] = useState(null);
     if (selectedConversation?._id) {
       dispatch(fetchMessages(selectedConversation._id));
     }
-    return () => { dispatch(clearMessages()); };
+    return () => {
+       dispatch(clearMessages());
+       console.log("clearing the messeage")
+     };
   }, [selectedConversation, dispatch]);
 
 
@@ -67,9 +71,32 @@ useEffect(() => {
   const senderId = message.sender?._id || message.sender; 
    console.log("myId:", myId, "senderId:", senderId);
     console.log("recive message", message);
-      if (senderId?.toString() !== myId?.toString()) {
-    //  Only add if someone ELSE sent it
-    dispatch(addMessage(message));
+
+
+
+    if (senderId?.toString() !== myId?.toString()) {
+        
+ // check if this conversation exists in current sidebar list
+    const convExists = conversations.some(
+      c => c._id?.toString() === message.conversationId?.toString()
+      );
+      
+         if (!convExists) {
+      //  conversation X was deleted from sidebar — fetch it fresh to add it back
+      dispatch(fetchConversations()); // re-fetch full list (aggregation will include X now since updatedAt > deletedAt)
+    } else {
+      // already in sidebar — just update its lastMessage and bump to top
+      dispatch(updateLastmessage({ 
+        conversationId: message.conversationId, 
+        text: message.text 
+      }));
+      }
+        // only add to main chat view if X is the one currently open
+    if (message.conversationId?.toString() === selectedConversation?._id?.toString()) {
+      dispatch(addMessage(message));
+    }
+
+   
   }});
 return () => {
     socket.off("receive-message"); // ✅ cleanup on conversation change
@@ -95,7 +122,11 @@ return () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSend = async() => {
+  const handelOndelete = (selectedId) => {
+    console.log("deleted conversationId ", selectedId)
+    dispatch(deleteConversationById(selectedId));
+  }
+const handleSend = async() => {
     if (!text.trim() || !selectedConversation?._id) return;
   if (Editmessage) {
     // Handle edit
@@ -152,7 +183,8 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
             return (
               <div
                 key={conv._id}
-                onClick={() => dispatch(setSelectedConversation(conv))}
+                onClick={() =>
+                  dispatch(setSelectedConversation(conv))}
                 className={`p-4 cursor-pointer border-b hover:bg-gray-100 ${
                   selectedConversation?._id === conv._id ? "bg-gray-200" : ""
                 }`}
@@ -199,9 +231,16 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
         ) : (
           // ✅ Conversation selected — show header, messages, input
           <>
-            {/* Header */}
-            <div className="p-4 border-b font-bold">
-              {getDisplayName(getOtherParticipant(selectedConversation))}
+              {/* Header */}
+              <div className=" flex border-b  justify-between">
+            <div className="p-4 font-bold">
+                {getDisplayName(getOtherParticipant(selectedConversation))}
+                </div> 
+                <div
+                  onClick={() => {
+                    handelOndelete(selectedConversation._id);
+                }}
+                  className="p-1 cursor-pointer m-2">Delete</div>
             </div>
 
             {/* Messages */}

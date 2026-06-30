@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const Conversation = require('../model/conversation.js');
 const message = require('../model/message.js');
 const Message = require("../model/message.js");
@@ -5,49 +6,67 @@ const user = require('../model/user.js');
 
 const getConversations = async (req, res) => {
   try {
-    const userId = req.user._id;
+    // const userId = req.user._id;
+     const userId = new mongoose.Types.ObjectId(req.user._id);
 
-    const conversations = await Conversation.find({
-      participants: userId,
-    })
-      .populate("participants", "name email")
-      .sort({ updatedAt: -1 });
-    res.status(200).json({
-      conversations,
-    });
-  
+    const conversations = await Conversation.aggregate([
+      { $match: { participants: userId } },
+      {
+        $addFields: {
+          myDeletedEntry: {
+            $arrayElemAt: [
+              { $filter: {
+                  input: "$deletedBy",
+                  cond: { $eq: ["$$this.user", userId] }
+              }},
+              0
+            ]
+          }
+        }
+      },
+      {
+        $match: {
+          $or: [
+            { myDeletedEntry: { $exists: false } }, // never deleted
+            { $expr: { $lt: ["$myDeletedEntry.deletedAt", "$updatedAt"] } } // deleted before latest activity
+          ]
+        }
+      },
+      { $sort: { updatedAt: -1 } }
+    ]);
+  // console.log("simple aggregate:", conversations);
+
+    await Conversation.populate(conversations, { path: "participants", select: "name email" });
+
+    res.status(200).json({ conversations });
   } catch (err) {
-   console.log("this is conversation err", err);
     res.status(500).json({ message: err.message });
   }
 };
 const createConversation = async (req, res) => {
-   try {
-     const {receiverId
-   } = req.body;
+  try {
+    const { receiverId } = req.body;
     const senderId = req.user._id;
 
-    // check if conversation already exists
     let conversation = await Conversation.findOne({
-      participants: {
-        $all: [senderId, receiverId],
-      },
+      participants: { $all: [senderId, receiverId] },
     });
 
-     if (conversation) {
-       conversation = await conversation.populate("participants", "name email");
-      return res.status(200).json(conversation);
+    if (conversation) {
+      console.log("conversation is already exist");
+      conversation = await conversation.populate("participants", "name email");
+      return res.status(200).json({ conversation }); // ✅ no deletedAt needed anymore
     }
 
-    // create new conversation
-     conversation = await Conversation.create({
-       participants: [senderId, receiverId],
-     })
+    conversation = await Conversation.create({
+      participants: [senderId, receiverId],
+    });
     conversation = await conversation.populate("participants", "name email");
-    res.status(201).json(conversation);
-  
+
+    res.status(201).json({ conversation });
+
   } catch (err) {
-    console.log("this is full error of the conversation",err )
+    console.log("this is full error of the conversation", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -72,45 +91,46 @@ const createConversation = async (req, res) => {
   }
 };
 
- const deleteConversation = async (req, res) => {
+const deleteConversation = async (req, res) => {
   try {
     const { conversationId } = req.params;
     const userId = req.user._id;
 
-    const conversation = await Conversation.findById(
-      conversationId
-    );
+    const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
-      return res.status(404).json({
-        message: "Conversation not found",
-      });
+      return res.status(404).json({ message: "Conversation not found" });
     }
 
-    // check user belongs to conversation
-    if (
-      !conversation.participants.includes(userId)
-    ) {
-      return res.status(403).json({
-        message: "Not allowed",
-      });
+    if (!conversation.participants.some(p => p.toString() === userId.toString())) {
+      return res.status(403).json({ message: "Not allowed" });
     }
 
-    // delete conversation
-    await Conversation.findByIdAndDelete(
-      conversationId
+    const existingEntry = conversation.deletedBy.find(
+      (d) => d.user.toString() === userId.toString()
     );
 
-    // delete all messages in that conversation
-    await Message.deleteMany({ conversationId });
+    if (existingEntry) {
+      // ✅ update existing entry's timestamp
+      existingEntry.deletedAt = new Date();
+    } else {
+      // ✅ first time deleting — push new entry
+      conversation.deletedBy.push({ user: userId, deletedAt: new Date() });
+    }
+
+    await conversation.save();
+
+    console.log("deletedBy after save:", conversation.deletedBy);
 
     res.status(200).json({
+      conversation,
       message: "Conversation deleted successfully",
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 const updateLastConversation = async (req, res) => {
   const { conversationId } = req.body;
   await user.findByIdAndUpdate(userId, {

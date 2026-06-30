@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import messageService from "./messageService";
-import { updateLastmessage } from "../conversation/convesationSlice";
+import {  updateLastmessage } from "../conversation/convesationSlice";
 
 const initialState = {
   messages: [],
@@ -19,7 +19,8 @@ const messageSlice = createSlice({
     },
 
     setMessages: (state, action) => {
-      state.messages = action.payload.messages || [];
+      console.log("this message is setmessages", action.payload);
+      state.messages = action.payload || [];
       state.isLoading = false;
       state.isError = false;
       state.message = "";
@@ -67,23 +68,24 @@ export const {
   setError,
 } = messageSlice.actions;
 
-export const fetchMessages =
+
+ export const fetchMessages =
   (conversationId) => async (dispatch) => {
     try {
       dispatch(setLoading(true));
-  console.log("calling getMessages with", conversationId); // ← add this
-      const messages =
-        await messageService.getMessage(
-          conversationId
-        );
-console.log("this is fetchmessage in slice",messages)
+
+      // ✅ just send conversationId — backend looks up deletedAt itself
+      const response = await messageService.getMessage(conversationId);
+      const { messages } = response;
+      console.log("this is messages form slice", messages);
+
       dispatch(setMessages(messages));
+
     } catch (err) {
-          console.log("FULL ERROR", err);
+      console.log("FULL ERROR", err);
       dispatch(
         setError(
-          err.response?.data?.message ||
-            "Failed to fetch messages"
+          err.response?.data?.message || "Failed to fetch messages"
         )
       );
     }

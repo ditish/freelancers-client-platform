@@ -2,57 +2,69 @@ const message = require("../model/message");
 const conversation = require("../model/conversation")
 
 
- const sendMessage = async (req, res) => {
+const sendMessage = async (req, res) => {
   try {
-    const { conversationId, text,replyTo } = req.body;
-
+    const { conversationId, text, replyTo } = req.body;
+    const senderId = req.user._id;
+  
     const newMessage = await message.create({
       conversationId,
-      sender: req.user._id, // from auth middleware
+      sender: senderId,
       replyTo: replyTo || null,
       text,
     });
-   const populatedMessage = await message
+
+    const populatedMessage = await message
       .findById(newMessage._id)
       .populate("sender", "name email")
       .populate({
         path: "replyTo",
-        populate: {
-          path: "sender",
-          select: "name _id",
-        },
-      })
+        populate: { path: "sender", select: "name _id" },
+      });
 
-    // update conversation metadata (important)
     await conversation.findByIdAndUpdate(conversationId, {
-      lastMessage: text,
-      updatedAt: Date.now(),
+      $set: { lastMessage: text, updatedAt: Date.now() },
     });
 
-    console.log("this is populatedMessage", populatedMessage);
-
-    res.status(201).json(populatedMessage);
+    res.status(201).json({ 
+      ...populatedMessage.toObject(), 
+    });
   } catch (error) {
-    console.log("full erorr",error)
+    console.log("full error", error);
     res.status(500).json({ message: error.message });
   }
 };
+
 const getMessages = async (req, res) => {
+  const userId = req.user._id;
   try {
     const { conversationId } = req.params;
-  
 
-    const messages = await message.find({ conversationId })
+    const Conversation = await conversation.findById(conversationId);
+    const deletedEntry = Conversation.deletedBy.find(
+      (d) => d.user.toString() === userId.toString()
+    );
+   
+    const deletedAt = deletedEntry?.deletedAt || null;
+
+    const query = { conversationId };
+    if (deletedAt) {
+      query.createdAt = { $gt: new Date(deletedAt) };
+       
+    }
+
+
+    const messages = await message.find(query)
       .sort({ createdAt: 1 })
       .populate("sender", "name email")
       .populate({
-    path: "replyTo",
-    populate: { path: "sender", select: "name" }
-  });
-    
-     
-    
-        if (!messages || messages.length === 0) {
+        path: "replyTo",
+        populate: { path: "sender", select: "name" }
+      });
+
+  
+
+    if (!messages || messages.length === 0) {
       return res.status(200).json({
         messages: [],
         isEmpty: true,
@@ -60,11 +72,11 @@ const getMessages = async (req, res) => {
       });
     }
 
-
     res.status(200).json({
-      messages,
+      messages
     });
   } catch (error) {
+    console.log("this is error fro get message ", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -137,7 +149,6 @@ const deleteMessage = async (req, res) => {
       deletedMessageId: messageId,
     });
   } catch (err) {
-    console.log("there is err while deleting message", err);
     res.status(500).json({ message: err.message });
   }
 };
