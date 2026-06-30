@@ -132,8 +132,11 @@ export const editMessage =
           conversationId
         });
 
-      dispatch(updateMessage(updated));
-       dispatch(updateLastmessage({ conversationId,text }));
+      dispatch(updateMessage(updated.Foundmessage));
+      if (updated?.isLastmessage) {
+         dispatch(updateLastmessage({ conversationId,text }));
+      }
+      
     } catch (err) {
       console.log("there is err while editing",err)
       dispatch(
@@ -159,10 +162,11 @@ deletedMessageId
       dispatch(updateDeleteMessage(deletedMessage.
         deletedMessageId
       ));
-         dispatch(updateLastmessage({ 
-      conversationId, 
-      text: "This message was deleted" 
-    }));
+      if (deletedMessage?.isLastmessage) {
+        dispatch(updateLastmessage({ conversationId, text: "This message was deleted" }));
+
+      }
+    
     } catch (err) {
       dispatch(
         setError(

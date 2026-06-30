@@ -105,14 +105,20 @@ await Foundmessage.populate({
   path: "replyTo",
   populate: { path: "sender", select: "name" }
 });
-   await conversation.findByIdAndUpdate(conversationId, {
-      lastMessage: text,
-      updatedAt: Date.now(),
+    let isLastmessage = false;
+ const lastMessage = await message
+  .findOne({ conversationId })
+  .sort({ createdAt: -1 });
+    if (lastMessage._id.toString() === messageId) {
+      isLastmessage = true;
+  await conversation.findByIdAndUpdate(conversationId, {
+    lastMessage: text,
+    updatedAt: Date.now(),
+  });
+    }
+    res.status(200).json({
+      Foundmessage, isLastmessage
     });
-
-    res.status(200).json(
-      Foundmessage
-    );
  // update conversation metadata (important)
   
 
@@ -139,14 +145,23 @@ const deleteMessage = async (req, res) => {
 
     Message.isDeleted = true;
     Message.text = ""; // optional: clear text
+    
+     let isLastmessage = false;
+ const lastMessage = await message
+  .findOne({ conversationId })
+  .sort({ createdAt: -1 });
+    if (lastMessage._id.toString() === messageId) {
+      isLastmessage = true;
+  await conversation.findByIdAndUpdate(conversationId, {
+    lastMessage: "This message was deleted" 
+   
+  });
+    }
     await Message.save();
-    await conversation.findByIdAndUpdate(conversationId, {
-  lastMessage: "This message was deleted",
-});
-
-    res.status(200).json({
+ res.status(200).json({
       message: "Message deleted successfully",
-      deletedMessageId: messageId,
+   deletedMessageId: messageId,
+      isLastmessage,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
