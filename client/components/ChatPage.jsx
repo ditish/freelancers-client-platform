@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage } from "../src/features/message/messageSlice";
+import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage, updateMessage, updateDeleteMessage } from "../src/features/message/messageSlice";
 import { deleteConversationById, fetchConversations, setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
 
@@ -62,47 +62,61 @@ const [Editmessage, setEditmessage] = useState(null);
 useEffect(() => {
   if (!selectedConversation?._id) return;
 
-  // Join the conversation room
   socket.emit("join-chat", selectedConversation._id);
 
 
-
-  // Listen for incoming messages
+   socket.off("receive-message");
   socket.on("receive-message", (message) => {
-
-        const myId = user?._id || user?.id;    
-  const senderId = message.sender?._id || message.sender; 
-   console.log("myId:", myId, "senderId:", senderId);
-    console.log("recive message", message);
-
-
+    const myId = user?._id || user?.id;
+    const senderId = message.sender?._id || message.sender;
 
     if (senderId?.toString() !== myId?.toString()) {
-        
- // check if this conversation exists in current sidebar list
-      const convExists = conversationsRef.current.some( // ✅ always fresh via ref
+      const convExists = conversationsRef.current.some(
         c => c._id?.toString() === message.conversationId?.toString()
       );
-      
-         if (!convExists) {
-      //  conversation X was deleted from sidebar — fetch it fresh to add it back
-      dispatch(fetchConversations()); // re-fetch full list (aggregation will include X now since updatedAt > deletedAt)
-    } else {
-      // already in sidebar — just update its lastMessage and bump to top
-      dispatch(updateLastmessage({ 
-        conversationId: message.conversationId, 
-        text: message.text 
-      }));
-      }
-        // only add to main chat view if X is the one currently open
-    if (message.conversationId?.toString() === selectedConversation?._id?.toString()) {
-      dispatch(addMessage(message));
-    }
 
-   
-  }});
-return () => {
-    socket.off("receive-message"); // ✅ cleanup on conversation change
+      if (!convExists) {
+        dispatch(fetchConversations());
+      } else {
+        dispatch(updateLastmessage({
+          conversationId: message.conversationId,
+          text: message.text,
+        }));
+      }
+
+      if (message.conversationId?.toString() === selectedConversation?._id?.toString()) {
+        dispatch(addMessage(message));
+      }
+    }
+  });
+
+  socket.off("message-edited");
+  socket.on("message-edited", (message) => {
+    dispatch(updateMessage(message));
+    if (message?.isLastmessage) {
+      dispatch(updateLastmessage({
+        conversationId: message.conversationId,
+        text: message.text,
+      }));
+    }
+  });
+    socket.off("message-deleted");
+  socket.on("message-deleted", (message) => {
+    dispatch(updateDeleteMessage(message._id
+      ));
+    if (message?.isLastmessage) {
+      dispatch(updateLastmessage({
+        conversationId: message.conversationId,
+        text:"the message is deleted",
+      }));
+    }
+  });
+    
+
+  return () => {
+    socket.off("receive-message");
+    socket.off("message-edited");
+    socket.off("message-deleted");
   };
 }, [selectedConversation]);
   
@@ -127,13 +141,21 @@ return () => {
 
   const handelOndelete = (selectedId) => {
     console.log("deleted conversationId ", selectedId)
-    dispatch(deleteConversationById(selectedId));
-  }
+     dispatch(deleteConversationById(selectedId));
+    }
 const handleSend = async() => {
     if (!text.trim() || !selectedConversation?._id) return;
   if (Editmessage) {
     // Handle edit
-    dispatch(editMessage({ messageId: Editmessage._id, text,conversationId:selectedConversation._id }));
+     const updatedMessage = await dispatch(editMessage({ messageId: Editmessage._id, text, conversationId: selectedConversation._id }));
+   
+    if (updatedMessage) {
+         socket.emit("edit-message", {
+      ...updatedMessage,
+       conversationId: selectedConversation._id
+      });
+    }
+ 
     setEditmessage(null);
     setText("");
     return;
@@ -415,8 +437,13 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
       {/* Delete — only for your own messages */}
       {contextMenu.msg.sender?._id?.toString() === getUserId(user)?.toString() && (
         <button
-          onClick={() => {
-            dispatch(deleteMessage(contextMenu.msg._id,selectedConversation._id));
+          onClick={async() => {
+                   const deletedMessage= await dispatch(deleteMessage(contextMenu.msg._id, selectedConversation._id));
+                    
+                     if (deletedMessage) {
+      socket.emit("delete-message", deletedMessage);
+    }
+
             setContextMenu(null);
           }}
           className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"

@@ -131,11 +131,11 @@ export const editMessage =
           text,
           conversationId
         });
-
-      dispatch(updateMessage(updated.Foundmessage));
+        dispatch(updateMessage(updated.Foundmessage));
       if (updated?.isLastmessage) {
          dispatch(updateLastmessage({ conversationId,text }));
       }
+      return { ...updated.Foundmessage,isLastmessage: updated.isLastmessage }
       
     } catch (err) {
       console.log("there is err while editing",err)
@@ -166,7 +166,13 @@ deletedMessageId
         dispatch(updateLastmessage({ conversationId, text: "This message was deleted" }));
 
       }
-    
+
+   return {
+        _id: deletedMessage.deletedMessageId,   // explicit, not spread
+        conversationId,                          // needed for socket room routing
+        isLastmessage: deletedMessage.isLastmessage,  // fixed typo
+      };
+
     } catch (err) {
       dispatch(
         setError(

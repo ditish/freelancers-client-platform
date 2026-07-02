@@ -43,6 +43,15 @@ io.on("connection", (socket) => {
     console.log("user send message")
   });
 
+  socket.on("edit-message", (message) => {
+  io.to(message.conversationId).emit("message-edited", message);
+  console.log("message edited and broadcast");
+});
+
+    socket.on("delete-message", (message) => {
+  io.to(message.conversationId).emit("message-deleted", message);
+  console.log("message deleted and broadcast");
+});
 
   socket.on("disconnect", () => {
     Object.keys(connectedUsers).forEach(key => {
