@@ -14,7 +14,7 @@ import { MdMenu } from "react-icons/md";
 import Sidebar from "./Sidebar";
 import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
-import { setSelectedConversation, updateLastConversation } from "../src/features/conversation/convesationSlice";
+import { fetchConversations, setSelectedConversation, updateLastConversation } from "../src/features/conversation/convesationSlice";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -60,10 +60,17 @@ const fetchAllClient = async () => {
      dispatch(fetchTasks());
      dispatch(fetchInvoices());
      dispatch(fetchProjects());
+      dispatch(fetchConversations())
 }, [dispatch]);
 
   
   console.log(" toataltask", totalTasks);
+  const { unreadCounts } = useSelector((state) => state.conversations)
+   const values = Object.values(unreadCounts);
+   console.log("this is message values", values);
+   // values is an ARRAY of numbers: [3, 0, 2]
+   const totalUnread = values.reduce((sum, count) => sum + count, 0);
+   console.log("this  is totalunread", totalUnread);
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar sidebarOpen={sidebarOpen}
@@ -88,11 +95,16 @@ const fetchAllClient = async () => {
            <NotificationBell></NotificationBell>
           </span>
 
-          <span>
+          <span   className="relative inline-block">
             <FaFacebookMessenger onClick={() => 
               navigate("/Chatpage")
  
-} />
+            } />
+                    {totalUnread > 0 && (
+    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full min-w-3 h-3 flex items-center justify-center px-1 leading-none">
+      {totalUnread > 9 ? "9+" : totalUnread}
+    </span>
+  )}
                     </span>
        
         </div>

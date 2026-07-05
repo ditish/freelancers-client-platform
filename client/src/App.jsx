@@ -22,16 +22,16 @@ import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 import DashboardLayout from "../components/Dashboardlayout.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import ChatPage from "../components/ChatPage.jsx";
+import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
-
-  return (
+return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       <BrowserRouter>
         <LoadUser />
-
+ <ReceiveMessageListener />
         {isloadingUser ? (
           <div className="flex items-center justify-center h-screen text-xl">
             Loading...

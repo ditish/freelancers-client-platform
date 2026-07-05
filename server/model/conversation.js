@@ -17,6 +17,12 @@ const conversationSchema = new mongoose.Schema(
 
         deletedAt: { type: Date, default: Date.now }
       }],
+    
+     lastRead: [{
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  timestamp: Date
+}],
+    
   },
    
   { timestamps: true }

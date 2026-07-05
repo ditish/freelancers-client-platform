@@ -81,7 +81,7 @@ export const {
 
       dispatch(setMessages(messages));
 
-    } catch (err) {
+   } catch (err) {
       console.log("FULL ERROR", err);
       dispatch(
         setError(
@@ -93,7 +93,6 @@ export const {
 
   export const sendMessage =
     ({ conversationId, text, replyTo }) => async (dispatch) => {
-
     try {
       dispatch(setLoading(true));
 console.log("this is message", conversationId, text, replyTo )

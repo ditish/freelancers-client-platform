@@ -51,7 +51,30 @@ io.on("connection", (socket) => {
     socket.on("delete-message", (message) => {
   io.to(message.conversationId).emit("message-deleted", message);
   console.log("message deleted and broadcast");
-});
+    });
+  
+    socket.on("markAsRead", async ({ conversationId, userId }) => {
+      try {
+      
+      const Conversation = require("./model/conversation");
+
+      await Conversation.updateOne(
+        { _id: conversationId, "lastRead.user": userId },
+        { $set: { "lastRead.$.timestamp": new Date() } }
+      );
+      await Conversation.updateOne(
+        { _id: conversationId, "lastRead.user": { $ne: userId } },
+        { $push: { lastRead: { user: userId, timestamp: new Date() } } }
+        );
+        console.log("message is markasreaded");
+      // broadcast to the room — everyone else in this conversation sees it was read
+      io.to(conversationId).emit("markAsRead", { conversationId, readBy: userId });
+    } catch (err) {
+      console.error("markAsRead error:", err);
+    }
+  });
+  
+  
 
   socket.on("disconnect", () => {
     Object.keys(connectedUsers).forEach(key => {

@@ -6,11 +6,12 @@ const user = require('../model/user.js');
 
 const getConversations = async (req, res) => {
   try {
-    // const userId = req.user._id;
-     const userId = new mongoose.Types.ObjectId(req.user._id);
+    const userId = new mongoose.Types.ObjectId(req.user._id);
 
     const conversations = await Conversation.aggregate([
       { $match: { participants: userId } },
+
+      // --- your existing soft-delete filtering ---
       {
         $addFields: {
           myDeletedEntry: {
@@ -27,14 +28,68 @@ const getConversations = async (req, res) => {
       {
         $match: {
           $or: [
-            { myDeletedEntry: { $exists: false } }, // never deleted
-            { $expr: { $lt: ["$myDeletedEntry.deletedAt", "$updatedAt"] } } // deleted before latest activity
+            { myDeletedEntry: { $exists: false } },
+            { $expr: { $lt: ["$myDeletedEntry.deletedAt", "$updatedAt"] } }
           ]
         }
       },
-      { $sort: { updatedAt: -1 } }
+
+      // --- NEW: extract this user's lastRead timestamp ---
+      {
+        $addFields: {
+          myLastRead: {
+            $let: {
+              vars: {
+                entry: {
+                  $first: {
+                    $filter: {
+                      input: "$lastRead",
+                      cond: { $eq: ["$$this.user", userId] }
+                    }
+                  }
+                }
+              },
+              in: { $ifNull: ["$$entry.timestamp", new Date(0)] }
+            }
+          }
+        }
+      },
+
+      // --- NEW: count unread messages ---
+      {
+        $lookup: {
+          from: "messages",
+          let: { convId: "$_id", lastRead: "$myLastRead" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$conversationId", "$$convId"] },
+                    { $gt: ["$createdAt", "$$lastRead"] },
+                    { $ne: ["$sender", userId] }
+                  ]
+                }
+              }
+            },
+            { $count: "count" }
+          ],
+          as: "unreadInfo"
+        }
+      },
+
+      // --- NEW: flatten into a plain number ---
+      {
+        $addFields: {
+          unreadCount: { $ifNull: [{ $first: "$unreadInfo.count" }, 0] }
+        }
+      },
+
+      { $sort: { updatedAt: -1 } },
+
+      // --- cleanup: drop ALL scratch fields, old and new ---
+      { $project: { myDeletedEntry: 0, myLastRead: 0, unreadInfo: 0 } }
     ]);
-  // console.log("simple aggregate:", conversations);
 
     await Conversation.populate(conversations, { path: "participants", select: "name email" });
 
@@ -43,6 +98,7 @@ const getConversations = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 const createConversation = async (req, res) => {
   try {
     const { receiverId } = req.body;

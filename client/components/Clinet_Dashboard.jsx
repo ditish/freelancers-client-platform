@@ -15,8 +15,10 @@ import { MdMenu } from "react-icons/md"; // ✅ Added missing import
 import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import ChatPage from "./ChatPage";
+import { fetchConversations } from "../src/features/conversation/convesationSlice";
 
 const ClientDashboard = () => {
+
   const [Totalfreelancer, setTotalfreelancer] = useState(0);
   const [Totalclient, setTotalClient] = useState(0);
   const { user, role } = useSelector((state) => state.auth);
@@ -50,6 +52,7 @@ const ClientDashboard = () => {
   useEffect(() => {
     fetchFreelancers();
     fetchAllClient();
+    dispatch(fetchConversations())
   }, []);
 
   useEffect(() => {
@@ -62,6 +65,14 @@ const ClientDashboard = () => {
     dispatch(resetLogin());
     navigate("/");
   };
+
+    const { unreadCounts } = useSelector((state) => state.conversations)
+  const values = Object.values(unreadCounts);
+  console.log("this is message values", values);
+  // values is an ARRAY of numbers: [3, 0, 2]
+  const totalUnread = values.reduce((sum, count) => sum + count, 0);
+  console.log("this  is totalunread", totalUnread);
+// totalUnread is a single NUMBER: 5
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -89,13 +100,15 @@ const ClientDashboard = () => {
           <span>
             <NotificationBell></NotificationBell>
           </span>
-          <span>
-            <FaFacebookMessenger onClick={() =>
-              
-
-              
-              navigate("/Chatpage")
+          <span  className="relative inline-block">
+            <FaFacebookMessenger className=""  onClick={() =>
+            navigate("/Chatpage")
             } />
+              {totalUnread > 0 && (
+    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full min-w-3 h-3 flex items-center justify-center px-1 leading-none">
+      {totalUnread > 9 ? "9+" : totalUnread}
+    </span>
+  )}
           </span>
         </div>
 

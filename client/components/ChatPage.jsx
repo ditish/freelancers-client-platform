@@ -2,12 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage, updateMessage, updateDeleteMessage } from "../src/features/message/messageSlice";
-import { deleteConversationById, fetchConversations, setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
+import { clearUnreadCount, deleteConversationById, fetchConversations,  setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
 
 const ChatPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {unreadCounts} = useSelector((state) => state.conversations);
   const { user, isloadingUser } = useSelector((state) => state.auth);
   const { conversations, selectedConversation, isLoading } = useSelector((state) => state.conversations);
   const { messages } = useSelector((state) => state.messages);
@@ -18,8 +19,10 @@ const [Editmessage, setEditmessage] = useState(null);
   const [text, setText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesContainerRef = useRef(null);
+  const selectedConversationRef = useRef(selectedConversation);
   const messagesEndRef = useRef(null);
-   const conversationsRef = useRef(conversations);
+  const conversationsRef = useRef(conversations);
+  const activeConversationId = selectedConversation?._id;
 
   const getUserId = (user) => user?._id || user?.id;
 // Join conversation room when selected
@@ -28,12 +31,35 @@ const [Editmessage, setEditmessage] = useState(null);
   useEffect(() => {
     dispatch(fetchConversations());
   }, [dispatch]);
+   useEffect(() => {
+  return () => {
+    dispatch(setSelectedConversation(null));
+  };
+}, []);
 
   useEffect(() => {
   conversationsRef.current = conversations;
-}, [conversations]);
-
+  }, [conversations]);
+  
   useEffect(() => {
+  if (!activeConversationId) return;
+  if (document.visibilityState === 'visible') {
+    socket.emit('markAsRead', { conversationId: activeConversationId, userId: user?._id });
+       dispatch(clearUnreadCount(activeConversationId));
+  }
+  }, [activeConversationId]);
+  
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible' && activeConversationId) {
+        socket.emit('markAsRead', { conversationId: activeConversationId, userId: user?._id });
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [activeConversationId]);
+
+ useEffect(() => {
   if (conversations.length === 0) return;
     if (selectedConversation?._id) return;
   const latestConversation = conversations[0];
@@ -53,43 +79,10 @@ const [Editmessage, setEditmessage] = useState(null);
        console.log("clearing the messeage")
      };
   }, [selectedConversation, dispatch]);
-
-
-
-
-
 // Listen for new messages
 useEffect(() => {
   if (!selectedConversation?._id) return;
-
-  socket.emit("join-chat", selectedConversation._id);
-
-
-   socket.off("receive-message");
-  socket.on("receive-message", (message) => {
-    const myId = user?._id || user?.id;
-    const senderId = message.sender?._id || message.sender;
-
-    if (senderId?.toString() !== myId?.toString()) {
-      const convExists = conversationsRef.current.some(
-        c => c._id?.toString() === message.conversationId?.toString()
-      );
-
-      if (!convExists) {
-        dispatch(fetchConversations());
-      } else {
-        dispatch(updateLastmessage({
-          conversationId: message.conversationId,
-          text: message.text,
-        }));
-      }
-
-      if (message.conversationId?.toString() === selectedConversation?._id?.toString()) {
-        dispatch(addMessage(message));
-      }
-    }
-  });
-
+socket.emit("join-chat", selectedConversation._id);
   socket.off("message-edited");
   socket.on("message-edited", (message) => {
     dispatch(updateMessage(message));
@@ -114,7 +107,6 @@ useEffect(() => {
     
 
   return () => {
-    socket.off("receive-message");
     socket.off("message-edited");
     socket.off("message-deleted");
   };
@@ -197,34 +189,43 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
     <div className="flex h-screen">
 
       {/* LEFT SIDEBAR */}
-      <div className="w-1/3 border-r overflow-y-auto">
-        {conversations.length === 0 ? (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            No conversations yet
+     <div className="w-1/3 border-r overflow-y-auto">
+  {conversations.length === 0 ? (
+    <div className="flex items-center justify-center h-full text-gray-500">
+      No conversations yet
+    </div>
+  ) : (
+    conversations.map((conv) => {
+      const otherParticipant = getOtherParticipant(conv);
+      const unreadCount = unreadCounts[conv._id] || 0;
+
+      return (
+        <div
+          key={conv._id}
+          onClick={() => dispatch(setSelectedConversation(conv))}
+          className={`p-4 cursor-pointer border-b hover:bg-gray-100 flex justify-between items-center ${
+            selectedConversation?._id === conv._id ? "bg-gray-200" : ""
+          }`}
+        >
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold">{getDisplayName(otherParticipant)}</p>
+            <p className="text-sm text-gray-500 truncate">
+              {conv?.lastMessage !== undefined && conv?.lastMessage !== ""
+                ? conv.lastMessage
+                : "No messages yet"}
+            </p>
           </div>
-        ) : (
-          conversations.map((conv) => {
-            const otherParticipant = getOtherParticipant(conv);
-            return (
-              <div
-                key={conv._id}
-                onClick={() =>
-                  dispatch(setSelectedConversation(conv))}
-                className={`p-4 cursor-pointer border-b hover:bg-gray-100 ${
-                  selectedConversation?._id === conv._id ? "bg-gray-200" : ""
-                }`}
-              >
-                <p className="font-semibold">{getDisplayName(otherParticipant)}</p>
-                <p className="text-sm text-gray-500 truncate">
-                   {conv?.lastMessage !== undefined && conv?.lastMessage !== "" 
-    ? conv.lastMessage 
-    : "No messages yet"}
-                </p>
-              </div>
-            );
-          })
-        )}
-      </div>
+
+          {unreadCount > 0 && (
+            <span className="bg-red-500 text-white text-xs rounded-full min-w-5 h-5 flex items-center justify-center px-1.5 ml-2 shrink-0">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </div>
+      );
+    })
+  )}
+</div>
 
       {/* RIGHT SIDE */}
       <div className="w-2/3 flex flex-col">
@@ -321,7 +322,13 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
 
                         <p className="text-sm">
                           {msg.isDeleted ? (
-                            <span className="italic text-white">This message was deleted</span>
+                            <span className=
+                              {`
+                                ${
+                               isOther?"italic text-black": "italic text-white"
+                                }
+                                `}
+                             >This message was deleted</span>
                           ) : (
                             msg.text
                           )}

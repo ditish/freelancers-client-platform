@@ -8,6 +8,8 @@ const initialState = {
   isLoading: true,
   isError: false,
   message: "",
+   conversations: [],
+  unreadCounts: {}, // { conversationId: count }
    deletedAtMap: {},// { conversationId: deletedAt }
 };
 
@@ -17,13 +19,14 @@ const conversationSlice = createSlice({
     setLoading: (state, action) => {
       state.isLoading = action.payload;
     },
+
+    
 setConversations: (state, action) => {
       state.conversations = action.payload.conversations || [];
       state.isLoading = false;
       state.isError = false;
       state.message = "";
-    },
-
+    }, 
   addConversation: (state, action) => {
   const exists = state.conversations.find(
     (c) => c._id === action.payload._id
@@ -52,6 +55,19 @@ setConversations: (state, action) => {
       state.isError = false;
       state.message = "";
     },
+
+      incrementUnread: (state, action) => {
+    const { conversationId } = action.payload;
+    if (conversationId !== state.activeConversationId) {
+      state.unreadCounts[conversationId] = (state.unreadCounts[conversationId] || 0) + 1;
+    }
+    },
+       clearUnreadCount: (state, action) => {
+    state.unreadCounts[action.payload] = 0;
+    },
+         setUnreadCounts: (state, action) => {
+    state.unreadCounts = action.payload; // hydrate on initial load
+  },
 
     deleteConversation: (state, action) => {
       state.conversations = state.conversations.filter(
@@ -93,6 +109,9 @@ export const {
   setLoading,
   setConversations,
   addConversation,
+  setUnreadCounts,
+  incrementUnread,
+  clearUnreadCount,
   setSelectedConversation,
   deleteConversation,
   setLastConversation,
@@ -106,12 +125,20 @@ export const fetchConversations =
       dispatch(setLoading(true));
 
       const response =
-        await conversationService.getConversation();
-      console.log("API response:", response);
- dispatch(setConversations(response));
+       await conversationService.getConversation();
+      console.log("API response from fetch conversations:", response);
+      dispatch(setConversations(response));
+        // build { conversationId: count } map from the response
+    const counts = {};
+    response.conversations.forEach((conv) => {
+      counts[conv._id] = conv.unreadCount || 0;
+    });
+      dispatch(setUnreadCounts(counts));
+      console.log("unreadcounts on fetchconversations", counts);
        } catch (err) {
-       console.log("API error:", err)
-      dispatch(
+      console.log("API error:", err)
+       
+ dispatch(
         setError(
           err.response?.data?.message ||
           "Failed to fetch conversations"
