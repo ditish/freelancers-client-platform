@@ -47,10 +47,8 @@ setConversations: (state, action) => {
   state.isError = false;
   state.message = "";
 },
-
-    setSelectedConversation: (state, action) => {
+ setSelectedConversation: (state, action) => {
       state.selectedConversation = action.payload;
-  localStorage.setItem("selectedConversation", JSON.stringify(action.payload));
       state.isLoading = false;
       state.isError = false;
       state.message = "";

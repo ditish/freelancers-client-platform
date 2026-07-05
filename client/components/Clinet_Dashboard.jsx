@@ -18,8 +18,7 @@ import ChatPage from "./ChatPage";
 import { fetchConversations } from "../src/features/conversation/convesationSlice";
 
 const ClientDashboard = () => {
-
-  const [Totalfreelancer, setTotalfreelancer] = useState(0);
+ const [Totalfreelancer, setTotalfreelancer] = useState(0);
   const [Totalclient, setTotalClient] = useState(0);
   const { user, role } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -73,7 +72,6 @@ const ClientDashboard = () => {
   const totalUnread = values.reduce((sum, count) => sum + count, 0);
   console.log("this  is totalunread", totalUnread);
 // totalUnread is a single NUMBER: 5
-
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
