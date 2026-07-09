@@ -6,6 +6,15 @@ const signUp = async (userdata) => {
   
 };
 
+export const googleLoginService = async (idToken, role) => {
+  const res = await API.post(
+    "/auth/google",
+    { idToken, role },
+    { withCredentials: true } // required to receive/send the httpOnly cookie
+  );
+  return res.data;
+};
+
 const login = async (email,password,role) => {
   const res = await API.post("/auth/login", email, password,role)
   return res.data.user;
@@ -27,5 +36,5 @@ const verifyOtp = async (otp,newpassword) => {
   return res.data
  }
 
-export default { signUp, login,logOut, resetPassword,verifyOtp };
+export default { signUp,googleLoginService, login,logOut, resetPassword,verifyOtp };
 

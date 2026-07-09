@@ -2,6 +2,9 @@ const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const { OAuth2Client } = require("google-auth-library");
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 /* ================= SIGNUP ================= */
 const signup = async (req, res) => {
@@ -45,6 +48,64 @@ const signup = async (req, res) => {
   }
 };
 
+const googleLogin = async (req, res) => {
+  try {
+    const { idToken, role } = req.body;
+
+    if (!idToken || !role) {
+      return res.status(400).json({ success: false, message: "idToken and role are required" });
+    }
+
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { email, name, sub: googleId } = payload;
+
+    let user = await User.findOne({ email, role });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        role,
+        googleId,
+        authProvider: "google",
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+    console.log("this is google login error", error.message);
+  }
+};
+
+
 /* ================= LOGIN ================= */
 const login = async (req, res) => {
   try {
@@ -73,7 +134,6 @@ const login = async (req, res) => {
 
     return res.status(200).json({
       success: true, message: "Login successful",
-        token,           // <--- include token here
   user: {          // optionally send user info
    id: user._id,
      name: user.name,
@@ -209,6 +269,7 @@ module.exports = {
   resetPassword,
   verifyOtp,
   getUserProfile,
-  getAllclient
+  getAllclient,
+  googleLogin
   
 };

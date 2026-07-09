@@ -119,6 +119,25 @@ export const loginUser = (email, password,role) => async (dispatch) => {
     dispatch(loginFailure(message));
   }
 };
+
+export const googleLoginThunk = (idToken, role) => async (dispatch) => {
+  try {
+    dispatch(loginStart()); 
+    const data = await authService.googleLoginService(idToken, role);
+
+    if (data.success) {
+      dispatch(loginSuccess(data.user));
+    } else {
+      dispatch(loginFailure(data.message));
+    }
+    return data;
+  } catch (error) {
+    dispatch(loginFailure(error.response?.data?.message || "Google login failed"));
+    return { success: false, message: error.response?.data?.message };
+  }
+};
+
+
 export const logOutuser = () => async(dispatch)=> {
   try {
     const logOutuser = await authService.logOut();

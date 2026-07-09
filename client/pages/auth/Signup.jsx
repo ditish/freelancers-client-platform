@@ -2,11 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { FaRegEye,FaRegEyeSlash } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { loginFailure } from "../../src/features/auth/authslice"
+import { googleLoginThunk, loginFailure } from "../../src/features/auth/authslice"
 import { useNavigate, Link } from "react-router-dom";
 import Authwrapper from "../../components/Authwrapper";
 import { toast } from "react-toastify";
 import { signupUser, resetSignup } from "../../src/features/auth/authslice";
+import { GoogleLogin } from "@react-oauth/google";
 
 const ALL_SKILLS = [
   "JavaScript", "React", "Node.js", "Python", "Django", "Flask",
@@ -81,6 +82,20 @@ const Signup = () => {
       ...(role === "client" && { company }),
     };
     dispatch(signupUser(userData));
+  };
+
+   const handleGoogleSuccess = async (credentialResponse) => {
+    if (!role) {
+      toast.error("Please select Freelancer or Client first");
+      return;
+    }
+    const result = await dispatch(googleLoginThunk(credentialResponse.credential, role));
+    if (result?.success) {
+      toast.success("Registration successful");
+      navigate(role === "client" ? "/Client_Dashboard" : "/freelance_Dashboard");
+    } else {
+      toast.error(result?.message || "Google signup failed");
+    }
   };
 
   return (
@@ -204,6 +219,30 @@ const Signup = () => {
         >
           signup
         </button>
+   
+          <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-gray-300"></div>
+          <span className="text-sm text-gray-500">OR</span>
+          <div className="flex-1 h-px bg-gray-300"></div>
+        </div>
+
+            {role ? (
+          <div className="flex justify-center">
+            <GoogleLogin
+              text="continue_with"
+              size="medium"
+              shape="rectangular"
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error("Google signup failed")}
+            />
+          </div>
+        ) : (
+          <p className="text-sm text-center text-gray-400">
+            Select Freelancer or Client above to continue with Google
+          </p>
+        )}
+
+
         <div className="text-sm text-gray-600">
           Already have an account?{" "}
           <Link to="/login" className="hover:text-purple-500">Login</Link>

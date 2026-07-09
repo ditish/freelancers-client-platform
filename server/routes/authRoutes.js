@@ -6,7 +6,8 @@ const {
   login,
   logOut,
   getUserProfile,
-  getAllclient
+  getAllclient,
+  googleLogin
 
 } = require("../controllers/authControllers.js")
 const { verifyToken } = require("../middleware/verifytoken")
@@ -15,6 +16,7 @@ const router = express.Router();
 router.get("/me", verifyToken, getUserProfile);
 router.post("/auth/signup", signup);
 router.post("/auth/login", login);
+router.post("/auth/google", googleLogin);
 router.post("/auth/logOut", logOut);
 router.get("/auth/getuser",verifyToken, getuser);
 router.post("/auth/resetPassword", resetPassword);

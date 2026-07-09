@@ -3,5 +3,5 @@ const { verifyToken } = require("../middleware/verifytoken")
 const express = require("express")
 const router = express.Router();
 router.get('/client/freelancers',verifyToken, getFreelancer)
-router.get("/client/freelancerProfile/:id", getFreelancerProfile)
+router.get("/client/freelancerProfile/:id", verifyToken,getFreelancerProfile)
 module.exports = router;
