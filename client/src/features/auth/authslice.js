@@ -39,8 +39,12 @@ const authSlice = createSlice({
       state.role = action.payload.role;
       state.Showtoast = true;
     },
+    googlelogin: (state,action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+      state.role = action.payload.role;
+    },
     resetLogin: (state) => {
-      
       state.isSuccess = false;
       state.isError = false;
       state.message = "";
@@ -63,7 +67,7 @@ const authSlice = createSlice({
       resetSignup: (state,action) => {
     state.signupSucess = false;
     state.isError = false;
-        state.message = action.payload;
+    state.message = action.payload;
         
   },
     loginFailure: (state, action) => {
@@ -86,6 +90,7 @@ export const {
   loginSuccess,
   loginFailure,
   signUpSucess,
+  googlelogin,
   resetLogin,
   resetSignup,
   otpSuccess,
@@ -126,12 +131,13 @@ export const googleLoginThunk = (idToken, role) => async (dispatch) => {
     const data = await authService.googleLoginService(idToken, role);
 
     if (data.success) {
-      dispatch(loginSuccess(data.user));
+      dispatch(googlelogin(data.user));
     } else {
       dispatch(loginFailure(data.message));
     }
     return data;
   } catch (error) {
+    console.log("this is errorin google login", error);
     dispatch(loginFailure(error.response?.data?.message || "Google login failed"));
     return { success: false, message: error.response?.data?.message };
   }

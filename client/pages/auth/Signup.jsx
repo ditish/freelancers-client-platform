@@ -91,7 +91,7 @@ const Signup = () => {
     }
     const result = await dispatch(googleLoginThunk(credentialResponse.credential, role));
     if (result?.success) {
-      toast.success("Registration successful");
+      toast.success(result.message);
       navigate(role === "client" ? "/Client_Dashboard" : "/freelance_Dashboard");
     } else {
       toast.error(result?.message || "Google signup failed");

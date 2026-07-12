@@ -28,7 +28,9 @@ function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
 return (
     <>
-      <ToastContainer position="top-right" autoClose={3000} />
+    <ToastContainer position="top-right" autoClose={3000}
+      autoClose={1000}
+    />
       <BrowserRouter>
         <LoadUser />
  <ReceiveMessageListener />

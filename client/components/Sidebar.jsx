@@ -3,6 +3,7 @@ import { MdCancel } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { logOutuser } from "../src/features/auth/authslice";
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from "react-toastify";
 
 // ✅ Define nav links per role
 const freelancerLinks = [
@@ -29,7 +30,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleLogout = () => {
     dispatch(logOutuser());
+      toast.success("Logout successful");
     navigate("/");
+   
+;
   };
 
   // ✅ Pick links based on role
