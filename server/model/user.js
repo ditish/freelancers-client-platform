@@ -13,7 +13,15 @@ const userSchema = mongoose.Schema(
    password: {
   type: String,
   required: function () { return this.authProvider !== "google"; },
-},
+    },
+    otp: {
+    type: String,      // store as string, not number (see note below)
+    default: null
+  },
+  otpExpiry: {
+    type: Date,
+    default: null
+  },
 authProvider: {
   type: String,
   enum: ["local", "google"],

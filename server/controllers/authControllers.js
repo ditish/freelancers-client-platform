@@ -191,16 +191,17 @@ const getAllclient = async (req, res) => {
 /* ================= RESET PASSWORD ================= */
 const resetPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email,role } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email,role });
     if (!user) {
       return res.status(404).json({ success: false, message: "Email not found" });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-
+    console.log("this is otp from the mailtrap", otp);
     user.otp = otp;
+    user.otpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
     await user.save();
 
     const transporter = nodemailer.createTransport({
@@ -221,29 +222,65 @@ const resetPassword = async (req, res) => {
     res.status(200).json({ success: true, message: "OTP sent" });
 
   } catch (error) {
+    console.log("otp error",error)
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 /* ================= VERIFY OTP ================= */
-const verifyOtp = async (req, res) => {
+const verifyOtpAndResetPassword = async (req, res) => {
   try {
-    const { otp, newpassword } = req.body;
+    const { email, role, otp, newPassword } = req.body;
 
-    const hashedPassword = await bcrypt.hash(newpassword, 10);
-
-    const user = await User.findOneAndUpdate(
-      { otp },
-      { password: hashedPassword, otp: null }
-    );
-
+    if (!email || !role || !otp || !newPassword) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+    console.log("this is otp form the user", otp);
+    const user = await User.findOne({ email, role });
     if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Check OTP exists at all
+    if (!user.otp) {
+      return res.status(400).json({ success: false, message: "No OTP requested. Please request a new one" });
+    }
+
+    // Check expiry
+    if (user.otpExpiry < Date.now()) {
+      user.otp = null;
+      user.otpExpiry = null;
+      await user.save();
+      return res.status(400).json({ success: false, message: "OTP expired. Please request a new one" });
+    }
+
+    // Check OTP match
+    // If you stored OTP as plaintext:
+    if (String(user.otp )!==String(otp)) {
+      console.log("invalid otp")
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
 
-    res.status(200).json({ success: true, message: "Password updated" });
+    // If you hashed the OTP instead (recommended), use this instead of the line above:
+    // const isOtpValid = await bcrypt.compare(otp, user.otp);
+    // if (!isOtpValid) {
+    //   return res.status(400).json({ success: false, message: "Invalid OTP" });
+    // }
+
+    // Hash and set new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    // Clear OTP fields so it can't be reused
+    user.otp = null;
+    user.otpExpiry = null;
+
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Password reset successful" });
 
   } catch (error) {
+    console.log("there is err in verifyotp", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -267,7 +304,7 @@ module.exports = {
   logOut,
   getuser,
   resetPassword,
-  verifyOtp,
+  verifyOtpAndResetPassword,
   getUserProfile,
   getAllclient,
   googleLogin

@@ -164,22 +164,24 @@ export const signupUser = (userdata) => async (dispatch) => {
   }
 };
 
-export const UserforgetPassword = (email) => async (dispatch) => {
+export const UserforgetPassword = ({ email, role }) => async (dispatch) => {
   try {
     dispatch(loginStart());
-    const res = await authService.resetPassword(email);
+    const res = await authService.resetPassword({ email, role });
     dispatch(otpSuccess(res.message));
   } catch (err) {
     dispatch(loginFailure(err.response?.data?.message || "OTP failed"));
-  }
+  }``
 };
 
-export const verifyOtpUser = (otp, newpassword) => async (dispatch) => {
+export const verifyOtpUser = ({ email, role, otp, newPassword }) => async (dispatch) => {
   try {
     dispatch(loginStart());
-    const res = await authService.verifyOtp(otp, newpassword);
+    const res = await authService.verifyOtpAndResetPassword({ email, role, otp, newPassword });
+    console.log("this is response fromr the verifyotp", res)
     dispatch(otpSuccess(res.message));
   } catch (err) {
+    console.log("there is err while verifying otp", err);
     dispatch(loginFailure(err.response?.data?.message || "OTP invalid"));
   }
 };

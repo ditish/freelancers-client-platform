@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import React, { useEffect } from "react";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
-import ForgotPassword from "../pages/auth/Forgetpassword";
+import Forgetpassword from "../pages/auth/Forgetpassword";
 import VerifyOtp from "../pages/auth/Verifyotp";
 import Freelancer_Dashboard from "../components/Freelancer_Dashboard";
 import PrivateRoute from "../routes/Privateroutes";
@@ -23,13 +23,13 @@ import DashboardLayout from "../components/Dashboardlayout.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import ChatPage from "../components/ChatPage.jsx";
 import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
+import ResetPassword from "../pages/auth/Resetpassword.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
 return (
     <>
-    <ToastContainer position="top-right" autoClose={3000}
-      autoClose={1000}
+    <ToastContainer position="top-right" autoClose={1000}
     />
       <BrowserRouter>
         <LoadUser />
@@ -44,8 +44,11 @@ return (
                <Route path="/Chatpage" element={<ChatPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-
+            <Route path="/forgot-password" element={<Forgetpassword />} />
+            <Route path="/reset-password" element={<ResetPassword/>} />
+            
             <Route element={<PrivateRoute />}>
+              
               <Route
                 path="/freelance_Dashboard"
                 element={<Freelancer_Dashboard />}

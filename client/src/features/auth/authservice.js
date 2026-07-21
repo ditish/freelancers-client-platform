@@ -26,15 +26,14 @@ const logOut = async () => {
 
 }
 
-
-const resetPassword = async (email) => {
-  const res = await API.post("/auth/resetPassword", email) 
+const resetPassword = async ({ email, role }) => {
+  const res = await API.post("/auth/resetPassword", {email, role}) 
   return res.data;
 }
-const verifyOtp = async (otp,newpassword) => {
-  const res = await API.post("/auth/verifyotp,", otp,newpassword)
+const verifyOtpAndResetPassword = async ({ email, role, otp, newPassword }) => {
+  const res = await API.post("/auth/verifyotp", {email,role, otp, newPassword })
   return res.data
  }
 
-export default { signUp,googleLoginService, login,logOut, resetPassword,verifyOtp };
+export default { signUp,googleLoginService, login,logOut, resetPassword,verifyOtpAndResetPassword };
 

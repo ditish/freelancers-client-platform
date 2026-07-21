@@ -1,7 +1,7 @@
 const {
   signup,
   resetPassword,
-  verifyOtp,
+  verifyOtpAndResetPassword,
   getuser,
   login,
   logOut,
@@ -21,6 +21,6 @@ router.post("/auth/logOut", logOut);
 router.get("/auth/getuser",verifyToken, getuser);
 router.post("/auth/resetPassword", resetPassword);
 router.get("/auth/getAllclient", getAllclient);
-router.post("/auth/verifyotp", verifyOtp);
+router.post("/auth/verifyotp", verifyOtpAndResetPassword);
 
 module.exports = router;
