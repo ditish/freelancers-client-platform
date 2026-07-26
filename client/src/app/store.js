@@ -6,6 +6,10 @@ import taskReducer from "../features/task/taskslice";
 import invoiceReducer from "../features/invoice/invoiceSlice";
 import conversationReducer from "../features/conversation/convesationSlice"
 import messageReducer from "../features/message/messageSlice"
+ import searchReducer from "../features/search/serachSlice"
+
+
+
 
 export const store = configureStore({
   reducer: {
@@ -14,7 +18,10 @@ export const store = configureStore({
     tasks: taskReducer,
     invoices: invoiceReducer,
     conversations: conversationReducer,
-    messages:messageReducer,
+    messages: messageReducer,
+    search: searchReducer,
+    
+    
   },
 });
 

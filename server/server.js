@@ -94,6 +94,7 @@ app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/invoices", require("./routes/invoiceRoutes"));
 app.use("/api/conversations", require("./routes/conversationRoutes"));
+app.use("/api/search", require("./routes/searchRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 

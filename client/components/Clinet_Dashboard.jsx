@@ -16,6 +16,7 @@ import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import ChatPage from "./ChatPage";
 import { fetchConversations } from "../src/features/conversation/convesationSlice";
+import SearchBar from "./Searchbar";
 
 const ClientDashboard = () => {
  const [Totalfreelancer, setTotalfreelancer] = useState(0);
@@ -98,6 +99,7 @@ const ClientDashboard = () => {
           <span>
             <NotificationBell></NotificationBell>
           </span>
+
           <span  className="relative inline-block">
             <FaFacebookMessenger className=""  onClick={() =>
             navigate("/Chatpage")
@@ -107,6 +109,9 @@ const ClientDashboard = () => {
       {totalUnread > 9 ? "9+" : totalUnread}
     </span>
   )}
+          </span>
+          <span>
+            <SearchBar/>
           </span>
         </div>
 
