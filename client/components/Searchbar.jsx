@@ -5,10 +5,13 @@ import { FaSearch, FaArrowLeft } from "react-icons/fa";
 import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { searchUsersThunk, setSelectedRole, clearSearch } from "../src/features/search/serachSlice";
+import { useNavigate } from "react-router-dom";
+
 
 export default function SearchBar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { results, loading, selectedRole } = useSelector((state) => state.search);
   const debounceRef = useRef(null);
@@ -41,6 +44,15 @@ export default function SearchBar() {
     }, 400);
   };
 
+   const handleUserClick = (user) => {
+    const path =
+      user.role === "freelancer"
+        ? `/client/freelancerProfile/${user._id}`
+        : `/freelancer/clientProfile/${user._id}`; // adjust if your client-profile route differs
+
+    navigate(path);
+    handleClose(); // closes dropdown, clears query, clears redux search state
+  };
   return (
     <div className="relative flex items-center">
       {!open ? (
@@ -101,7 +113,10 @@ export default function SearchBar() {
                 <p className="p-3 text-sm text-gray-400">No matches found</p>
               )}
               {results.map((user) => (
-                <div key={user._id} className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer">
+                <div
+               key={user._id}
+                      onClick={() => handleUserClick(user)}
+                  className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer">
                   {/* <img src={user.avatar || "/default-avatar.png"} className="w-8 h-8 rounded-full" /> */}
                   <div>
                     <p className="text-sm font-medium">{user.name}</p>
