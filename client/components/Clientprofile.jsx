@@ -1,11 +1,11 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import API from "../../src/utiles/axiosConfigaxios";
-import { useSidebar } from "../../Context/SidebarContext";
+import API from "../src/utiles/axiosConfigaxios";
+import { useSidebar } from "../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
 
-const FreelancerClientProfile = () => {
+const ClientProfile = () => {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const { id } = useParams();
   const [client, setClient] = useState(null);
@@ -13,7 +13,7 @@ const FreelancerClientProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await API.get(`/freelancer/clientProfile/${id}`);
+      const res = await API.get(`/clientProfile/${id}`);
       console.log("this is res from client profile", res);
       setClient(res.data.client);
       setStats(res.data.stats);
@@ -59,4 +59,4 @@ const Stat = ({ title, value }) => (
   </div>
 );
 
-export default FreelancerClientProfile;
+export default ClientProfile;

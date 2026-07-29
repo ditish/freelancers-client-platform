@@ -24,6 +24,7 @@ import NotificationBell from "../components/NotificationBell.jsx";
 import ChatPage from "../components/ChatPage.jsx";
 import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
 import ResetPassword from "../pages/auth/Resetpassword.jsx";
+import ClientProfile from "../components/Clientprofile.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -53,6 +54,14 @@ return (
                 path="/freelance_Dashboard"
                 element={<Freelancer_Dashboard />}
               />
+
+              <Route path="/" element={<DashboardLayout />}>
+                 <Route
+                  path="clientProfile/:id"
+                  element={<ClientProfile />}
+                />
+              </Route>
+              
               <Route path="/Client_Dashboard" element={<ClientDashboard />} />
               <Route path="/projects/:projectId" element={<ProjectDetails />} />
               <Route path="/client" element={<DashboardLayout />}>
@@ -64,7 +73,7 @@ return (
                   path="freelancerProfile/:id"
                   element={<ClientFreelancerProfile />}
                 />
-              
+                 
               </Route>
 
               <Route path="/freelancer" element={<DashboardLayout />}>

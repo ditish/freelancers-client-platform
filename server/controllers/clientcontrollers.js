@@ -55,10 +55,50 @@ const getFreelancerProfile = async (req, res) => {
     });
   }
 };
+const getClientProfile = async (req, res) => {
+  try {
+    const clientId = req.params.id;
+
+    // 1. Find client
+    const client = await User.findById(clientId)
+      .select("-password");
+
+    if (!client || client.role !== "client") {
+      return res.status(404).json({
+        success: false,
+        message: "Client not found",
+      });
+    }
+
+    // 2. Get client's projects
+    const projects = await Project.find({
+      client: client._id,
+    });
+
+    // 3. Send response
+    res.status(200).json({
+      success: true,
+      client,
+      stats: {
+        totalProjects: projects.length,
+        completed: projects.filter(p => p.status === "Completed").length,
+        pending: projects.filter(p => p.status === "Pending").length,
+      },
+    });
+
+  } catch (error) {
+    console.log('err', error)
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 
 
 module.exports = {
   getFreelancer,
-  getFreelancerProfile
+  getFreelancerProfile,
+  getClientProfile
 }

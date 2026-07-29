@@ -48,7 +48,7 @@ export default function SearchBar() {
     const path =
       user.role === "freelancer"
         ? `/client/freelancerProfile/${user._id}`
-        : `/freelancer/clientProfile/${user._id}`; // adjust if your client-profile route differs
+        : `/clientProfile/${user._id}`; // adjust if your client-profile route differs
 
     navigate(path);
     handleClose(); // closes dropdown, clears query, clears redux search state
