@@ -20,6 +20,7 @@ const ClientFreelancerProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const res = await API.get(`/client/freelancerProfile/${id}`);
+      console.log("this is res form profile", res)
       setFreelancer(res.data.freelancer);
       setStats(res.data.stats);
     };

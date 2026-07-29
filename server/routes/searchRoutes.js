@@ -3,5 +3,5 @@ const router = express.Router();
 const { verifyToken} = require("../middleware/verifytoken");
 const { searchUsers } = require("../controllers/searchControllers");
 
-router.get("/serachUser", verifyToken, searchUsers);
+router.get("/searchUser", verifyToken, searchUsers);
 module.exports = router;

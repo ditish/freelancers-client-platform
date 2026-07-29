@@ -1,4 +1,5 @@
-const { escapeRegex } = require("../utiles/escapeRegex");
+const user = require("../model/user");
+const escapeRegex  = require("../utiles/escapeRegex");
 
 // controllers/searchController.js
  const searchUsers = async (req, res) => {
@@ -20,13 +21,14 @@ const { escapeRegex } = require("../utiles/escapeRegex");
       ];
     }
 
-    const results = await User.find(filter)
+    const results = await user.find(filter)
       .select("name  role skills ")
       .limit(10) // always cap at 10, whether it's the default list or a search
       .sort({ createdAt: -1 }); // default list shows most recent users first
 
     res.status(200).json({ results });
   } catch (err) {
+    console.log("is there is err while searching", err)
     res.status(500).json({ message: "Search failed", error: err.message });
   }
 };

@@ -28,7 +28,7 @@ export const { setSelectedRole, clearSearch, setResults, setLoading } = searchSl
  export const searchUsersThunk = (query, role) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
-    const res = await searchUsersService(query, role);
+    const res = await searchService.searchUsersService(query, role);
     dispatch(setResults(res.data.results));
   } catch (err) {
     console.error(err);
