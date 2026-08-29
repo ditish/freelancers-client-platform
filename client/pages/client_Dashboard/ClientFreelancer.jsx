@@ -84,9 +84,7 @@ const ClientFreelancers = () => {
             className="rounded-2xl  bg-blue-400 text-white font-semibold  px-2 py-1 ml-3">
              message 
             </button>
-           
-
-        </div>
+           </div>
       ))}
         </div>
         </div>

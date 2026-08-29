@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage, updateMessage, updateDeleteMessage } from "../src/features/message/messageSlice";
 import { clearUnreadCount, deleteConversationById, fetchConversations,  setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
+import SearchBar from "./Searchbar";
 
 const ChatPage = () => {
   const dispatch = useDispatch();
@@ -238,13 +239,12 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
               // New user — no conversations at all
               <>
                 <p className="text-lg font-medium text-gray-600">No conversations yet</p>
-                <p className="text-sm mt-1 mb-4">Find a freelancer and start chatting</p>
-                <button
-                  onClick={() => navigate("/freelancers")}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Browse Freelancers
-                </button>
+                <p className="text-sm mt-1 mb-4">Find a freelancer or client  and start chatting</p>
+                
+                <div className="bg-blend-lighten">
+                  <SearchBar />
+                  </div>
+                
               </>
             ) : (
               // Has conversations but none selected

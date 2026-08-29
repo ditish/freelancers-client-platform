@@ -1,11 +1,12 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../../src/utiles/axiosConfigaxios";
 import { useSidebar } from "../../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
 import { fetchTasks, assignDirectTasks } from "../../src/features/task/taskslice"; // ✅ fix 3
 import { useDispatch, useSelector } from "react-redux"; // ✅ fix 1
+import { createConversation } from "../../src/features/conversation/convesationSlice";
 
 const ClientFreelancerProfile = () => {
   const { tasks } = useSelector((state) => state.tasks); // ✅ fix 2
@@ -16,6 +17,7 @@ const ClientFreelancerProfile = () => {
   const [freelancer, setFreelancer] = useState(null);
   const [stats, setStats] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -59,6 +61,20 @@ const ClientFreelancerProfile = () => {
     setShowTaskModal(false);
     setSelectedTasks([]);
   };
+   const handleOnclickmessage = async (receiverId) => {
+    try {
+      // works because thunk returns the conversation directly
+      const conversation = await dispatch(createConversation(receiverId));
+  
+      console.log(" this is clientFreelancer conversation", conversation);
+  //  if (conversation?._id) {
+  //       await dispatch(setSelectedConversation(conversation));
+        navigate("/Chatpage");
+      // }
+  } catch (error) {
+      console.error("Failed to create conversation:", error);
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -87,12 +103,20 @@ const ClientFreelancerProfile = () => {
         </div>
 
         {/* ✅ fix 4 — just open modal */}
+       <div className="flex gap-2">
         <button
           onClick={() => setShowTaskModal(true)}
           className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded"
         >
           Assign Task
         </button>
+          <button
+             onClick={() => {
+              handleOnclickmessage(freelancer._id)
+            }}
+            className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded">message</button>
+          </div>
+        
       </div>
 
       {/* ✅ fix 5 — modal is inside return */}
