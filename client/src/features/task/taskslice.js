@@ -91,7 +91,7 @@ export const updateTask = ({ taskId, taskData }) => async (dispatch) => {
   try {
     await taskService.updateTask(taskId, taskData );
     console.log("msg form updatetaskslice", taskId, taskData);
-    dispacth(fetchTasks());
+    dispatch(fetchTasks());
   } catch (err) {
     dispatch(setError(err.response?.data?.message || "Failed to update task"));
   }
@@ -109,7 +109,7 @@ export const updateTaskStatus =  ({ taskId, status}) => async (dispatch) => {
   }
 };
 
-export const deleteTask = (taskId) => async (dispatch) => {
+export const deleteTask = ( taskId ) => async (dispatch) => {
   try {
     await taskService.deleteTask(taskId);
     await dispatch(fetchTasks()); // 👈 re-fetch after delete
@@ -127,6 +127,7 @@ export const assignDirectTasks = ({ taskIds, assignedTo }) => async (dispatch) =
     dispatch(setError(err.response?.data?.message || "Failed to assign tasks"));
   }
 };
+
 
 
 export default taskSlice.reducer;

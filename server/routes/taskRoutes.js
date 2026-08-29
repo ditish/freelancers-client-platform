@@ -10,6 +10,8 @@ router.get("/TaskbyProject/:projectId",verifyToken,getTaskbyProject)
 router.post("/createtask", verifyToken, createTask);
 router.delete("/delete/:taskId", verifyToken, deleteTask);
 router.put("/assignDirect", verifyToken, assignDirectTasks);
-router.patch('/:id/status',verifyToken,updateTaskStatus);
+router.patch('/:id/status', verifyToken, updateTaskStatus);
+
+
 
 module.exports = router;

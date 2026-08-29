@@ -107,12 +107,15 @@ const [showEditForm, setShowEditForm] = useState(false);
   };
   const handleReassign = async () => {
   if (!newFreelancerId) return;
-
+const oldFreelancerId = assignTask.assignedTo?._id;
   await dispatch(updateTask({
     taskId: assignTask._id,
-    taskData: { assignedTo: newFreelancerId } // 👈 only update assignedTo
+    taskData: {
+      assignedTo: newFreelancerId,
+      oldFreelancerId,
+     } // 👈 only update assignedTo
   }));
-  await dispatch(fetchTasks()); // 👈 re-fetch to show updated freelancer
+    await dispatch(fetchTasks()); // 👈 re-fetch to show updated freelancer
   setShowAssignForm(false);
   setAssignTask(null);
   setNewFreelancerId("");
@@ -382,12 +385,12 @@ const [showEditForm, setShowEditForm] = useState(false);
         value={newFreelancerId}
         onChange={(e) => setNewFreelancerId(e.target.value)}
       >
-    
-        {Freelancers.map((f) => (
+    {Freelancers.map((f) => (
           <option key={f._id} value={f._id}>
             {f.name}
           </option>
-        ))}
+    ))}
+              
       </select>
 
       <div className="flex justify-end gap-3">

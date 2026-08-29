@@ -48,5 +48,4 @@ const assignDirectTasks = async (taskIds, assignedTo) => {
   console.log("this is assign direct mssage", res.data);
   return res.data;
 };
-
 export default { getTasks, createTask, getTaskbyProject, updateTask, deleteTask, assignDirectTasks ,updateTaskStatus };
