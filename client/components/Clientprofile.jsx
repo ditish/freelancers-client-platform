@@ -1,15 +1,19 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../src/utiles/axiosConfigaxios";
 import { useSidebar } from "../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
+import { createConversation } from "../src/features/conversation/convesationSlice";
+import { useDispatch } from "react-redux";
 
 const ClientProfile = () => {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const { id } = useParams();
   const [client, setClient] = useState(null);
   const [stats, setStats] = useState(null);
+    const dispatch = useDispatch();
+   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -20,6 +24,20 @@ const ClientProfile = () => {
     };
     fetchProfile();
   }, [id]);
+   const handleOnclickmessage = async (receiverId) => {
+      try {
+        // works because thunk returns the conversation directly
+        const conversation = await dispatch(createConversation(receiverId));
+    
+        console.log(" this is clientFreelancer conversation", conversation);
+    //  if (conversation?._id) {
+    //       await dispatch(setSelectedConversation(conversation));
+          navigate("/Chatpage");
+        // }
+    } catch (error) {
+        console.error("Failed to create conversation:", error);
+      }
+    };
 
   if (!client) return <p>Loading...</p>;
 
@@ -47,7 +65,13 @@ const ClientProfile = () => {
           <Stat title="Completed" value={stats.completed} />
           <Stat title="Pending" value={stats.pending} />
         </div>
+         <button
+             onClick={() => {
+              handleOnclickmessage(client._id)
+            }}
+            className="mt-6 bg-indigo-600 text-white px-6 py-3 rounded">message</button>
       </div>
+      
     </div>
   );
 };

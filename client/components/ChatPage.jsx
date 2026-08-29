@@ -8,7 +8,6 @@ import SearchBar from "./Searchbar";
 
 const ChatPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const {unreadCounts} = useSelector((state) => state.conversations);
   const { user, isloadingUser } = useSelector((state) => state.auth);
   const { conversations, selectedConversation, isLoading } = useSelector((state) => state.conversations);
@@ -20,7 +19,6 @@ const [Editmessage, setEditmessage] = useState(null);
   const [text, setText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesContainerRef = useRef(null);
-  const selectedConversationRef = useRef(selectedConversation);
   const messagesEndRef = useRef(null);
   const conversationsRef = useRef(conversations);
   const activeConversationId = selectedConversation?._id;
