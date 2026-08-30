@@ -11,8 +11,8 @@ export const Paymentpiechart = ({totalPaidAmount,totalPendingAmount}) => {
   const screenHeight = window.innerHeight; // total viewport height
 const chartHeight = screenHeight * 0.35; // 25% of screen height
   return (
-      <div className="bg-white p-6 shadow rounded mt-6 ">
-          <h3 className="text-xl font-bold mb-4"> payement Overview</h3>
+      <div className="p-2">
+          <h3 className="text-xl font-display font-bold mb-4 text-white"> Payment Overview</h3>
     
           <ResponsiveContainer width="100%" height={chartHeight}>
             <PieChart>
@@ -29,8 +29,8 @@ const chartHeight = screenHeight * 0.35; // 25% of screen height
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip contentStyle={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#fff" }} />
+              <Legend wrapperStyle={{ color: "rgba(255,255,255,0.7)", fontSize: 13 }} />
             </PieChart>
           </ResponsiveContainer>
         </div>

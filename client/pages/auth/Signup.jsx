@@ -8,6 +8,7 @@ import Authwrapper from "../../components/Authwrapper";
 import { toast } from "react-toastify";
 import { signupUser, resetSignup } from "../../src/features/auth/authslice";
 import { GoogleLogin } from "@react-oauth/google";
+import { MdOutlineEmail, MdLockOutline, MdOutlinePerson, MdOutlineBusiness } from "react-icons/md";
 
 const ALL_SKILLS = [
   "JavaScript", "React", "Node.js", "Python", "Django", "Flask",
@@ -99,71 +100,82 @@ const Signup = () => {
   };
 
   return (
-    <Authwrapper title="signup">
+    <Authwrapper title="Create your account">
       <form onSubmit={submitHandler} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Full Name"
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
         <div className="relative">
-        <input
-          
-          type={showPassword?"text":"password"}
-          placeholder="Password"
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+          <MdOutlinePerson className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+          <input
+            type="text"
+            placeholder="Full Name"
+            className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="relative">
+          <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="relative">
+          <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+          <input
+            type={showPassword?"text":"password"}
+            placeholder="Password"
+            className="w-full pl-11 pr-11 py-3 rounded-lg glass-input"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
          <button
     type="button"
     onClick={() => SetshowPassword(!showPassword)}
-    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-purple-600"
+    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
   >
     {showPassword ? <FaRegEye size={18}/> : <FaRegEyeSlash size={18} />}
           </button>
           </div>
-        <div className="flex gap-6">
-          <label className="flex items-center gap-2">
+        <div className="flex gap-6 text-white/80 text-sm">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
               name="role"
               value="freelancer"
               checked={role === "freelancer"}
               onChange={(e) => setRole(e.target.value)}
+              className="accent-[#7c6cf6]"
             />
             Freelancer
           </label>
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="radio"
               name="role"
               value="client"
               checked={role === "client"}
               onChange={(e) => setRole(e.target.value)}
+              className="accent-[#7c6cf6]"
             />
             Client
           </label>
         </div>
 
         {role === "client" && (
-          <input
-            type="text"
-            placeholder="Company Name"
-            className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-            value={company}
-            onChange={(e) => setCompany(e.target.value)}
-            required
-          />
+          <div className="relative">
+            <MdOutlineBusiness className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+            <input
+              type="text"
+              placeholder="Company Name"
+              className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              required
+            />
+          </div>
         )}
 
         {role === "freelancer" && (
@@ -173,13 +185,13 @@ const Signup = () => {
               {skills.map((skill) => (
                 <span
                   key={skill}
-                  className="flex items-center gap-1 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium"
+                  className="flex items-center gap-1 bg-white/10 border border-white/10 text-white px-3 py-1 rounded-full text-sm font-medium"
                 >
                   {skill}
                   <button
                     type="button"
                     onClick={() => removeSkill(skill)}
-                    className="text-purple-500 hover:text-purple-900 font-bold"
+                    className="text-white/60 hover:text-white font-bold"
                   >
                     ×
                   </button>
@@ -191,19 +203,19 @@ const Signup = () => {
             <input
               type="text"
               placeholder="your skill"
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full px-4 py-3 rounded-lg glass-input"
               value={skillInput}
               onChange={handleSkillInput}
             />
 
             {/* Dropdown suggestions */}
             {suggestions.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto">
+              <ul className="absolute z-10 w-full bg-[#0a0a0a] border border-white/10 rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto">
                 {suggestions.map((skill) => (
                   <li
                     key={skill}
                     onClick={() => addSkill(skill)}
-                    className="px-4 py-2 cursor-pointer hover:bg-purple-50 hover:text-purple-700 text-sm"
+                    className="px-4 py-2 cursor-pointer hover:bg-white/10 text-white/80 hover:text-white text-sm"
                   >
                     {skill}
                   </li>
@@ -215,15 +227,15 @@ const Signup = () => {
 
         <button
           type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition"
+          className="w-full btn-accent py-3 rounded-lg font-semibold transition"
         >
-          signup
+          Sign up
         </button>
    
           <div className="flex items-center gap-3 my-4">
-          <div className="flex-1 h-px bg-gray-300"></div>
-          <span className="text-sm text-gray-500">OR</span>
-          <div className="flex-1 h-px bg-gray-300"></div>
+          <div className="flex-1 h-px bg-white/10"></div>
+          <span className="text-sm text-white/40">OR</span>
+          <div className="flex-1 h-px bg-white/10"></div>
         </div>
 
             {role ? (
@@ -237,15 +249,15 @@ const Signup = () => {
             />
           </div>
         ) : (
-          <p className="text-sm text-center text-gray-400">
+          <p className="text-sm text-center text-white/30">
             Select Freelancer or Client above to continue with Google
           </p>
         )}
 
 
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-white/50">
           Already have an account?{" "}
-          <Link to="/login" className="hover:text-purple-500">Login</Link>
+          <Link to="/login" className="text-white hover:underline">Login</Link>
         </div>
       </form>
     </Authwrapper>

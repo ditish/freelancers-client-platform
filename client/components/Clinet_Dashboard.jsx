@@ -14,6 +14,8 @@ import Sidebar from "./Sidebar";
 import { MdMenu } from "react-icons/md"; // ✅ Added missing import
 import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
+import { FaBriefcase, FaUserTie, FaFileInvoiceDollar } from "react-icons/fa6";
+import { MdOutlineTaskAlt } from "react-icons/md";
 import ChatPage from "./ChatPage";
 import { fetchConversations } from "../src/features/conversation/convesationSlice";
 import SearchBar from "./Searchbar";
@@ -74,33 +76,34 @@ const ClientDashboard = () => {
   console.log("this  is totalunread", totalUnread);
 // totalUnread is a single NUMBER: 5
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-black text-white">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* ✅ Fixed: sidebar open = no extra margin, closed = pull content left */}
       <div
-        className={`flex-1 p-6 transition-all duration-300 ease-in-out ${
+        className={`flex-1 p-4 sm:p-6 overflow-y-auto transition-all duration-300 ease-in-out ${
           sidebarOpen ? "md:ml-0" : "md:ml-0"
         }`}
       >
         {/* ✅ Fixed: single header with menu toggle */}
-        <div className="flex gap-4 items-center mb-6">
+        <div className="flex gap-4 items-center mb-6 flex-wrap">
           <span
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`text-2xl cursor-pointer transition-all ease-in-out duration-300 ${
+            className={`text-2xl cursor-pointer transition-all ease-in-out duration-300 text-white/80 hover:text-white ${
               sidebarOpen ? "hidden" : "block"
             }`}
           >
             <MdMenu />
           </span>
-          <h1 className="text-3xl font-bold">
-            Welcome, {user?.name || "Client"} 👋
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">
+            Welcome, <span className="text-gradient">{user?.name || "Client"}</span> 👋
           </h1>
+          <div className="ml-auto flex items-center gap-4">
           <span>
             <NotificationBell></NotificationBell>
           </span>
 
-          <span  className="relative inline-block">
+          <span  className="relative inline-block text-xl text-white/80 hover:text-white cursor-pointer transition-colors">
             <FaFacebookMessenger className=""  onClick={() =>
             navigate("/Chatpage")
             } />
@@ -113,42 +116,55 @@ const ClientDashboard = () => {
           <span>
             <SearchBar/>
           </span>
+          </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white p-6 shadow rounded">
-            <h3>Total Projects</h3>
-            <p className="text-2xl font-bold text-indigo-600">{totalProjects}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="glass-card p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">Total Projects</h3>
+              <FaBriefcase className="text-[#7c6cf6] text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{totalProjects}</p>
           </div>
 
-          <div className="bg-white p-6 shadow rounded">
-            <h3>Active Freelancers</h3>
-            <p className="text-2xl font-bold text-green-600">{Totalfreelancer}</p>
+          <div className="glass-card p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">Active Freelancers</h3>
+              <FaUserTie className="text-[#22d3ee] text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{Totalfreelancer}</p>
           </div>
 
-          <div className="bg-white p-6 shadow rounded">
-            <h3>Pending Tasks</h3>
-            <p className="text-2xl font-bold text-yellow-600">{totalTasks}</p>
+          <div className="glass-card p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">Pending Tasks</h3>
+              <MdOutlineTaskAlt className="text-yellow-400 text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{totalTasks}</p>
           </div>
 
-          <div className="bg-white p-6 shadow rounded">
-            <h3>Pending Payments</h3>
-            <p className="text-2xl font-bold text-red-600">₹{totalPendingAmount}</p>
+          <div className="glass-card p-6 rounded-xl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">Pending Payments</h3>
+              <FaFileInvoiceDollar className="text-red-400 text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-red-400">₹{totalPendingAmount}</p>
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1 glass-card rounded-xl p-4">
             <Piechart totalTasks={totalTasks} />
           </div>
 
-          <div className="col-span-1">
+          <div className="col-span-1 glass-card rounded-xl p-4">
             <Paymentpiechart
               totalPaidAmount={totalPaidAmount}
               totalPendingAmount={totalPendingAmount}
             />
           </div>
 
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 sm:col-span-2 md:col-span-2 glass-card rounded-xl p-4">
             <Bargraph
               totalTasks={totalTasks}
               totalProjects={totalProjects}

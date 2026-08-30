@@ -26,21 +26,21 @@ const Bargraph = ({ totalTasks, totalProjects, Totalfreelancer ,Totalclient }) =
   ];
 
   return (
-    <div className="bg-white  p-4 shadow rounded mt-6 ">
-      <h3 className="text-lg font-bold mb-2">Platform Overview</h3>
+    <div className="p-2">
+      <h3 className="text-lg font-display font-bold mb-2 text-white">Platform Overview</h3>
 
       <ResponsiveContainer width="100%" height={225}>
         <BarChart 
           data={barData}
           margin={{ top: 10, right: 20, left: -10, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="2 2" />
-          <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip />
+          <CartesianGrid strokeDasharray="2 2" stroke="rgba(255,255,255,0.1)" />
+          <XAxis dataKey="name" tick={{ fontSize: 12, fill: "rgba(255,255,255,0.5)" }} />
+          <YAxis tick={{ fontSize: 12, fill: "rgba(255,255,255,0.5)" }} />
+          <Tooltip contentStyle={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#fff" }} />
           <Bar 
             dataKey="value" 
-            fill="#6366f1" 
+            fill="#7c6cf6" 
             radius={[6, 6, 0, 0]}   // rounded top
             barSize={30}           // thinner bars
           />

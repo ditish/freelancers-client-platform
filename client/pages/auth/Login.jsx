@@ -5,6 +5,8 @@ import { loginUser,resetLogin ,toastDisable} from "../../src/features/auth/auths
 import { useNavigate, Link } from "react-router-dom";
 import AuthWrapper from "../../components/Authwrapper";
 import { toast } from "react-toastify";
+import { MdOutlineEmail, MdLockOutline } from "react-icons/md";
+import { FaUserTag } from "react-icons/fa6";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,38 +37,47 @@ const Login = () => {
   };
 
   return (
-    <AuthWrapper title="Login">
+    <AuthWrapper title="Welcome back">
       <form onSubmit={submitHandler} className="space-y-4">
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div className="relative">
+          <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="relative">
+          <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="relative">
+          <FaUserTag className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-base" />
           <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-          required
-        >
-          <option value="" disabled>Select Role</option>
-          <option value="client">Client</option>
-          <option value="freelancer">Freelancer</option>
-        </select>
-        <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition">
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="w-full pl-11 pr-4 py-3 rounded-lg glass-input appearance-none [&>option]:text-black"
+            required
+          >
+            <option value="" disabled>Select Role</option>
+            <option value="client">Client</option>
+            <option value="freelancer">Freelancer</option>
+          </select>
+        </div>
+        <button className="w-full btn-primary py-3 rounded-lg font-semibold transition">
           Login
         </button>
-        <div className="flex justify-between text-sm text-gray-600">
-          <Link to="/forgot-password" className="hover:text-indigo-500">Forgot Password?</Link>
-          <Link to="/signup" className="hover:text-indigo-500">signup</Link>
+        <div className="flex justify-between text-sm text-white/50">
+          <Link to="/forgot-password" className="hover:text-white transition-colors">Forgot Password?</Link>
+          <Link to="/signup" className="hover:text-white transition-colors">Create account</Link>
         </div>
       </form>
     </AuthWrapper>

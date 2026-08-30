@@ -43,8 +43,8 @@ const Landing = () => {
   return (
     <div className="relative bg-black text-white min-h-screen overflow-x-hidden">
       {/* Ambient background blobs */}
-      <div className="blob w-96 h-96 bg-[#7c6cf6] -top-32 -left-32 animate-float-slow" />
-      <div className="blob w-96 h-96 bg-[#22d3ee] top-1/3 -right-40 animate-float-slower" />
+      <div className="blob w-96 h-96 bg-accent -top-32 -left-32 animate-float-slow" />
+      <div className="blob w-96 h-96 bg-accent-2 top-1/3 -right-40 animate-float-slower" />
       <div className="blob w-72 h-72 bg-[#f6537c] bottom-0 left-1/4 opacity-20" />
 
       {/* Navbar */}
@@ -106,7 +106,7 @@ const Landing = () => {
       {/* Hero */}
       <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 text-center">
         <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel text-xs sm:text-sm text-white/70 mb-6">
-          <FaBolt className="text-[#22d3ee]" />
+          <FaBolt className="text-accent" />
           The freelance marketplace built for real work
         </span>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold leading-tight mb-6">
