@@ -4,6 +4,7 @@ import API from "../../src/utiles/axiosConfigaxios";// your axios instance
 import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from "../../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
+import { FaUserTie } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { createConversation, setSelectedConversation } from "../../src/features/conversation/convesationSlice";
 import { fetchMessages } from "../../src/features/message/messageSlice";
@@ -46,34 +47,37 @@ const ClientFreelancers = () => {
   }
 };
 
-  if (loading) return <p>Loading freelancers...</p>;
+  if (loading) return <p className="text-white/50 p-6">Loading freelancers...</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="min-h-screen text-white">
       
-      <span className="fixed top-10 left-5 p-4"> 
+      <span className="fixed top-10 left-5 p-4 z-30"> 
          {!sidebarOpen && (
               <MdMenu
-                className="text-2xl cursor-pointer"
+                className="text-2xl cursor-pointer text-white/80 hover:text-white"
                 onClick={() => setSidebarOpen(true)}
               />
             )}
       </span>
       <div>
-          <h6 className="text-2xl font-bold mb-10 ml-10">freelancer</h6>
+          <h6 className="text-2xl font-display font-bold mb-8 flex items-center gap-2">
+            <FaUserTie className="text-[#22d3ee]" /> Freelancers
+          </h6>
           
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {freelancers.map((freelancer) => (
-        <div key={freelancer._id} className="bg-white p-6 shadow rounded">
-          <h3 className="text-xl font-bold">{freelancer.name}</h3>
-          <p className="text-gray-600">{freelancer.email}</p>
-          <p className="text-sm mt-2">
+        <div key={freelancer._id} className="glass-card p-6 rounded-xl">
+          <h3 className="text-xl font-semibold text-white">{freelancer.name}</h3>
+          <p className="text-white/50">{freelancer.email}</p>
+          <p className="text-sm mt-2 text-white/70">
             Skills: {freelancer.skills?.join(", ") || "Not added"}
           </p>
         
          
         <Link
   to={`/client/freelancerProfile/${freelancer._id}`}
-  className="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded"
+  className="mt-4 inline-block btn-accent px-4 py-2 rounded-lg text-sm"
 >
   View Profile
           </Link>
@@ -81,11 +85,14 @@ const ClientFreelancers = () => {
             onClick={() => {
               handleOnclickmessage(freelancer._id)
             }}
-            className="rounded-2xl  bg-blue-400 text-white font-semibold  px-2 py-1 ml-3">
-             message 
+            className="rounded-full btn-ghost text-sm px-3 py-2 ml-3">
+             Message 
             </button>
-           </div>
+           
+
+        </div>
       ))}
+        </div>
         </div>
         </div>
       

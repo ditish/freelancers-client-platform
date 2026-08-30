@@ -6,6 +6,7 @@ import {fetchProjects} from "../../src/features/Project/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useSidebar } from "../../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
+import { MdOutlineTaskAlt } from "react-icons/md";
 
 const ClientTasks = () => {
 const [showAssignForm, setShowAssignForm] = useState(false);
@@ -122,21 +123,23 @@ const oldFreelancerId = assignTask.assignedTo?._id;
 };
 
   return (
-   <div className="p-6">
+   <div className="min-h-screen text-white">
   {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center flex-wrap gap-3 mb-6">
         <span>
            {!sidebarOpen && (
                 <MdMenu
-                  className="text-2xl cursor-pointer"
+                  className="text-2xl cursor-pointer text-white/80 hover:text-white"
                   onClick={() => setSidebarOpen(true)}
                 />
               )}
              </span>
-    <h2 className="text-2xl font-bold">My Tasks</h2>
+    <h2 className="text-2xl font-display font-bold flex items-center gap-2">
+      <MdOutlineTaskAlt className="text-[#22d3ee]" /> My Tasks
+    </h2>
     <button
       onClick={() => SetshowForm(true)}
-      className="bg-indigo-600 text-white px-4 py-2 rounded"
+      className="btn-accent px-4 py-2 rounded-lg"
     >
       + Create Task
     </button>
@@ -144,21 +147,21 @@ const oldFreelancerId = assignTask.assignedTo?._id;
 
   {/* Task List */}
   {tasks.length === 0 ? (
-    <p className="text-gray-500">No task created yet.</p>
+    <p className="text-white/40">No task created yet.</p>
   ) : (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {tasks.map((task) => (
-        <div key={task._id} className="bg-white p-6 shadow rounded relative">
+        <div key={task._id} className="glass-card p-6 rounded-xl relative">
             <button
-    className="absolute top-3 right-3 text-gray-500 hover:bg-gray-100 rounded p-1"
+    className="absolute top-3 right-3 text-white/50 hover:bg-white/10 hover:text-white rounded p-1 transition-colors"
     onClick={() => setOpenMenuId(openMenuId === task._id ? null : task._id)}
   >
     ⋮
   </button>
           {openMenuId === task._id && (
-    <div className="absolute top-10 right-3 bg-white border border-gray-200 rounded shadow-md z-10 w-52">
+    <div className="absolute top-10 right-3 glass-panel rounded-lg shadow-2xl shadow-black/50 z-10 w-52 overflow-hidden">
       <button
-        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100 text-left"
+        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-white/10 text-white/80 text-left transition-colors"
                 onClick={() => {
                     setAssignTask(task); 
     setNewFreelancerId(task.assignedTo?._id || "")
@@ -170,7 +173,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
         Assign to another freelancer
       </button>
       <button
-        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100 text-left"
+        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-white/10 text-white/80 text-left transition-colors"
                 onClick={() => {
                   setEditTask(task);
                   setShowEditForm(true);
@@ -180,7 +183,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
         Edit task
       </button>
       <button
-        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-red-50 text-red-500 text-left"
+        className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-red-500/10 text-red-400 text-left transition-colors"
                 onClick={async() => {
                   await dispatch(deleteTask(task._id))
                   await dispatch(fetchTasks());setOpenMenuId(null);
@@ -190,27 +193,27 @@ const oldFreelancerId = assignTask.assignedTo?._id;
       </button>
     </div>
   )}
-          <h3 className="text-lg font-semibold">{task.title}</h3>
+          <h3 className="text-lg font-semibold text-white">{task.title}</h3>
 
-          <p className="text-gray-600">{task.deadline}</p>
+          <p className="text-white/50">{task.deadline}</p>
 
-          <span className="text-gray-600">Project:</span>
-          <p className="text-gray-600">{task.projectId?.title}</p>
+          <span className="text-white/50">Project:</span>
+          <p className="text-white/50">{task.projectId?.title}</p>
 
-          <span className="text-gray-600">Status:</span>
+          <span className="text-white/50">Status:</span>
           <p
             className={
               task.status === "Pending"
                 ? "text-yellow-400"
-                : "text-green-500"
+                : "text-green-400"
             }
           >
             {task.status}
           </p>
 
-          <p className="mt-2 text-sm">
+          <p className="mt-2 text-sm text-white/70">
             Assigned To:{" "}
-            <span className="font-semibold">
+            <span className="font-semibold text-white">
               {task.assignedTo?.name || "Not assigned"}
             </span>
           </p>
@@ -221,9 +224,9 @@ const oldFreelancerId = assignTask.assignedTo?._id;
 
   {/* ================= MODAL ================= */}
   {showForm && (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md p-6 rounded-lg">
-        <h3 className="text-xl font-bold mb-4">Create Task</h3>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="glass-panel text-white w-full max-w-md p-6 rounded-xl">
+        <h3 className="text-xl font-display font-bold mb-4">Create Task</h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -232,14 +235,14 @@ const oldFreelancerId = assignTask.assignedTo?._id;
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full border p-3 rounded"
+            className="w-full p-3 rounded-lg glass-input"
           />
 
           <select
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
             required
-            className="w-full border p-3 rounded"
+            className="w-full p-3 rounded-lg glass-input [&>option]:text-black"
           >
             <option value="">Select Project</option>
             {projects.map((p) => (
@@ -253,7 +256,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
             value={assignedTo}
             onChange={(e) => setAssignedTo(e.target.value)}
             required
-            className="w-full border p-3 rounded"
+            className="w-full p-3 rounded-lg glass-input [&>option]:text-black"
           >
             <option value="">Select Freelancer</option>
             {Freelancers.map((f) => (
@@ -268,13 +271,13 @@ const oldFreelancerId = assignTask.assignedTo?._id;
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             required
-            className="w-full border p-3 rounded"
+            className="w-full p-3 rounded-lg glass-input"
           />
 
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full border p-3 rounded"
+            className="w-full p-3 rounded-lg glass-input [&>option]:text-black"
           >
             <option value="Pending">Pending</option>
             <option value="Completed">Completed</option>
@@ -284,14 +287,14 @@ const oldFreelancerId = assignTask.assignedTo?._id;
             <button
               type="button"
               onClick={() => SetshowForm(false)}
-              className="px-4 py-2 bg-gray-300 rounded"
+              className="px-4 py-2 btn-ghost rounded-lg"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded"
+              className="px-4 py-2 btn-accent rounded-lg"
             >
               Create
             </button>
@@ -302,21 +305,21 @@ const oldFreelancerId = assignTask.assignedTo?._id;
       )}
       
       {showEditForm && editTask && (
-  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-    <div className="bg-white w-full max-w-md p-6 rounded-lg">
-      <h3 className="text-xl font-bold mb-4">Edit Task</h3>
+  <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="glass-panel text-white w-full max-w-md p-6 rounded-xl">
+      <h3 className="text-xl font-display font-bold mb-4">Edit Task</h3>
 
       <form onSubmit={handleEditSubmit} className="space-y-4">
         <input
           type="text"
-          className="w-full border p-3 rounded"
+          className="w-full p-3 rounded-lg glass-input"
           value={editTask.title}
           onChange={(e) => setEditTask({ ...editTask, title: e.target.value })}
           required
         />
 
         <select
-          className="w-full border p-3 rounded"
+          className="w-full p-3 rounded-lg glass-input [&>option]:text-black"
           value={editTask.assignedTo?._id || editTask.assignedTo}
           onChange={(e) => setEditTask({ ...editTask, assignedTo: e.target.value })}
         >
@@ -328,14 +331,14 @@ const oldFreelancerId = assignTask.assignedTo?._id;
 
         <input
           type="date"
-          className="w-full border p-3 rounded"
+          className="w-full p-3 rounded-lg glass-input"
           value={editTask.deadline?.slice(0, 10)} // 👈 format date
           onChange={(e) => setEditTask({ ...editTask, deadline: e.target.value })}
           required
         />
 
         <select
-          className="w-full border p-3 rounded"
+          className="w-full p-3 rounded-lg glass-input [&>option]:text-black"
           value={editTask.status}
           onChange={(e) => setEditTask({ ...editTask, status: e.target.value })}
         >
@@ -346,14 +349,14 @@ const oldFreelancerId = assignTask.assignedTo?._id;
         <div className="flex justify-end gap-3">
           <button
             type="button"
-            className="px-4 py-2 bg-gray-300 rounded"
+            className="px-4 py-2 btn-ghost rounded-lg"
             onClick={() => setShowEditForm(false)}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded"
+            className="px-4 py-2 btn-accent rounded-lg"
           >
             Save Changes
           </button>
@@ -363,25 +366,25 @@ const oldFreelancerId = assignTask.assignedTo?._id;
   </div>
       )}
      {showAssignForm && assignTask && (
-  <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-    <div className="bg-white w-full max-w-md p-6 rounded-lg">
-      <h3 className="text-xl font-bold mb-4">Reassign Task</h3>
-      <p className="text-gray-600 mb-4">
-        Task: <span className="font-semibold">{assignTask.title}</span>
+  <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="glass-panel text-white w-full max-w-md p-6 rounded-xl">
+      <h3 className="text-xl font-display font-bold mb-4">Reassign Task</h3>
+      <p className="text-white/60 mb-4">
+        Task: <span className="font-semibold text-white">{assignTask.title}</span>
       </p>
 
-      <p className="text-gray-600 mb-2">
+      <p className="text-white/60 mb-2">
         Current Freelancer:{" "}
-        <span className="font-semibold">
+        <span className="font-semibold text-white">
           {assignTask.assignedTo?.name || "Not assigned"}
         </span>
       </p>
 
-            <p>
+            <p className="text-white/60 text-sm mb-2">
               select new freelancer
             </p>
       <select
-        className="w-full border p-3 rounded mb-4"
+        className="w-full p-3 rounded-lg glass-input mb-4 [&>option]:text-black"
         value={newFreelancerId}
         onChange={(e) => setNewFreelancerId(e.target.value)}
       >
@@ -395,7 +398,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
 
       <div className="flex justify-end gap-3">
         <button
-          className="px-4 py-2 bg-gray-300 rounded"
+          className="px-4 py-2 btn-ghost rounded-lg"
           onClick={() => {
             setShowAssignForm(false);
             setAssignTask(null);
@@ -404,7 +407,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
           Cancel
         </button>
         <button
-          className="px-4 py-2 bg-indigo-600 text-white rounded"
+          className="px-4 py-2 btn-accent rounded-lg"
           onClick={handleReassign}
         >
           Reassign

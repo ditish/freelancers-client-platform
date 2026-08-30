@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { clearMessages, fetchMessages, sendMessage,addMessage, deleteMessage, editMessage, updateMessage, updateDeleteMessage } from "../src/features/message/messageSlice";
 import { clearUnreadCount, deleteConversationById, fetchConversations,  setSelectedConversation, updateLastmessage } from "../src/features/conversation/convesationSlice"; 
 import socket from "../src/utiles/Socket"
-import SearchBar from "./Searchbar";
+import { IoArrowBack } from "react-icons/io5";
 
 const ChatPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {unreadCounts} = useSelector((state) => state.conversations);
   const { user, isloadingUser } = useSelector((state) => state.auth);
   const { conversations, selectedConversation, isLoading } = useSelector((state) => state.conversations);
@@ -19,6 +20,7 @@ const [Editmessage, setEditmessage] = useState(null);
   const [text, setText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesContainerRef = useRef(null);
+  const selectedConversationRef = useRef(selectedConversation);
   const messagesEndRef = useRef(null);
   const conversationsRef = useRef(conversations);
   const activeConversationId = selectedConversation?._id;
@@ -181,16 +183,16 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
   };
 
   if (!user || isLoading || isloadingUser) return (
-    <div className="flex h-screen items-center justify-center text-gray-400">Loading...</div>
+    <div className="flex h-screen items-center justify-center text-white/40 bg-black">Loading...</div>
   );
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-black text-white">
 
       {/* LEFT SIDEBAR */}
-     <div className="w-1/3 border-r overflow-y-auto">
+     <div className={`w-full md:w-1/3 border-r border-white/10 overflow-y-auto ${selectedConversation ? "hidden md:block" : "block"}`}>
   {conversations.length === 0 ? (
-    <div className="flex items-center justify-center h-full text-gray-500">
+    <div className="flex items-center justify-center h-full text-white/40">
       No conversations yet
     </div>
   ) : (
@@ -202,13 +204,13 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
         <div
           key={conv._id}
           onClick={() => dispatch(setSelectedConversation(conv))}
-          className={`p-4 cursor-pointer border-b hover:bg-gray-100 flex justify-between items-center ${
-            selectedConversation?._id === conv._id ? "bg-gray-200" : ""
+          className={`p-4 cursor-pointer border-b border-white/5 hover:bg-white/5 flex justify-between items-center transition-colors ${
+            selectedConversation?._id === conv._id ? "bg-white/10" : ""
           }`}
         >
           <div className="flex-1 min-w-0">
-            <p className="font-semibold">{getDisplayName(otherParticipant)}</p>
-            <p className="text-sm text-gray-500 truncate">
+            <p className="font-semibold text-white/90">{getDisplayName(otherParticipant)}</p>
+            <p className="text-sm text-white/40 truncate">
               {conv?.lastMessage !== undefined && conv?.lastMessage !== ""
                 ? conv.lastMessage
                 : "No messages yet"}
@@ -227,27 +229,28 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
 </div>
 
       {/* RIGHT SIDE */}
-      <div className="w-2/3 flex flex-col">
+      <div className={`w-full md:w-2/3 flex-col ${selectedConversation ? "flex" : "hidden md:flex"}`}>
 
         {!selectedConversation ? (
           // ✅ Empty state — covers both new user and no selection
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 bg-gray-50">
+          <div className="flex-1 flex flex-col items-center justify-center text-white/40 bg-[#0a0a0a]">
             <p className="text-4xl mb-3">💬</p>
             {conversations.length === 0 ? (
               // New user — no conversations at all
               <>
-                <p className="text-lg font-medium text-gray-600">No conversations yet</p>
-                <p className="text-sm mt-1 mb-4">Find a freelancer or client  and start chatting</p>
-                
-                <div className="bg-blend-lighten">
-                  <SearchBar />
-                  </div>
-                
+                <p className="text-lg font-medium text-white/70">No conversations yet</p>
+                <p className="text-sm mt-1 mb-4">Find a freelancer and start chatting</p>
+                <button
+                  onClick={() => navigate("/freelancers")}
+                  className="btn-accent px-4 py-2 rounded-lg"
+                >
+                  Browse Freelancers
+                </button>
               </>
             ) : (
               // Has conversations but none selected
               <>
-                <p className="text-lg font-medium text-gray-600">No conversation selected</p>
+                <p className="text-lg font-medium text-white/70">No conversation selected</p>
                 <p className="text-sm mt-1">Select a conversation from the left</p>
               </>
             )}
@@ -256,21 +259,27 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
           // ✅ Conversation selected — show header, messages, input
           <>
               {/* Header */}
-              <div className=" flex border-b  justify-between">
-            <div className="p-4 font-bold">
+              <div className=" flex border-b border-white/10  justify-between items-center">
+              <button
+                onClick={() => dispatch(setSelectedConversation(null))}
+                className="p-4 text-white/60 hover:text-white md:hidden transition-colors"
+              >
+                <IoArrowBack size={20} />
+              </button>
+            <div className="p-4 font-bold text-white/90">
                 {getDisplayName(getOtherParticipant(selectedConversation))}
                 </div> 
                 <div
                   onClick={() => {
                     handelOndelete(selectedConversation._id);
                 }}
-                  className="p-1 cursor-pointer m-2">Delete</div>
+                  className="p-1 cursor-pointer m-2 text-sm text-white/50 hover:text-red-400 transition-colors">Delete</div>
             </div>
 
             {/* Messages */}
-            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 relative bg-gray-50">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 relative bg-[#0a0a0a]">
               {messages.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-gray-400">
+                <div className="h-full flex items-center justify-center text-white/30">
                   Start the conversation 💬
                 </div>
               ) : (
@@ -292,22 +301,22 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
                     
                     >
                       {isOther && (
-                        <span className="text-xs text-gray-500 mb-1 ml-1">
+                        <span className="text-xs text-white/40 mb-1 ml-1">
                           {msg.sender?.name || "User"}
                         </span>
                       )}
-                      <div className={`px-3 py-2 rounded-lg max-w-xs shadow-sm ${
+                      <div className={`px-3 py-2 rounded-lg max-w-[85%] sm:max-w-xs shadow-sm ${
                         isOther
-                          ? "bg-white text-gray-800 rounded-tl-none"
-                          : "bg-green-500 text-white rounded-tr-none"
+                          ? "glass-card text-white rounded-tl-none"
+                          : "bg-white text-black rounded-tr-none"
                         }`}>
                         
    {/*  Reply preview inside the bubble */}
   {msg.replyTo && !msg.isDeleted && (
     <div className={`text-xs px-2 py-1 rounded mb-1 border-l-2 ${
       isOther
-        ? "bg-gray-100 border-gray-400 text-gray-500"
-        : "bg-green-600 border-green-200 text-green-100"
+        ? "bg-white/10 border-white/30 text-white/60"
+        : "bg-black/10 border-black/30 text-black/60"
     }`}>
       <p className="font-semibold">
         {msg.replyTo.sender?.name || "User"}
@@ -323,7 +332,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
                             <span className=
                               {`
                                 ${
-                               isOther?"italic text-black": "italic text-white"
+                               isOther?"italic text-white/50": "italic text-black/50"
                                 }
                                 `}
                              >This message was deleted</span>
@@ -331,7 +340,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
                             msg.text
                           )}
                         </p>
-                        <p className={`text-xs mt-1 text-right ${isOther ? "text-gray-400" : "text-green-100"}`}>
+                        <p className={`text-xs mt-1 text-right ${isOther ? "text-white/40" : "text-black/50"}`}>
                           {time}
                         </p>
                       </div>
@@ -343,7 +352,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
               {showScrollButton && (
                 <button
                   onClick={scrollToBottom}
-                  className="fixed bottom-24 right-10 bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg"
+                  className="fixed bottom-24 right-6 sm:right-10 bg-white text-black w-12 h-12 rounded-full shadow-lg"
                 >
                   ↓
                 </button>
@@ -352,36 +361,36 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
               </div>
               
  {replyTo && (
-    <div className="flex items-center justify-between bg-gray-100 px-3 py-2 rounded mb-2 text-sm">
-      <span className="text-gray-500">
-        Replying to: <span className="font-medium">{replyTo.text}</span>
+    <div className="flex items-center justify-between bg-white/5 px-3 py-2 mb-2 text-sm">
+      <span className="text-white/50">
+        Replying to: <span className="font-medium text-white/80">{replyTo.text}</span>
       </span>
-      <button onClick={() => setReplyTo(null)} className="text-gray-400 hover:text-gray-600">✕</button>
+      <button onClick={() => setReplyTo(null)} className="text-white/40 hover:text-white">✕</button>
     </div>
   )}
 
   {/* Edit preview */}
   {Editmessage && (
-    <div className="flex items-center justify-between bg-yellow-50 px-3 py-2 rounded mb-2 text-sm">
-      <span className="text-gray-500">
-        Editing: <span className="font-medium">{Editmessage.text}</span>
+    <div className="flex items-center justify-between bg-yellow-500/10 px-3 py-2 mb-2 text-sm">
+      <span className="text-white/50">
+        Editing: <span className="font-medium text-white/80">{Editmessage.text}</span>
       </span>
-      <button onClick={() => { setEditmessage(null); setText(""); }} className="text-gray-400 hover:text-gray-600">✕</button>
+      <button onClick={() => { setEditmessage(null); setText(""); }} className="text-white/40 hover:text-white">✕</button>
     </div>
   )}
 
 {/* Input */}
-            <div className="p-3 border-t flex">
+            <div className="p-3 border-t border-white/10 flex gap-2">
               <input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                className="flex-1 border rounded px-3 py-2"
+                className="flex-1 rounded-lg px-3 py-2 glass-input"
                   placeholder={Editmessage ? "Edit message..." : "Type a message..."}
               />
               <button
                 onClick={handleSend}
-                  className="ml-2 bg-blue-600 text-white px-4 py-2 rounded"
+                  className="btn-primary px-4 py-2 rounded-lg"
                   
               >
                    {Editmessage ? "Update" : "Send"}
@@ -400,7 +409,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
 
     {/* Menu */}
     <div
-      className="fixed z-20 bg-white rounded-lg shadow-xl border py-1 w-48"
+      className="fixed z-20 glass-panel rounded-lg shadow-2xl shadow-black/50 py-1 w-48"
       style={{ top: contextMenu.y, left: contextMenu.x }}
     >
       {/* Reply */}
@@ -409,7 +418,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
           setReplyTo(contextMenu.msg);
           setContextMenu(null);
         }}
-        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+        className="w-full px-4 py-2 text-left text-sm hover:bg-white/10 text-white/80 flex items-center gap-2"
       >
         ↩️ Reply
       </button>
@@ -420,7 +429,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
           navigator.clipboard.writeText(contextMenu.msg.text);
           setContextMenu(null);
         }}
-        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+        className="w-full px-4 py-2 text-left text-sm hover:bg-white/10 text-white/80 flex items-center gap-2"
       >
         📋 Copy
       </button>
@@ -433,7 +442,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
             setText(contextMenu.msg.text);
             setContextMenu(null);
           }}
-          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+          className="w-full px-4 py-2 text-left text-sm hover:bg-white/10 text-white/80 flex items-center gap-2"
         >
           ✏️ Edit
         </button>
@@ -451,7 +460,7 @@ const savedMessage = await  dispatch(sendMessage({ conversationId: selectedConve
 
             setContextMenu(null);
           }}
-          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+          className="w-full px-4 py-2 text-left text-sm hover:bg-red-500/10 flex items-center gap-2 text-red-400"
         >
           🗑️ Delete
         </button>

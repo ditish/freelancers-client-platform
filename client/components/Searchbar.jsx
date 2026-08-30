@@ -56,17 +56,17 @@ export default function SearchBar() {
   return (
     <div className="relative flex items-center">
       {!open ? (
-        <button onClick={handleOpen} className="p-2 rounded-full hover:bg-gray-100">
-          <FaSearch size={20} />
+        <button onClick={handleOpen} className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors">
+          <FaSearch size={18} />
         </button>
       ) : (
-        <div className="flex items-center border rounded-full px-3 py-1 w-72">
+        <div className="flex items-center glass-input rounded-full px-3 py-1.5 w-56 sm:w-72">
           {selectedRole && (
             <button onClick={handleBack} className="mr-1">
-              < FaArrowLeft  className="text-gray-400" />
+              < FaArrowLeft  className="text-white/40" />
             </button>
           )}
-          <FaSearch  className="text-gray-400" />
+          <FaSearch  className="text-white/40" />
           <input
             autoFocus
             value={query}
@@ -77,28 +77,28 @@ export default function SearchBar() {
                 ? `Search ${selectedRole === "freelancer" ? "freelancers" : "clients"} by name or skill...`
                 : "Choose an option below..."
             }
-            className="ml-2 outline-none flex-1 bg-transparent text-sm disabled:cursor-not-allowed"
+            className="ml-2 outline-none flex-1 bg-transparent text-sm text-white placeholder-white/40 disabled:cursor-not-allowed"
           />
           <button onClick={handleClose}>
-            <RxCross1 className="text-gray-400" />
+            <RxCross1 className="text-white/40 hover:text-white transition-colors" />
           </button>
         </div>
       )}
 
       {open && (
-        <div className="absolute top-10 left-0 w-72 bg-white shadow-lg rounded-lg max-h-80 overflow-y-auto z-50">
+        <div className="absolute top-11 right-0 sm:left-0 w-72 glass-panel rounded-lg max-h-80 overflow-y-auto z-50 shadow-2xl shadow-black/50">
           {/* Step 2: role picker — shown until a role is chosen */}
           {!selectedRole && (
             <div className="flex flex-col p-2">
               <button
                 onClick={() => handleSelectRole("freelancer")}
-                className="text-left p-2 rounded hover:bg-gray-50 text-sm font-medium"
+                className="text-left p-2 rounded hover:bg-white/10 text-sm font-medium text-white/80 hover:text-white transition-colors"
               >
                 Freelancers
               </button>
               <button
                 onClick={() => handleSelectRole("client")}
-                className="text-left p-2 rounded hover:bg-gray-50 text-sm font-medium"
+                className="text-left p-2 rounded hover:bg-white/10 text-sm font-medium text-white/80 hover:text-white transition-colors"
               >
                 Clients
               </button>
@@ -108,19 +108,19 @@ export default function SearchBar() {
           {/* Step 3: list of 10 (default or filtered) */}
           {selectedRole && (
             <>
-              {loading && <p className="p-3 text-sm text-gray-400">Loading...</p>}
+              {loading && <p className="p-3 text-sm text-white/40">Loading...</p>}
               {!loading && results.length === 0 && (
-                <p className="p-3 text-sm text-gray-400">No matches found</p>
+                <p className="p-3 text-sm text-white/40">No matches found</p>
               )}
               {results.map((user) => (
                 <div
                key={user._id}
                       onClick={() => handleUserClick(user)}
-                  className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer">
+                  className="flex items-center gap-2 p-2 hover:bg-white/10 cursor-pointer transition-colors">
                   {/* <img src={user.avatar || "/default-avatar.png"} className="w-8 h-8 rounded-full" /> */}
                   <div>
-                    <p className="text-sm font-medium">{user.name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-white/90">{user.name}</p>
+                    <p className="text-xs text-white/40">
                       {user.role === "freelancer" ? user.skills?.join(", ") : "Client"}
                     </p>
                   </div>

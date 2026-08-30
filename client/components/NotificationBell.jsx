@@ -43,7 +43,7 @@ const NotificationBell = () => {
     <div className="relative">
       {/* Bell icon with badge */}
       <div onClick={() => { setShowDropdown(!showDropdown); markAllRead(); }}
-        className="cursor-pointer relative">
+        className="cursor-pointer relative text-white/80 hover:text-white transition-colors">
         <MdNotifications className="text-2xl" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white 
@@ -55,16 +55,16 @@ const NotificationBell = () => {
 
       {/* Dropdown */}
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50">
+        <div className="absolute right-0 mt-2 w-72 glass-panel rounded-lg z-50 shadow-2xl shadow-black/50 overflow-hidden">
           {notifications.length === 0 ? (
-            <p className="p-4 text-gray-500">No notifications</p>
+            <p className="p-4 text-white/50 text-sm">No notifications</p>
           ) : (
             notifications.map(n => (
               <div key={n._id}
-                className={`p-3 border-b ${!n.isRead ? "bg-blue-50" : ""}`}>
-                <p className="text-sm">{n.message}</p>
-                <p className="text-xs text-gray-400">{new Date(n.createdAt).toLocaleString()}</p>
-                <button onClick={() => { handleOnDelete(n._id)}}>delete</button>
+                className={`p-3 border-b border-white/5 ${!n.isRead ? "bg-white/5" : ""}`}>
+                <p className="text-sm text-white/90">{n.message}</p>
+                <p className="text-xs text-white/40">{new Date(n.createdAt).toLocaleString()}</p>
+                <button onClick={() => { handleOnDelete(n._id)}} className="text-xs text-red-400 hover:text-red-300 mt-1">delete</button>
               </div>
             ))
           )}

@@ -13,16 +13,16 @@ const DashboardLayout = () => {
   return (
     <>
    <SidebarContext.Provider value={{ sidebarOpen, setSidebarOpen }}>
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-black text-white overflow-hidden">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div
         className={`
-          flex-1 p-6 transition-all duration-300 overflow-y-auto
+          flex-1 transition-all duration-300 overflow-y-auto
           ${sidebarOpen ? "md:ml-0" : "md:-ml-60"}
         `}
       >
-             <div className="flex-1 p-6">
+             <div className="flex-1 p-4 sm:p-6">
        <Outlet></Outlet>
       </div>
       </div>
