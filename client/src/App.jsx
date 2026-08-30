@@ -25,6 +25,7 @@ import ChatPage from "../components/ChatPage.jsx";
 import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
 import ResetPassword from "../pages/auth/Resetpassword.jsx";
 import ClientProfile from "../components/Clientprofile.jsx";
+import Landing from "../pages/landingpage.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -41,7 +42,7 @@ return (
           </div>
         ) : (
           <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<Landing/>} />
                <Route path="/Chatpage" element={<ChatPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
