@@ -14,6 +14,8 @@ import { MdMenu } from "react-icons/md";
 import Sidebar from "./Sidebar";
 import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
+import { FaBriefcase, FaFileInvoiceDollar, FaMoneyBillWave } from "react-icons/fa6";
+import { MdOutlineTaskAlt } from "react-icons/md";
 import { fetchConversations, setSelectedConversation, updateLastConversation } from "../src/features/conversation/convesationSlice";
 const Freelancer_Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -72,30 +74,29 @@ const fetchAllClient = async () => {
    const totalUnread = values.reduce((sum, count) => sum + count, 0);
    console.log("this  is totalunread", totalUnread);
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-black text-white">
       <Sidebar sidebarOpen={sidebarOpen}
       setSidebarOpen ={setSidebarOpen}
       ></Sidebar>
  <div  className={`
-    flex-1 p-6
+    flex-1 p-4 sm:p-6 overflow-y-auto
     transition-all duration-300 ease-in-out
     ${sidebarOpen ? "md:ml-0" : "md:-ml-60"}
   `}>
-        <div className="flex gap-4 items-center mb-6">
+        <div className="flex gap-4 items-center mb-6 flex-wrap">
           <span
           onClick={()=>setSidebarOpen(!sidebarOpen)}
-            className={`text-2xl transition-all ease-in-out duration-300
+            className={`text-2xl transition-all ease-in-out duration-300 text-white/80 hover:text-white
               ${sidebarOpen ? "hidden" : ""}`}><MdMenu /></span>
-          <h1 className="text-3xl font-bold">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">
               
-            Welcome, {user?.name || "User"}!
+            Welcome, <span className="text-gradient">{user?.name || "User"}</span>!
           </h1>
 
-          <span>
+          <span className="ml-auto flex items-center gap-4">
            <NotificationBell></NotificationBell>
-          </span>
 
-          <span   className="relative inline-block">
+          <span   className="relative inline-block text-xl text-white/80 hover:text-white cursor-pointer transition-colors">
             <FaFacebookMessenger onClick={() => 
               navigate("/Chatpage")
  
@@ -106,46 +107,59 @@ const fetchAllClient = async () => {
     </span>
   )}
                     </span>
+          </span>
        
         </div>
 
         {/* Freelancer_Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-700">
-              Total Projects
-            </h3>
-            <p className="text-2xl font-bold text-indigo-600">{ totalProjects }</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="glass-card rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">
+                Total Projects
+              </h3>
+              <FaBriefcase className="text-[#7c6cf6] text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{ totalProjects }</p>
           </div>
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-700">Total Tasks</h3>
-            <p className="text-2xl font-bold text-green-600">{ totalTasks }</p>
+          <div className="glass-card rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">Total Tasks</h3>
+              <MdOutlineTaskAlt className="text-[#22d3ee] text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{ totalTasks }</p>
           </div>
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-700">
-              Total Invoices
-            </h3>
-            <p className="text-2xl font-bold text-purple-600">{Totalinvoices }</p>
+          <div className="glass-card rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">
+                Total Invoices
+              </h3>
+              <FaFileInvoiceDollar className="text-[#a99cf9] text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-white">{Totalinvoices }</p>
           </div>
 
-                <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-700">
-              Pending payemnts
-            </h3>
-            <p className="text-2xl font-bold text-red-400"> RS{totalPendingAmount }</p>
+                <div className="glass-card rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium text-white/60">
+                Pending Payments
+              </h3>
+              <FaMoneyBillWave className="text-red-400 text-xl" />
+            </div>
+            <p className="text-3xl font-display font-bold text-red-400"> ₹{totalPendingAmount }</p>
           </div>
            
-               <div className="col-span-1 ">
+               <div className="col-span-1 glass-card rounded-xl p-4">
               <Piechart totalTasks={totalTasks} />
             </div>
 
-           <div className="col-span-1 ">
+           <div className="col-span-1 glass-card rounded-xl p-4">
                         <Paymentpiechart
                           totalPaidAmount={totalPaidAmount}
                           totalPendingAmount ={totalPendingAmount}
                         ></Paymentpiechart>
           </div> 
-             <div className="col-span-1 md:col-span-2">
+             <div className="col-span-1 sm:col-span-2 md:col-span-2 glass-card rounded-xl p-4">
     <Bargraph
       totalTasks={totalTasks}
               totalProjects={totalProjects}

@@ -45,18 +45,18 @@ const CreateInvoiceModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg w-[400px]"
+        className="glass-panel text-white p-6 rounded-xl w-full max-w-[400px]"
       >
-        <h3 className="text-xl font-bold mb-4">Create Invoice</h3>
+        <h3 className="text-xl font-display font-bold mb-4">Create Invoice</h3>
 
         {/* Project */}
-        <label className="block mb-2">Project</label>
+        <label className="block mb-2 text-sm text-white/70">Project</label>
         <select
           required
-          className="w-full border p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-lg glass-input [&>option]:text-black"
           value={form.project}
           onChange={(e) => setForm({ ...form, project: e.target.value })}
         >
@@ -69,36 +69,36 @@ const CreateInvoiceModal = ({ onClose }) => {
         </select>
 
         {/* Client (auto) */}
-        <label className="block mb-2">Client</label>
+        <label className="block mb-2 text-sm text-white/70">Client</label>
         <input
           disabled
-          className="w-full border p-2 mb-4 bg-gray-100"
+          className="w-full p-3 mb-4 rounded-lg glass-input opacity-60"
           value={selectedProject?.client?.name || ""}
         />
 
         {/* Amount */}
-        <label className="block mb-2">Amount</label>
+        <label className="block mb-2 text-sm text-white/70">Amount</label>
         <input
           type="number"
           required
-          className="w-full border p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-lg glass-input"
           value={form.amount}
           onChange={(e) => setForm({ ...form, amount:e.target.value })}
         />
 
         {/* Due Date */}
-        <label className="block mb-2">Due Date</label>
+        <label className="block mb-2 text-sm text-white/70">Due Date</label>
         <input
           type="date"
           required
-          className="w-full border p-2 mb-4"
+          className="w-full p-3 mb-4 rounded-lg glass-input"
           value={form.dueDate}
           onChange={(e) => setForm({ ...form, dueDate:e.target.value })}
         />
 
         <div className="flex justify-end gap-2">
-          <button type="button" onClick={onClose}>Cancel</button>
-          <button className="bg-purple-600 text-white px-4 py-2 rounded">
+          <button type="button" onClick={onClose} className="px-4 py-2 text-white/60 hover:text-white transition-colors">Cancel</button>
+          <button className="btn-accent px-4 py-2 rounded-lg">
             Create
           </button>
         </div>

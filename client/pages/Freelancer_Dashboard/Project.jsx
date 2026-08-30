@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../src/features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
 import { MdMenu } from "react-icons/md";
+import { FaBriefcase } from "react-icons/fa6";
 import { useSidebar } from "../../Context/SidebarContext";
 
 
@@ -17,45 +18,47 @@ const Projects = () => {
     dispatch(fetchProjects());
   }, [dispatch]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>{message}</p>;
+  if (isLoading) return <p className="text-white/50 p-6">Loading...</p>;
+  if (isError) return <p className="text-red-400 p-6">{message}</p>;
 
   return (
-    <div className=" h-screen bg-gray-100">
+    <div className="min-h-screen text-white">
   
   
-        <div className="flex gap-4 items-baseline">
+        <div className="flex gap-4 items-center mb-6">
         <span>
    {!sidebarOpen && (
         <MdMenu
-          className="text-2xl cursor-pointer"
+          className="text-2xl cursor-pointer text-white/80 hover:text-white"
           onClick={() => setSidebarOpen(true)}
         />
       )}
      </span>
-      <h2 className="text-2xl font-bold mb-4">Projects</h2>
+      <h2 className="text-2xl font-display font-bold flex items-center gap-2">
+        <FaBriefcase className="text-[#7c6cf6]" /> Projects
+      </h2>
         </div>
        
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg shadow">
-          <thead className="bg-indigo-600 text-white">
+      <div className="overflow-x-auto glass-card rounded-xl">
+        <table className="min-w-full">
+          <thead className="bg-white/5 text-white/70 text-sm uppercase tracking-wide">
             <tr>
-              <th className="py-2 px-4">Project Name</th>
-              <th className="py-2 px-4">Client</th>
-              <th className="py-2 px-4">Status</th>
-              <th className="py-2 px-4">Due Date</th>
+              <th className="py-3 px-4 text-left">Project Name</th>
+              <th className="py-3 px-4 text-left">Client</th>
+              <th className="py-3 px-4 text-left">Status</th>
+              <th className="py-3 px-4 text-left">Due Date</th>
             </tr>
           </thead>
           <tbody>
             {projects.map((p) => (
               <tr key={p._id}
-              onClick={() => navigate(`/projects/${p._id}`)}className="border-b">
-                <td className="py-2 px-4">{p.title}</td>
-                <td className="py-2 px-4">{p.client.name}</td>
+              onClick={() => navigate(`/projects/${p._id}`)} className="border-t border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
+                <td className="py-3 px-4 font-medium text-white/90">{p.title}</td>
+                <td className="py-3 px-4 text-white/70">{p.client.name}</td>
                 <td className={
-                  p.status == "Pending"?"text-yellow-500":"text-green-500"
+                  "py-3 px-4 " + (p.status == "Pending"?"text-yellow-400":"text-green-400")
                 }>{p.status}</td>
-                <td className="py-2 px-4">{new Date(p.deadline).toLocaleDateString()}</td>
+                <td className="py-3 px-4 text-white/60">{new Date(p.deadline).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

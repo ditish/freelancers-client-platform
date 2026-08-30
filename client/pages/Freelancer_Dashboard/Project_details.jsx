@@ -18,29 +18,29 @@ const ProjectDetails = () => {
     dispatch(fetchTaskbyProject(projectId));
   }, [dispatch, projectId]);
   console.log("this is task1", task);
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p className="text-white/50 p-6">Loading...</p>;
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-black text-white p-4 sm:p-6">
       {/* Project Info */}
-      <h1 className="text-2xl font-bold">{project?.title}</h1>
-      <p className="text-gray-600">{project?.description}</p>
+      <h1 className="text-2xl sm:text-3xl font-display font-bold">{project?.title}</h1>
+      <p className="text-white/50 mt-1">{project?.description}</p>
 
       {/* Tasks */}
-      <h2 className="text-xl font-semibold mt-6 mb-4">Tasks</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-4 text-white/90">Tasks</h2>
 
       {task.length ===0? (
-        <p>No tasks yet</p>
+        <p className="text-white/40">No tasks yet</p>
       ) : (
         <div className="space-y-3">
           {task.map((task) => (
             <div
               key={task._id}
-              className="p-4 bg-white shadow rounded flex justify-between"
+              className="p-4 glass-card rounded-xl flex justify-between"
             >
               <div>
-                <h3 className="font-medium">{task.title}</h3>
-                <p className="text-sm text-gray-500">
+                <h3 className="font-medium text-white">{task.title}</h3>
+                <p className="text-sm text-white/50">
                   {task.description}
                 </p>
               </div>
@@ -48,10 +48,10 @@ const ProjectDetails = () => {
               <span
                 className={`text-sm ${
                   task.status === "done"
-                    ? "text-green-600"
+                    ? "text-green-400"
                     : task.status === "in-progress"
-                    ? "text-blue-600"
-                    : "text-yellow-600"
+                    ? "text-blue-400"
+                    : "text-yellow-400"
                 }`}
               >
                 {task.status}
