@@ -1,5 +1,5 @@
 // controllers/profileController.js
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require("../config/cloudinary");
 const User = require("../model/user");
 const Project = require("../model/project");
 
