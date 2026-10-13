@@ -19,6 +19,7 @@ import { MdOutlineTaskAlt } from "react-icons/md";
 import ChatPage from "./ChatPage";
 import { fetchConversations } from "../src/features/conversation/convesationSlice";
 import SearchBar from "./Searchbar";
+import ProfilePage from "../pages/Profilepage";
 
 const ClientDashboard = () => {
  const [Totalfreelancer, setTotalfreelancer] = useState(0);
@@ -95,6 +96,14 @@ const ClientDashboard = () => {
           >
             <MdMenu />
           </span>
+          <span>
+         <img
+  src={user?.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "C")}&background=7c6cf6&color=fff`}
+  alt="Profile"
+  className="w-9 h-9 rounded-full object-cover cursor-pointer border border-white/20"
+  onClick={() => navigate(`/profilepage/${user._id}`)}
+/>
+             </span>
           <h1 className="text-2xl sm:text-3xl font-display font-bold">
             Welcome, <span className="text-gradient">{user?.name || "Client"}</span> 👋
           </h1>

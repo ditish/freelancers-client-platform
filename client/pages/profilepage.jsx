@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { MdMenu, MdCameraAlt } from "react-icons/md";
-import { useSidebar } from "../../Context/SidebarContext";
-import { fetchProfile, uploadAvatar } from "../../src/features/profile/profileSlice";
-import { assignDirectTasks, fetchTasks } from "../../src/features/task/taskslice";
+import { useSidebar } from "../Context/SidebarContext";
+import { fetchProfile, uploadAvatar } from "../src/features/profile/profileSlice";
+import {  assignDirectTasks,fetchTasks  } from"../src/features/task/taskslice";
 import EditProfileModal from "./Editprofilepage";
+
 
 const ProfilePage = () => {
   const { id } = useParams();
@@ -16,6 +18,9 @@ const ProfilePage = () => {
   const { user, stats, recentProjects, loading } = useSelector((s) => s.profile);
   const [editing, setEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { tasks = [] } = useSelector((s) => s.tasks); // adjust to your task slice name/shape
+const [selectedTasks, setSelectedTasks] = useState([]);
+const [assigning, setAssigning] = useState(false);
 
   const isOwner = !id || id === me?._id;
   const isFreelancer = user?.role === "freelancer";
@@ -31,6 +36,35 @@ const ProfilePage = () => {
     await dispatch(uploadAvatar(file));
     setUploading(false);
   };
+const handleAssign = async () => {
+  if (selectedTasks.length === 0) return;
+  setAssigning(true);
+  const result = await dispatch(
+    assignDirectTasks({ taskIds: selectedTasks, assignedTo: user._id })
+  );
+  setAssigning(false);
+
+  if (assignDirectTasks.fulfilled.match(result)) {
+    setSelectedTasks([]);
+    dispatch(fetchTasks()); // refresh so assigned tasks disappear from the list
+  } else {
+    alert(result.payload || "Failed to assign tasks");
+  }
+};
+   useEffect(() => {
+  if (canAssign) dispatch(fetchTasks());
+}, [dispatch, canAssign]);
+
+// only tasks that can still be assigned (adjust field names to your Task schema)
+const assignableTasks = useMemo(
+  () => tasks.filter((t) => t.createdBy === me?._id && !t.assignedTo && t.status === "open"),
+  [tasks, me]
+);
+
+const toggleTask = (taskId) =>
+  setSelectedTasks((prev) =>
+    prev.includes(taskId) ? prev.filter((x) => x !== taskId) : [...prev, taskId]
+  );
 
   if (loading || !user) return <p className="text-white/50 p-6">Loading...</p>;
 
@@ -69,7 +103,40 @@ const ProfilePage = () => {
 
           <div className="mt-4 flex gap-3 justify-center sm:justify-start">
             {isOwner && <button className="btn-ghost px-4 py-2 rounded-lg" onClick={() => setEditing(true)}>Edit Profile</button>}
-            {canAssign && <AssignTasksButton freelancerId={user._id} />}
+          {canAssign && (
+  <button
+    className="px-4 py-2 btn-accent rounded-lg disabled:opacity-50"
+    onClick={handleAssign}
+    disabled={selectedTasks.length === 0 || assigning}
+  >
+    {assigning ? "Assigning..." : `Assign${selectedTasks.length ? ` (${selectedTasks.length})` : ""}`}
+  </button>
+            )}
+            {canAssign && (
+  <Section title="Select tasks to assign">
+    {assignableTasks.length ? (
+      assignableTasks.map((t) => (
+        <label
+          key={t._id}
+          className="flex items-start gap-3 bg-white/5 border border-white/10 rounded-lg p-3 mb-2 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            className="mt-1"
+            checked={selectedTasks.includes(t._id)}
+            onChange={() => toggleTask(t._id)}
+          />
+          <div>
+            <p className="font-semibold text-sm">{t.title}</p>
+            <p className="text-xs text-white/50 line-clamp-2">{t.description}</p>
+          </div>
+        </label>
+      ))
+    ) : (
+      <p className="text-white/40">You have no unassigned tasks.</p>
+    )}
+  </Section>
+)}
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 // features/profile/profileSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import * as svc from "../../services/profileService";
+import * as svc from "./profileServices";
 
-const slice = createSlice({
+const profileSlice = createSlice({
   name: "profile",
   initialState: { user: null, stats: null, recentProjects: [], loading: false, error: null },
   reducers: {
@@ -13,8 +13,8 @@ const slice = createSlice({
     setError: (s, a) => { s.error = a.payload; s.loading = false; },
   },
 });
-export const { setLoading, setProfile, setUser, setAvatar, setError } = slice.actions;
-export default slice.reducer;
+export const { setLoading, setProfile, setUser, setAvatar, setError } = profileSlice.actions;
+export default profileSlice.reducer;
 
 export const fetchProfile = (id) => async (dispatch) => {
   try {

@@ -1,11 +1,11 @@
 // controllers/profileController.js
-import { v2 as cloudinary } from "cloudinary";
-import User from "../models/User.js";
-import Project from "../models/Project.js";
+const cloudinary = require("cloudinary").v2;
+const User = require("../model/user");
+const Project = require("../model/project");
 
-const EDITABLE = ["name","headline","bio","location","skills","education","companyName","website"];
+const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", "companyName", "website"];
 
-export const getProfile = async (req, res) => {
+const getProfile = async (req, res) => {
   try {
     const userId = req.params.id || req.user._id;
     const user = await User.findById(userId).select("-password -resetOtp -resetOtpExpiry");
@@ -25,7 +25,7 @@ export const getProfile = async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 };
 
-export const updateProfile = async (req, res) => {
+const updateProfile = async (req, res) => {
   try {
     const updates = {};
     EDITABLE.forEach((k) => { if (req.body[k] !== undefined) updates[k] = req.body[k]; });
@@ -35,7 +35,7 @@ export const updateProfile = async (req, res) => {
   } catch (e) { res.status(500).json({ message: e.message }); }
 };
 
-export const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file" });
 
@@ -64,3 +64,5 @@ export const updateAvatar = async (req, res) => {
     res.status(500).json({ message: "Failed to update avatar" });
   }
 };
+
+module.exports = { getProfile, updateProfile, updateAvatar };

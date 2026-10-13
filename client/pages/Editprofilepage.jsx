@@ -1,6 +1,7 @@
+import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateProfile } from "../../src/features/profile/profileSlice";
+import { updateProfile } from "../src/features/profile/profileSlice";
 
 const input = "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-[#7c6cf6]";
 

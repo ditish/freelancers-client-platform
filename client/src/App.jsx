@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import Login from "../pages/auth/Login";
 import Signup from "../pages/auth/Signup";
 import Forgetpassword from "../pages/auth/Forgetpassword";
-import VerifyOtp from "../pages/auth/Verifyotp";
 import Freelancer_Dashboard from "../components/Freelancer_Dashboard";
 import PrivateRoute from "../routes/Privateroutes";
 import Projects from "../pages/Freelancer_Dashboard/Project";
@@ -20,12 +19,12 @@ import { useSelector } from "react-redux";
 import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerprofile.jsx";
 import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 import DashboardLayout from "../components/Dashboardlayout.jsx";
-import NotificationBell from "../components/NotificationBell.jsx";
 import ChatPage from "../components/ChatPage.jsx";
 import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
 import ResetPassword from "../pages/auth/Resetpassword.jsx";
 import ClientProfile from "../components/Clientprofile.jsx";
 import Landing from "../pages/landingpage.jsx";
+import ProfilePage from "../pages/Profilepage.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -60,6 +59,12 @@ return (
                  <Route
                   path="clientProfile/:id"
                   element={<ClientProfile />}
+                />
+              </Route>
+              <Route path="/" element={<DashboardLayout />}>
+                 <Route
+                  path="profilepage/:id"
+                  element={<ProfilePage />}
                 />
               </Route>
               

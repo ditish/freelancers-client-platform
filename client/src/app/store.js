@@ -7,6 +7,7 @@ import invoiceReducer from "../features/invoice/invoiceSlice";
 import conversationReducer from "../features/conversation/convesationSlice"
 import messageReducer from "../features/message/messageSlice"
  import searchReducer from "../features/search/serachSlice"
+ import profileReducer from "../features/profile/profileSlice"
 
 
 
@@ -20,6 +21,7 @@ export const store = configureStore({
     conversations: conversationReducer,
     messages: messageReducer,
     search: searchReducer,
+    profile:profileReducer,
     
     
   },
