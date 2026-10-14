@@ -1,15 +1,15 @@
 
 import React, { useEffect, useState } from "react";
-import API from "../../src/utiles/axiosConfigaxios";// your axios instance
+import API from "../src/utiles/axiosConfigaxios";// your axios instance
 import { Link, useNavigate } from "react-router-dom";
-import { useSidebar } from "../../Context/SidebarContext";
+import { useSidebar } from "../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
 import { FaUserTie } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { createConversation, setSelectedConversation } from "../../src/features/conversation/convesationSlice";
-import { fetchMessages } from "../../src/features/message/messageSlice";
+import { createConversation, setSelectedConversation } from "../src/features/conversation/convesationSlice";
 
-const ClientFreelancers = () => {
+
+const Freelancers = () => {
     const { user } = useSelector((state) => state.auth);
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [freelancers, setFreelancers] = useState([]);
@@ -99,4 +99,4 @@ const ClientFreelancers = () => {
   );
 };
 
-export default ClientFreelancers;
+export default Freelancers;

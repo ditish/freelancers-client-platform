@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { MdCancel, MdSpaceDashboard, MdLogout } from "react-icons/md";
-import { FaBriefcase, FaFileInvoiceDollar, FaUserTie } from "react-icons/fa6";
+import { FaBriefcase, FaBuilding, FaFileInvoiceDollar, FaUserTie } from "react-icons/fa6";
 import { MdOutlineTaskAlt } from "react-icons/md";
 import { Link, useNavigate } from 'react-router-dom';
 import { logOutuser } from "../src/features/auth/authslice";
@@ -8,6 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 
 // ✅ Define nav links per role
+const sharedLinks = [
+  { label: "Freelancers", to: "/freelancers", icon: FaUserTie },
+  { label: "Clients",     to: "/clients",     icon: FaBuilding},
+];
 const freelancerLinks = [
    { label: "Dashboard",   to: "/freelance_Dashboard", icon: MdSpaceDashboard },
   { label: "Projects", to: "/freelancer/Projects", icon: FaBriefcase },
@@ -21,7 +25,6 @@ const clientLinks = [
   { label: "Projects",    to: "/client/projects", icon: FaBriefcase },
   { label: "Invoices",    to: "/client/invoices", icon: FaFileInvoiceDollar },
   { label: "Tasks",       to: "/client/tasks", icon: MdOutlineTaskAlt },
-  { label: "Freelancers", to: "/client/freelancers", icon: FaUserTie },
  
 ];
 
@@ -39,7 +42,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // ✅ Pick links based on role
-  const navLinks = role === "client" ? clientLinks : freelancerLinks;
+  const roleLinks = role === "client" ? clientLinks : freelancerLinks;
+  const navLinks = [...roleLinks, ...sharedLinks];
+  // const navLinks = role === "client" ? clientLinks : freelancerLinks;
   const dashboardTitle = role === "client" ? "Client Dashboard" : "Freelancer Dashboard";
 
 

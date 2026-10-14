@@ -13,16 +13,16 @@ import ClientDashboard from "../components/Clinet_Dashboard.jsx";
 import ClientProjects from "../pages/client_Dashboard/ClientProject.jsx";
 import ClientInvoice from "../pages/client_Dashboard/ClientInvoice.jsx";
 import ClientTasks from "../pages/client_Dashboard/ClinetTask.jsx";
-import ClientFreelancers from "../pages/client_Dashboard/ClientFreelancer.jsx";
+;
 import LoadUser from "../components/LoadUser.jsx";
 import { useSelector } from "react-redux";
-import ClientFreelancerProfile from "../pages/client_Dashboard/ClientFreelancerprofile.jsx";
 import ProjectDetails from "../pages/Freelancer_Dashboard/Project_details.jsx";
 import DashboardLayout from "../components/Dashboardlayout.jsx";
 import ChatPage from "../components/ChatPage.jsx";
 import ReceiveMessageListener from "../components/ReceiveMessageListener.jsx";
 import ResetPassword from "../pages/auth/Resetpassword.jsx";
-import ClientProfile from "../components/Clientprofile.jsx";
+import Clients from "../components/Clients.jsx";
+import Freelancers from "../components/Freelancers.jsx";
 import Landing from "../pages/landingpage.jsx";
 import ProfilePage from "../pages/Profilepage.jsx";
 
@@ -57,8 +57,12 @@ return (
 
               <Route path="/" element={<DashboardLayout />}>
                  <Route
-                  path="clientProfile/:id"
-                  element={<ClientProfile />}
+                  path="clients"
+                  element={<Clients/>}
+                />
+                 <Route
+                  path="freelancers"
+                  element={<Freelancers/>}
                 />
               </Route>
               <Route path="/" element={<DashboardLayout />}>
@@ -74,13 +78,7 @@ return (
                 <Route path="projects" element={<ClientProjects />} />
                 <Route path="invoices" element={<ClientInvoice />} />
                 <Route path="tasks" element={<ClientTasks />} />
-                <Route path="freelancers" element={<ClientFreelancers />} />
-                <Route
-                  path="freelancerProfile/:id"
-                  element={<ClientFreelancerProfile />}
-                />
-                 
-              </Route>
+        </Route>
 
               <Route path="/freelancer" element={<DashboardLayout />}>
                 <Route path="Projects" element={<Projects />} />

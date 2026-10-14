@@ -13,92 +13,26 @@ const User = require("../model/user");
      return res.status(500).json({ success: false , message:"this is error:",error})
   }
 }
-
-
-
-const getFreelancerProfile = async (req, res) => {
+const getClients = async (req, res) => {
   try {
-    const freelancerId = req.params.id;
-
-    // 1. Find freelancer
-    const freelancer = await User.findById(freelancerId)
-      .select("-password");
-
-    if (!freelancer || freelancer.role !== "freelancer") {
-      return res.status(404).json({
-        success: false,
-        message: "Freelancer not found",
-      });
+    const clients =  await User.find({ role: "client" })
+    if (!clients) {
+      return res.status(404).json({ success:false, message: "no clients found" }) 
     }
-
-    // 2. Get freelancer projects
-    const projects = await Project.find({
-      freelancer: freelancer._id,
-    });
-
-    // 3. Send response
-    res.status(200).json({
-      success: true,
-      freelancer,
-      stats: {
-        totalProjects: projects.length,
-        completed: projects.filter(p => p.status === "Completed").length,
-        ongoing: projects.filter(p => p.status === "Ongoing").length,
-      },
-    });
-
+    return res.status(200).json({ success: true , message:"client found",clients})
+    
   } catch (error) {
-    console.log('err',error)
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+
+     return res.status(500).json({ success: false , message:"this is error:",error})
   }
-};
-const getClientProfile = async (req, res) => {
-  try {
-    const clientId = req.params.id;
+}
+ 
 
-    // 1. Find client
-    const client = await User.findById(clientId)
-      .select("-password");
 
-    if (!client || client.role !== "client") {
-      return res.status(404).json({
-        success: false,
-        message: "Client not found",
-      });
-    }
-
-    // 2. Get client's projects
-    const projects = await Project.find({
-      client: client._id,
-    });
-
-    // 3. Send response
-    res.status(200).json({
-      success: true,
-      client,
-      stats: {
-        totalProjects: projects.length,
-        completed: projects.filter(p => p.status === "Completed").length,
-        pending: projects.filter(p => p.status === "Pending").length,
-      },
-    });
-
-  } catch (error) {
-    console.log('err', error)
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
 
 
 
 module.exports = {
   getFreelancer,
-  getFreelancerProfile,
-  getClientProfile
+  getClients
 }

@@ -1,8 +1,7 @@
-const { getFreelancer, getFreelancerProfile, getClientProfile } = require("../controllers/clientcontrollers")
+const { getFreelancer, getFreelancerProfile, getClients } = require("../controllers/clientcontrollers")
 const { verifyToken } = require("../middleware/verifytoken")
 const express = require("express")
 const router = express.Router();
 router.get('/client/freelancers',verifyToken, getFreelancer)
-router.get("/client/freelancerProfile/:id", verifyToken, getFreelancerProfile)
-router.get("/clientProfile/:id", verifyToken,getClientProfile)
+router.get("/clients", verifyToken,getClients)
 module.exports = router;
