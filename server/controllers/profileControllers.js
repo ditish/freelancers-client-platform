@@ -8,7 +8,9 @@ const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", 
 const getProfile = async (req, res) => {
   try {
     const userId = req.params.id || req.user._id;
+    console.log("this is id from getprofile", userId)
     const user = await User.findById(userId).select("-password -resetOtp -resetOtpExpiry");
+    console.log("user is foud ", user);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // adjust field names to your Project schema
@@ -22,7 +24,10 @@ const getProfile = async (req, res) => {
       .sort({ updatedAt: -1 }).limit(6).select("title description updatedAt");
 
     res.json({ user, stats: { total, completed, ongoing }, recentProjects: recent });
-  } catch (e) { res.status(500).json({ message: e.message }); }
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+    console.log("this is err form getprofile", e.message);
+  }
 };
 
 const updateProfile = async (req, res) => {

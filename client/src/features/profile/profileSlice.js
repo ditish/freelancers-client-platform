@@ -18,9 +18,11 @@ export default profileSlice.reducer;
 
 export const fetchProfile = (id) => async (dispatch) => {
   try {
+    console.log("this is profileId ", id);
     dispatch(setLoading(true));
     const res = await svc.fetchProfileAPI(id);
     dispatch(setProfile(res.data));
+    console.log("this is response from fetchprofile", res.data);
     return res.data;
   } catch (e) { dispatch(setError(e.response?.data?.message || e.message)); }
 };

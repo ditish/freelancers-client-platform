@@ -6,6 +6,7 @@ const { verifyToken } = require("../middleware/verifytoken");
 const { upload } = require("../middleware/upload");
 
 router.get("/me", verifyToken, getProfile);
+router.get("/:id", verifyToken, getProfile);
 router.put("/me", verifyToken, updateProfile);
 router.put("/me/avatar", verifyToken, upload.single("avatar"), updateAvatar);
 

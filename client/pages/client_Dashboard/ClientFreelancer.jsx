@@ -5,11 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from "../../Context/SidebarContext";
 import { MdMenu } from "react-icons/md";
 import { FaUserTie } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createConversation, setSelectedConversation } from "../../src/features/conversation/convesationSlice";
 import { fetchMessages } from "../../src/features/message/messageSlice";
 
 const ClientFreelancers = () => {
+    const { user } = useSelector((state) => state.auth);
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [freelancers, setFreelancers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,14 +74,12 @@ const ClientFreelancers = () => {
           <p className="text-sm mt-2 text-white/70">
             Skills: {freelancer.skills?.join(", ") || "Not added"}
           </p>
-        
-         
-        <Link
-  to={`/client/freelancerProfile/${freelancer._id}`}
+       <Link
+  to={`/profilepage/${freelancer._id}`}
   className="mt-4 inline-block btn-accent px-4 py-2 rounded-lg text-sm"
 >
   View Profile
-          </Link>
+</Link>
           <button
             onClick={() => {
               handleOnclickmessage(freelancer._id)

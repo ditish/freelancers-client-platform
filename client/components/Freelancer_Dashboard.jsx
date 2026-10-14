@@ -88,10 +88,19 @@ const fetchAllClient = async () => {
           onClick={()=>setSidebarOpen(!sidebarOpen)}
             className={`text-2xl transition-all ease-in-out duration-300 text-white/80 hover:text-white
               ${sidebarOpen ? "hidden" : ""}`}><MdMenu /></span>
+          <span>
+         <img
+  src={user?.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "C")}&background=7c6cf6&color=fff`}
+  alt="Profile"
+  className="w-9 h-9 rounded-full object-cover cursor-pointer border border-white/20"
+  onClick={() => navigate(`/profilepage/${user._id}`)}
+/>
+             </span>
           <h1 className="text-2xl sm:text-3xl font-display font-bold">
               
             Welcome, <span className="text-gradient">{user?.name || "User"}</span>!
           </h1>
+         
 
           <span className="ml-auto flex items-center gap-4">
            <NotificationBell></NotificationBell>

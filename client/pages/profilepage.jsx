@@ -57,7 +57,7 @@ const handleAssign = async () => {
 
 // only tasks that can still be assigned (adjust field names to your Task schema)
 const assignableTasks = useMemo(
-  () => tasks.filter((t) => t.createdBy === me?._id && !t.assignedTo && t.status === "open"),
+  () => tasks.filter((t) => t.createdBy === me?._id && !t.assignedTo && t.status === "pending"),
   [tasks, me]
 );
 
