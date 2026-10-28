@@ -3,7 +3,14 @@ const cloudinary = require("../config/cloudinary");
 const User = require("../model/user");
 const Project = require("../model/project");
 
-const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", "companyName", "website"];
+const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", "companyName","experience", "website"];
+const SOCIAL_KEYS = ["github", "linkedin", "portfolio"];
+// trims, adds https:// when missing, empty string stays empty
+const cleanUrl = (v) => {
+  const s = String(v || "").trim().slice(0, 300);
+  if (!s) return "";
+  return /^https?:\/\//i.test(s) ? s : `https://${s}`;
+};
 
 const getProfile = async (req, res) => {
   try {
@@ -34,6 +41,13 @@ const updateProfile = async (req, res) => {
   try {
     const updates = {};
     EDITABLE.forEach((k) => { if (req.body[k] !== undefined) updates[k] = req.body[k]; });
+
+     const sl = req.body.socialLinks;
+    if (sl && typeof sl === "object") {
+      SOCIAL_KEYS.forEach((k) => {
+        if (sl[k] !== undefined) updates[`socialLinks.${k}`] = cleanUrl(sl[k]);
+      });
+    }
     const user = await User.findByIdAndUpdate(req.user._id, updates, { new: true, runValidators: true })
       .select("-password");
     res.json(user);

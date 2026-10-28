@@ -16,10 +16,8 @@ import NotificationBell from "./NotificationBell";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import { FaBriefcase, FaUserTie, FaFileInvoiceDollar } from "react-icons/fa6";
 import { MdOutlineTaskAlt } from "react-icons/md";
-import ChatPage from "./ChatPage";
 import { fetchConversations } from "../src/features/conversation/convesationSlice";
 import SearchBar from "./Searchbar";
-import ProfilePage from "../pages/Profilepage";
 
 const ClientDashboard = () => {
  const [Totalfreelancer, setTotalfreelancer] = useState(0);

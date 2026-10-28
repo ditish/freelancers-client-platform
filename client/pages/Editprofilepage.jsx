@@ -18,11 +18,16 @@ const EditProfileModal = ({ user, onClose }) => {
     headline: user.headline || "",
     bio: user.bio || "",
     location: user.location || "",
-    website: user.website || "",
+   companyName: user.companyName || "",
     company: user.company || "",
     skills: user.skills || [],
     education: user.education || [],
     experience: user.experience || [],
+      socialLinks: {
+    github: user.socialLinks?.github || "",
+    linkedin: user.socialLinks?.linkedin || "",
+    portfolio: user.socialLinks?.portfolio || "",
+  },
   });
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -59,6 +64,12 @@ const changeItem = (key, i, updates) =>
     }
   };
 
+  const handleSocialChange = (e) =>
+  setForm((f) => ({
+    ...f,
+    socialLinks: { ...f.socialLinks, [e.target.name]: e.target.value },
+  }));
+
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="glass-panel text-white w-full max-w-2xl rounded-xl flex flex-col max-h-[90vh]">
@@ -70,20 +81,51 @@ const changeItem = (key, i, updates) =>
           <input className={input} placeholder="Headline (e.g. Full-stack Developer)" maxLength={100}
                  value={form.headline} onChange={(e) => set("headline", e.target.value)} />
           <input className={input} placeholder="Location" value={form.location}
-                 onChange={(e) => set("location", e.target.value)} />
+            onChange={(e) => set("location", e.target.value)} />
+          
+
           <div>
             <textarea className={input} rows={4} placeholder="Bio" maxLength={500}
                       value={form.bio} onChange={(e) => set("bio", e.target.value)} />
             <p className="text-xs text-white/40 text-right">{form.bio.length}/500</p>
           </div>
+          <input
+            name="github"
+            className={input}
+  placeholder="GitHub profile URL"
+  value={form.socialLinks?.github || ""}
+  onChange={handleSocialChange}
+/>
+<input
+            name="linkedin"
+            className={input}
+  placeholder="LinkedIn profile URL"
+  value={form.socialLinks?.linkedin || ""}
+  onChange={handleSocialChange}
+/>
+<input
+            name="portfolio"
+            className={input}
+  placeholder="Portfolio website URL"
+  value={form.socialLinks?.portfolio || ""}
+  onChange={handleSocialChange}
+/>
 
-          {/* Client-only */}
-          {!isFreelancer && (
-            <input className={input} placeholder="Company name" value={form.company}
-                   onChange={(e) => set("company", e.target.value)} />
-          )}
-          <input className={input} placeholder="Website" value={form.website}
-                 onChange={(e) => set("website", e.target.value)} />
+         {/* Client-only */}
+{!isFreelancer && (
+  <input
+    className={input}
+    placeholder="Company name"
+    value={form.companyName}
+    onChange={(e) => set("companyName", e.target.value)}
+  />
+)}
+<input
+  className={input}
+  placeholder="Website"
+  value={form.website}
+  onChange={(e) => set("website", e.target.value)}
+/>
 
           {/* Freelancer-only */}
           {isFreelancer && (

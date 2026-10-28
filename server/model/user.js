@@ -48,6 +48,11 @@ const userSchema = mongoose.Schema(
       url: { type: String, default: "" },
       publicId: { type: String, default: "" },
     },
+    socialLinks: {
+  github: { type: String, default: "" },
+  linkedin: { type: String, default: "" },
+  portfolio: { type: String, default: "" },
+},
     headline: { type: String, maxlength: 100 },
     bio: { type: String, maxlength: 500 },
     location: String,

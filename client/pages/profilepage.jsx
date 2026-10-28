@@ -7,6 +7,7 @@ import { useSidebar } from "../Context/SidebarContext";
 import { fetchProfile, uploadAvatar } from "../src/features/profile/profileSlice";
 import {  assignDirectTasks,fetchTasks  } from"../src/features/task/taskslice";
 import EditProfileModal from "./Editprofilepage";
+import SocialLinks, { normalizeUrl } from "../components/Sociallinks";
 
 
 const ProfilePage = () => {
@@ -64,7 +65,10 @@ const assignableTasks = useMemo(
 const toggleTask = (taskId) =>
   setSelectedTasks((prev) =>
     prev.includes(taskId) ? prev.filter((x) => x !== taskId) : [...prev, taskId]
-  );
+    );
+  const fmt = (d) =>
+  d ? new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "";
+ 
 
   if (loading || !user) return <p className="text-white/50 p-6">Loading...</p>;
 
@@ -100,7 +104,13 @@ const toggleTask = (taskId) =>
           <p className="text-white/50 text-sm">{user.location}</p>
           <span className="inline-block mt-2 text-xs px-2 py-1 rounded bg-white/10 capitalize">{user.role}</span>
           <p className="mt-4 text-white/80 whitespace-pre-line">{user.bio || (isOwner ? "Add a bio to introduce yourself." : "")}</p>
-
+            <SocialLinks
+  links={{
+    ...user.socialLinks,
+    portfolio: user.socialLinks?.portfolio || (isFreelancer ? user.website : ""),
+  }}
+/>    
+          
           <div className="mt-4 flex gap-3 justify-center sm:justify-start">
             {isOwner && <button className="btn-ghost px-4 py-2 rounded-lg" onClick={() => setEditing(true)}>Edit Profile</button>}
           {canAssign && (
@@ -167,7 +177,29 @@ const toggleTask = (taskId) =>
                 <p className="text-xs text-white/40">{e.startYear} – {e.endYear || "Present"}</p>
               </div>
             )) : <p className="text-white/40">No education added</p>}
+            
           </Section>
+<Section title="Work Experience">
+  {user.experience?.length ? (
+    user.experience.map((x, i) => (
+      <div key={x._id || i} className="mb-3">
+        <p className="font-semibold">{x.title}</p>
+        <p className="text-sm text-white/60">
+          {x.company}{x.location && ` · ${x.location}`}
+        </p>
+        <p className="text-xs text-white/40">
+          {fmt(x.startDate)} – {x.current ? "Present" : fmt(x.endDate) || "Present"}
+        </p>
+        {x.description && (
+          <p className="text-sm text-white/70 mt-1 whitespace-pre-line">{x.description}</p>
+        )}
+      </div>
+    ))
+  ) : (
+    <p className="text-white/40">No work experience added</p>
+  )}
+</Section>
+
         </>
       )}
 
@@ -175,7 +207,11 @@ const toggleTask = (taskId) =>
       {!isFreelancer && (user.companyName || user.website) && (
         <Section title="Company">
           <p className="font-semibold">{user.companyName}</p>
-          {user.website && <a href={user.website} target="_blank" rel="noreferrer" className="text-sm text-[#7c6cf6]">{user.website}</a>}
+       {user.website && (
+  <a href={normalizeUrl(user.website)} target="_blank" rel="noreferrer" className="text-sm text-[#7c6cf6]">
+    {user.website}
+  </a>
+)}
         </Section>
       )}
 
