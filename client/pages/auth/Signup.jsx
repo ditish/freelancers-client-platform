@@ -29,6 +29,8 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [showPassword, SetshowPassword] = useState(false)
   const [role, setRole] = useState("");
+  const [clientType, setClientType] = useState("individual");
+const [companyName, setCompanyName] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, isError, signupSucess, message } = useSelector((state) => state.auth);
@@ -79,8 +81,11 @@ const Signup = () => {
       email,
       password,
       role,
-      ...(role === "freelancer" && { skills }),
-      ...(role === "client" && { company }),
+     ...(role === "freelancer" && { skills }),
+    ...(role === "client" && {
+      clientType,
+      ...(clientType === "company" && { companyName: companyName.trim() }),
+    }),
     };
     dispatch(signupUser(userData));
   };
@@ -164,19 +169,33 @@ const Signup = () => {
           </label>
         </div>
 
-        {role === "client" && (
-          <div className="relative">
-            <MdOutlineBusiness className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-lg" />
-            <input
-              type="text"
-              placeholder="Company Name"
-              className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              required
-            />
-          </div>
-        )}
+       {role === "client" && (
+  <>
+    <div className="flex gap-3">
+      {["individual", "company"].map((t) => (
+        <button
+          key={t}
+          type="button"
+          onClick={() => setClientType(t)}
+          className={`px-4 py-2 rounded-lg capitalize ${
+            clientType === t ? "btn-accent" : "btn-ghost"
+          }`}
+        >
+          {t}
+        </button>
+      ))}
+    </div>
+
+    {clientType === "company" && (
+      <input
+         className="w-full pl-11 pr-4 py-3 rounded-lg glass-input"
+        placeholder="Company name"
+        value={companyName}
+        onChange={(e) => setCompanyName(e.target.value)}
+      />
+    )}
+  </>
+)}
 
         {role === "freelancer" && (
           <div className="relative">

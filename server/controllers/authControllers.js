@@ -9,12 +9,14 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 /* ================= SIGNUP ================= */
 const signup = async (req, res) => {
   try {
-    const { name, email, password, role, skills, company } = req.body;
-    console.log(name,email,password,role)
-
+    const { name, email, password, role, skills, clientType, companyName } = req.body;
     if (!name || !email || !password || !role) {
       return res.status(400).json({ success: false, message: "All fields required" });
     }
+    const isCompany = role === "client" && clientType === "company";
+if (isCompany && !companyName?.trim()) {
+  return res.status(400).json({ message: "Company name is required" });
+}
 
     const existingUser = await User.findOne({ email ,role});
     if (existingUser) {
@@ -26,10 +28,14 @@ const signup = async (req, res) => {
      const newUser = await User.create({
       name,
       email,
-      password: hashedPassword,
-       role,
-       skills,
-      company
+       password: hashedPassword,
+      role,
+           ...(role === "client"
+        ? {
+            clientType: isCompany ? "company" : "individual",
+            ...(isCompany && { companyName: companyName.trim() }),
+          }
+        : { skills }),
     });
      
 

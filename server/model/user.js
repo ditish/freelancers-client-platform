@@ -35,8 +35,21 @@ const userSchema = mongoose.Schema(
       enum: ["freelancer", "client"],   // fixed typo: was "eum"
       required: true,
     },
+  clientType: {
+  type: String,
+  enum: ["individual", "company"],
+  default: function () {
+    return this.role === "client" ? "individual" : undefined;
+  },
+},
+    companyName: {
+  type: String,
+  trim: true,
+  required: function () {
+    return this.role === "client" && this.clientType === "company";
+  },
+},
     skills: [{ type: String }],
-    company: { type: String },
     lastOpenedConversation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",

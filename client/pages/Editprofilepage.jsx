@@ -51,19 +51,32 @@ const changeItem = (key, i, updates) =>
     ),
   }));
 
-  const save = async () => {
-    if (!form.name.trim()) return alert("Name is required");
-    try {
-      setSaving(true);
-      await dispatch(updateProfile(form));
-      onClose();
-    } catch (e) {
-      alert(e.response?.data?.message || "Failed to save");
-    } finally {
-      setSaving(false);
-    }
-  };
+ const save = async () => {
+  if (!form.name.trim()) return alert("Name is required");
 
+  // warn about half-filled work experience rows instead of silently dropping them
+  const incomplete = form.experience.some(
+    (x) => (x.title?.trim() || x.company?.trim()) && !(x.title?.trim() && x.company?.trim())
+  );
+  if (incomplete) return alert("Each work experience needs a job title and company.");
+
+  const payload = {
+    ...form,
+    education: form.education.filter((e) => e.school?.trim()),
+    experience: form.experience.filter((x) => x.title?.trim() && x.company?.trim()),
+  };
+  if (isFreelancer) delete payload.companyName;
+
+  try {
+    setSaving(true);
+    await dispatch(updateProfile(payload)); // throws if the thunk rethrows (see below)
+    onClose();
+  } catch (e) {
+    alert(e.response?.data?.message || e.message || "Failed to save");
+  } finally {
+    setSaving(false);
+  }
+};
   const handleSocialChange = (e) =>
   setForm((f) => ({
     ...f,
