@@ -98,6 +98,7 @@ app.use("/api/search", require("./routes/searchRoutes"));
 app.use("/api/messages", require("./routes/messageRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/profile", require("./routes/profileRoutes"));
+app.use("/api/payments", require("./routes/paymentRoutes"));
 
 
 const PORT = process.env.PORT || 5000;

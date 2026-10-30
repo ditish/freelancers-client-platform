@@ -25,6 +25,8 @@ import Clients from "../components/Clients.jsx";
 import Freelancers from "../components/Freelancers.jsx";
 import Landing from "../pages/landingpage.jsx";
 import ProfilePage from "../pages/Profilepage.jsx";
+import PaymentSuccess from "../pages/Payment/Sucesspage.jsx";
+import PaymentFailed from "../pages/Payment/Failurepage.jsx";
 
 function App() {
   const { isloadingUser } = useSelector((state) => state.auth);
@@ -49,7 +51,8 @@ return (
             <Route path="/reset-password" element={<ResetPassword/>} />
             
             <Route element={<PrivateRoute />}>
-              
+              <Route path="/payment/esewa/success" element={<PaymentSuccess />} />
+<Route path="/payment/esewa/failure" element={<PaymentFailed />} />
               <Route
                 path="/freelance_Dashboard"
                 element={<Freelancer_Dashboard />}

@@ -1,4 +1,4 @@
-const { getFreelancer, getFreelancerProfile, getClients } = require("../controllers/clientcontrollers")
+const { getFreelancer,  getClients } = require("../controllers/clientcontrollers")
 const { verifyToken } = require("../middleware/verifytoken")
 const express = require("express")
 const router = express.Router();
