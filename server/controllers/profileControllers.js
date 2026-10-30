@@ -3,7 +3,7 @@ const cloudinary = require("../config/cloudinary");
 const User = require("../model/user");
 const Project = require("../model/project");
 
-const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", "companyName","experience", "website"];
+const EDITABLE = ["name", "headline", "bio", "location", "skills", "education", "companyName","experience", "website","companyDescription", "establishedDate", "companyWebsite","companyLocation"];
 const SOCIAL_KEYS = ["github", "linkedin", "portfolio"];
 // trims, adds https:// when missing, empty string stays empty
 const cleanUrl = (v) => {

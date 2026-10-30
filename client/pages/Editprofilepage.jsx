@@ -10,6 +10,13 @@ const toDateInput = (d) => (d ? new Date(d).toISOString().slice(0, 10) : "");
 const EditProfileModal = ({ user, onClose }) => {
   const dispatch = useDispatch();
   const isFreelancer = user.role === "freelancer";
+   const isClient = user.role === "client";
+  const isCompany = isClient && user.clientType === "company"; // <-- adjust
+  const isIndividualClient = isClient && !isCompany;
+   const showSkillsEducation = isFreelancer;
+  const showExperience = isFreelancer || isIndividualClient;
+  const showPersonalFields = !isCompany; // name, headline, bio, social links
+  
   const [saving, setSaving] = useState(false);
   const [skillInput, setSkillInput] = useState("");
 
@@ -18,16 +25,22 @@ const EditProfileModal = ({ user, onClose }) => {
     headline: user.headline || "",
     bio: user.bio || "",
     location: user.location || "",
-   companyName: user.companyName || "",
     company: user.company || "",
     skills: user.skills || [],
     education: user.education || [],
     experience: user.experience || [],
-      socialLinks: {
-    github: user.socialLinks?.github || "",
-    linkedin: user.socialLinks?.linkedin || "",
-    portfolio: user.socialLinks?.portfolio || "",
-  },
+    socialLinks: {
+      github: user.socialLinks?.github || "",
+      linkedin: user.socialLinks?.linkedin || "",
+      portfolio: user.socialLinks?.portfolio || "",
+    },
+     // company
+    companyName: user.companyName || "",
+    companyDescription: user.companyDescription || "",
+    establishedDate: user.establishedDate || "",
+    companyWebsite: user.companyWebsite || "",
+    companyLocation:user.companyLocation || "",
+    
   });
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -51,100 +64,116 @@ const changeItem = (key, i, updates) =>
     ),
   }));
 
- const save = async () => {
-  if (!form.name.trim()) return alert("Name is required");
+  const save = async () => {
+    let payload;
 
-  // warn about half-filled work experience rows instead of silently dropping them
-  const incomplete = form.experience.some(
-    (x) => (x.title?.trim() || x.company?.trim()) && !(x.title?.trim() && x.company?.trim())
-  );
-  if (incomplete) return alert("Each work experience needs a job title and company.");
-
-  const payload = {
-    ...form,
-    education: form.education.filter((e) => e.school?.trim()),
-    experience: form.experience.filter((x) => x.title?.trim() && x.company?.trim()),
-  };
-  if (isFreelancer) delete payload.companyName;
-
-  try {
-    setSaving(true);
-    await dispatch(updateProfile(payload)); // throws if the thunk rethrows (see below)
-    onClose();
-  } catch (e) {
-    alert(e.response?.data?.message || e.message || "Failed to save");
-  } finally {
-    setSaving(false);
-  }
+    if (isCompany) {
+      if (!form.companyName.trim()) return alert("Company name is required");
+      if (!form.companyDescription.trim()) return alert("Company role is required");
+      if (!form.establishedDate.trim()) return alert("Company established is required");
+      if (!form.companyLocation.trim()) return alert("Company location  is required");
+     payload = {
+  companyName: form.companyName.trim(),
+  companyDescription: form.companyDescription.trim(),
+  establishedDate: form.establishedDate || null,
+  companyWebsite: form.companyWebsite.trim(),
+  companyLocation: form.companyLocation.trim(),
 };
+    } else {
+      if (!form.name.trim()) return alert("Name is required");
+
+      const incomplete = showExperience && form.experience.some(
+        (x) => (x.title?.trim() || x.company?.trim()) && !(x.title?.trim() && x.company?.trim())
+      );
+      if (incomplete) return alert("Each work experience needs a job title and company.");
+
+      payload = {
+        name: form.name,
+        headline: form.headline,
+        bio: form.bio,
+        location: form.location,
+        socialLinks: form.socialLinks,
+      };
+      if (showSkillsEducation) {
+        payload.skills = form.skills;
+        payload.education = form.education.filter((e) => e.school?.trim());
+      }
+      if (showExperience) {
+        payload.experience = form.experience.filter((x) => x.title?.trim() && x.company?.trim());
+      }
+    }
+
+    try {
+      setSaving(true);
+      await dispatch(updateProfile(payload));
+      onClose();
+    } catch (e) {
+      alert(e.response?.data?.message || e.message || "Failed to save");
+    } finally {
+      setSaving(false);
+    }
+  };
   const handleSocialChange = (e) =>
   setForm((f) => ({
     ...f,
     socialLinks: { ...f.socialLinks, [e.target.name]: e.target.value },
   }));
+  const toDateInput = (d) =>
+  d ? new Date(d).toISOString().slice(0, 10) : "";
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="glass-panel text-white w-full max-w-2xl rounded-xl flex flex-col max-h-[90vh]">
         <h3 className="text-xl font-display font-bold p-6 pb-3">Edit Profile</h3>
 
-        <div className="overflow-y-auto px-6 space-y-4">
-          <input className={input} placeholder="Name" value={form.name}
-                 onChange={(e) => set("name", e.target.value)} />
-          <input className={input} placeholder="Headline (e.g. Full-stack Developer)" maxLength={100}
-                 value={form.headline} onChange={(e) => set("headline", e.target.value)} />
-          <input className={input} placeholder="Location" value={form.location}
-            onChange={(e) => set("location", e.target.value)} />
-          
+       <div className="overflow-y-auto px-6 space-y-4">
+  {isCompany ? (
+    <>
+      <input className={input} placeholder="Company name" value={form.companyName}
+             onChange={(e) => set("companyName", e.target.value)} />
+      <input className={input} placeholder="Location" value={form.companyLocation}
+             onChange={(e) => set("companyLocation", e.target.value)} />
+      <div>
+        <textarea className={input} rows={4} maxLength={1000} placeholder="About the company"
+                  value={form.companyDescription}
+                  onChange={(e) => set("companyDescription", e.target.value)} />
+        <p className="text-xs text-white/40 text-right"> {(form.companyDescription || "").length}/1000</p>
+      </div>
+      <div>
+        <label className="text-xs text-white/50 mb-1 block">Established date</label>
+        <input className={input} type="date" value={toDateInput(form.establishedDate)}
+               max={new Date().toISOString().slice(0, 10)}
+               onChange={(e) => set("establishedDate", e.target.value)} />
+      </div>
+      <input className={input} type="url" placeholder="Company website (https://...)"
+             value={form.companyWebsite}
+             onChange={(e) => set("companyWebsite", e.target.value)} />
+    </>
+  ) : (
+    <>
+      {/* ---- common personal fields (freelancer + individual client) ---- */}
+      <input className={input} placeholder="Name" value={form.name}
+             onChange={(e) => set("name", e.target.value)} />
+      <input className={input} placeholder="Headline (e.g. Full-stack Developer)" maxLength={100}
+             value={form.headline} onChange={(e) => set("headline", e.target.value)} />
+      <input className={input} placeholder="Location" value={form.location}
+             onChange={(e) => set("location", e.target.value)} />
+      <div>
+        <textarea className={input} rows={4} placeholder="Bio" maxLength={500}
+                  value={form.bio} onChange={(e) => set("bio", e.target.value)} />
+        <p className="text-xs text-white/40 text-right">{form.bio.length}/500</p>
+      </div>
+      <input name="github" className={input} placeholder="GitHub profile URL"
+             value={form.socialLinks.github} onChange={handleSocialChange} />
+      <input name="linkedin" className={input} placeholder="LinkedIn profile URL"
+             value={form.socialLinks.linkedin} onChange={handleSocialChange} />
+      <input name="portfolio" className={input} placeholder="Portfolio website URL"
+             value={form.socialLinks.portfolio} onChange={handleSocialChange} />
 
-          <div>
-            <textarea className={input} rows={4} placeholder="Bio" maxLength={500}
-                      value={form.bio} onChange={(e) => set("bio", e.target.value)} />
-            <p className="text-xs text-white/40 text-right">{form.bio.length}/500</p>
-          </div>
-          <input
-            name="github"
-            className={input}
-  placeholder="GitHub profile URL"
-  value={form.socialLinks?.github || ""}
-  onChange={handleSocialChange}
-/>
-<input
-            name="linkedin"
-            className={input}
-  placeholder="LinkedIn profile URL"
-  value={form.socialLinks?.linkedin || ""}
-  onChange={handleSocialChange}
-/>
-<input
-            name="portfolio"
-            className={input}
-  placeholder="Portfolio website URL"
-  value={form.socialLinks?.portfolio || ""}
-  onChange={handleSocialChange}
-/>
-
-         {/* Client-only */}
-{!isFreelancer && (
-  <input
-    className={input}
-    placeholder="Company name"
-    value={form.companyName}
-    onChange={(e) => set("companyName", e.target.value)}
-  />
-)}
-<input
-  className={input}
-  placeholder="Website"
-  value={form.website}
-  onChange={(e) => set("website", e.target.value)}
-/>
-
-          {/* Freelancer-only */}
-          {isFreelancer && (
-            <>
-              {/* Skills */}
-              <div>
+      {/* ---- Skills + Education: freelancer only ---- */}
+      {showSkillsEducation && (
+        <>
+           <div>
                 <p className="font-semibold mb-2">Skills</p>
                 <div className="flex gap-2">
                   <input className={input} placeholder="Add a skill and press Enter" value={skillInput}
@@ -161,57 +190,13 @@ const changeItem = (key, i, updates) =>
                   ))}
                 </div>
               </div>
+        </>
+      )}
 
-              {/* Education */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <p className="font-semibold">Education</p>
-                  <button type="button" className="text-sm text-[#7c6cf6]"
-                    onClick={() => addItem("education", { school: "", degree: "", field: "", startYear: "", endYear: "" })}>
-                    + Add
-                  </button>
-                </div>
-                {form.education.map((e, i) => (
-                  <div key={e._id || i} className="bg-white/5 border border-white/10 rounded-lg p-3 mb-3 space-y-2">
-                    <input className={input} placeholder="School" value={e.school}
-                             onChange={(ev) =>
-    changeItem("education", i, {
-      school: ev.target.value
-    })
-  } />
-                    <div className="grid grid-cols-2 gap-2">
-                      <input className={input} placeholder="Degree" value={e.degree || ""}
-                              onChange={(ev) =>
-    changeItem("education", i, {
-      degree: ev.target.value
-    })
-  } />
-                      <input className={input} placeholder="Field of study" value={e.field || ""}
-                              onChange={(ev) =>
-    changeItem("education", i, {
-      field: ev.target.value
-    })
-  } />
-                      <input className={input} type="number" placeholder="Start year" value={e.startYear || ""}
-                              onChange={(ev) =>
-    changeItem("education", i, {
-      startYear: ev.target.value
-    })
-  } />
-                      <input className={input} type="number" placeholder="End year" value={e.endYear || ""}
-                            onChange={(ev) =>
-    changeItem("education", i, {
-      endYear: ev.target.value
-    })
-  } />
-                    </div>
-                    <button type="button" className="text-xs text-red-400" onClick={() => removeItem("education", i)}>Remove</button>
-                  </div>
-                ))}
-              </div>
-
-              {/* Experience */}
-              <div>
+      {/* ---- Experience: freelancer + individual client ---- */}
+      {showExperience && (
+        <>
+          <div>
                 <div className="flex justify-between items-center mb-2">
                   <p className="font-semibold">Work Experience</p>
                   <button type="button" className="text-sm text-[#7c6cf6]"
@@ -269,9 +254,12 @@ const changeItem = (key, i, updates) =>
                   </div>
                 ))}
               </div>
-            </>
-          )}
-        </div>
+
+        </>
+      )}
+    </>
+  )}
+</div>
 
         <div className="flex justify-end gap-3 p-6 pt-4 border-t border-white/10 mt-4">
           <button className="px-4 py-2 btn-ghost rounded-lg" onClick={onClose}>Cancel</button>

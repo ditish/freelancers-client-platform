@@ -48,7 +48,11 @@ const userSchema = mongoose.Schema(
   required: function () {
     return this.role === "client" && this.clientType === "company";
   },
-},
+    },
+    companyDescription: { type: String, trim: true, maxlength: 1000, default: "" },
+establishedDate: { type: Date, default: null },
+    companyWebsite: { type: String, trim: true, default: "" },
+ companyLocation: { type: String, default: "" },
     skills: [{ type: String }],
     lastOpenedConversation: {
       type: mongoose.Schema.Types.ObjectId,
