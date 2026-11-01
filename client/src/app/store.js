@@ -23,7 +23,7 @@ export const store = configureStore({
     messages: messageReducer,
     search: searchReducer,
     profile: profileReducer,
-    payment:paymentReducer
+    payments:paymentReducer
     
     
   },

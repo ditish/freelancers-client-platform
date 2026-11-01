@@ -16,12 +16,15 @@ exports.initiateEsewa = async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.body.invoiceId);
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
-    if (String(invoice.client) !== String(req.user._id))
-      return res.status(403).json({ message: "Not your invoice" });
-    if (invoice.status !== "sent")
-      return res.status(400).json({ message: "Invoice is not payable" });
+   
+  if (String(invoice.selectedClient) !== String(req.user._id))
+  return res.status(403).json({ message: "Not your invoice" });
+    if (invoice.status == "paid")
+      return res.status(400).json({ message: "Invoice is already paid" });
+     if (invoice.status == "Overdue")
+      return res.status(400).json({ message: "Invoice is outofdate" });
 
-    const total = invoice.totalAmount.toFixed(2);
+const total = invoice.amount.toFixed(2);
     const transactionUuid = `${invoice._id}-${Date.now()}`;
 
     await Payment.create({
@@ -29,12 +32,13 @@ exports.initiateEsewa = async (req, res) => {
       payer: req.user._id,
       gateway: "esewa",
       transactionUuid,
-      amount: invoice.totalAmount,
+      amount: invoice.amount,
     });
 
     const signature = sign(
       `total_amount=${total},transaction_uuid=${transactionUuid},product_code=${PRODUCT_CODE}`
     );
+    console.log("CLIENT_URL:", process.env.CLIENT_URL);
 
     res.json({
       url: FORM_URL,
@@ -54,6 +58,7 @@ exports.initiateEsewa = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
+    console.log("there is problme while payment".err);
   }
 };
 
