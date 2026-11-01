@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import paymentService from "./paymentService";
-import { fetchInvoices } from "../invoices/invoiceSlice"; // adjust path
+import { fetchInvoices } from "../invoice/invoiceSlice"; // adjust path
 
 const initialState = {
   isPaying: false,       // initiating / redirecting to eSewa

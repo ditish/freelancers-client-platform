@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { verifyEsewaPayment, resetPayment } from "../features/payments/paymentSlice";
+import { verifyEsewaPayment, resetPayment } from "../../src/features/payment/paymentSlice";
 
 const PaymentSuccess = () => {
   const dispatch = useDispatch();

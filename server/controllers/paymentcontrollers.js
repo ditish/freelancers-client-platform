@@ -1,8 +1,8 @@
 // controllers/paymentControllers.js
 const crypto = require("crypto");
 const axios = require("axios");
-const Invoice = require("../models/Invoice");
-const Payment = require("../models/Payment");
+const Invoice = require("../model/invoice");
+const Payment = require("../model/payment");
 
 const PRODUCT_CODE = process.env.ESEWA_PRODUCT_CODE;      // EPAYTEST in dev
 const SECRET = process.env.ESEWA_SECRET_KEY;
