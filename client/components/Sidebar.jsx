@@ -2,10 +2,11 @@ import React from "react";
 import { MdCancel, MdMenu, MdSpaceDashboard, MdLogout } from "react-icons/md";
 import { FaBriefcase, FaBuilding, FaFileInvoiceDollar, FaUserTie } from "react-icons/fa6";
 import { MdOutlineTaskAlt } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate , useLocation } from "react-router-dom";
 import { logOutuser } from "../src/features/auth/authslice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+
 
 // Define nav links per role
 const sharedLinks = [
@@ -30,6 +31,7 @@ const clientLinks = [
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
   const { role } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
@@ -97,23 +99,36 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         <nav className="flex flex-col space-y-1.5 mt-6">
           {navLinks.map((link) => {
             const Icon = link.icon;
+            const isActive =
+  location.pathname.toLowerCase() === link.to.toLowerCase();
             return (
-              <Link
-                key={link.to}
-                to={link.to}
-                title={link.label}
-                className={`${rowBase} ${rowLayout} text-white/70 hover:text-white hover:bg-white/5`}
-                onClick={() => {
-                  if (window.innerWidth < 768) {
-                    setSidebarOpen(false);
-                  }
-                }}
+            
+            <Link
+  key={link.to}
+  to={link.to}
+  title={link.label}
+  className={`${rowBase} ${rowLayout} ${
+    isActive
+      ? "bg-white/10 text-white"
+      : "text-white/70 hover:text-white hover:bg-white/5"
+  }`}
+  onClick={() => {
+    // mobile: always close after tapping a link
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+      return;
+    }
+    // desktop: clicking the page you're already on collapses to icons
+    if (isActive) {
+      setSidebarOpen(false);
+    }
+  }}
               >
-                <Icon className="text-lg shrink-0" />
+                  <Icon className="text-lg shrink-0" />
                 <span className={`text-sm font-medium ${labelClass}`}>
                   {link.label}
-                </span>
-              </Link>
+                </span> 
+</Link>
             );
           })}
 
