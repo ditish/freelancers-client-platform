@@ -79,20 +79,16 @@ const ClientDashboard = () => {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       {/* ✅ Fixed: sidebar open = no extra margin, closed = pull content left */}
-      <div
-        className={`flex-1 p-4 sm:p-6 overflow-y-auto transition-all duration-300 ease-in-out ${
-          sidebarOpen ? "md:ml-0" : "md:ml-0"
-        }`}
-      >
+     <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
         {/* ✅ Fixed: single header with menu toggle */}
         <div className="flex gap-4 items-center mb-6 flex-wrap">
           <span
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className={`text-2xl cursor-pointer transition-all ease-in-out duration-300 text-white/80 hover:text-white ${
-              sidebarOpen ? "hidden" : "block"
+              sidebarOpen ? "hidden" :"block"
             }`}
           >
-            <MdMenu />
+           
           </span>
           <span>
          <img

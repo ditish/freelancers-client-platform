@@ -7,14 +7,12 @@ import {
 } from "../../src/features/Project/projectSlice";
 import API from "../../src/utiles/axiosConfigaxios";
 import { useSearchParams } from "react-router-dom";
-import { useSidebar } from "../../Context/SidebarContext";
-import { MdMenu } from "react-icons/md";
 import { FaBriefcase } from "react-icons/fa6";
 import { createTask } from "../../src/features/task/taskslice";
 
 
 const ClientProjects = () => {
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
+
   const [showForm, SetshowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
@@ -127,14 +125,7 @@ const ClientProjects = () => {
       
       {/* Header */}
       <div className="flex justify-between flex-wrap gap-3  items-center mb-6">
-        <span>
-           {!sidebarOpen && (
-                <MdMenu
-                  className="text-2xl cursor-pointer text-white/80 hover:text-white"
-                  onClick={() => setSidebarOpen(true)}
-                />
-              )}
-             </span>
+       
         <h2 className="text-2xl font-display font-bold flex items-center gap-2">
           <FaBriefcase className="text-[#7c6cf6]" /> My Projects
         </h2>

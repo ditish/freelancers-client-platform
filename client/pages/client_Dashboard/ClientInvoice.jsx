@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { MdMenu } from "react-icons/md";
+
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 
 import { fetchInvoices } from "../../src/features/invoice/invoiceSlice";
@@ -8,7 +8,6 @@ import { useSidebar } from "../../Context/SidebarContext";
 import PaymentMethodModal from "../../components/PaymentMethodModal"; // adjust to where you saved it
 
 const ClientInvoice = () => {
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
   const invoices = useSelector((state) => state.invoices.invoices);
   const dispatch = useDispatch();
   const [invoiceToPay, setInvoiceToPay] = useState(null);
@@ -20,14 +19,7 @@ const ClientInvoice = () => {
   return (
     <div className="min-h-screen text-white">
       <div className="flex items-center gap-4 mb-6">
-        <span>
-          {!sidebarOpen && (
-            <MdMenu
-              className="text-2xl cursor-pointer text-white/80 hover:text-white"
-              onClick={() => setSidebarOpen(true)}
-            />
-          )}
-        </span>
+      
         <h2 className="text-2xl sm:text-3xl font-display font-bold flex items-center gap-2">
           <FaFileInvoiceDollar className="text-[#a99cf9]" /> Invoices
         </h2>

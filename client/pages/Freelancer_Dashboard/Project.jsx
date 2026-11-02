@@ -3,13 +3,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../../src/features/Project/projectSlice";
 import { useNavigate } from "react-router-dom";
-import { MdMenu } from "react-icons/md";
+
 import { FaBriefcase } from "react-icons/fa6";
-import { useSidebar } from "../../Context/SidebarContext";
+
 
 
 const Projects = () => {
-   const { sidebarOpen, setSidebarOpen } = useSidebar();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projects, isLoading, isError, message } = useSelector((state) => state.projects);
@@ -26,14 +26,7 @@ const Projects = () => {
   
   
         <div className="flex gap-4 items-center mb-6">
-        <span>
-   {!sidebarOpen && (
-        <MdMenu
-          className="text-2xl cursor-pointer text-white/80 hover:text-white"
-          onClick={() => setSidebarOpen(true)}
-        />
-      )}
-     </span>
+       
       <h2 className="text-2xl font-display font-bold flex items-center gap-2">
         <FaBriefcase className="text-[#7c6cf6]" /> Projects
       </h2>

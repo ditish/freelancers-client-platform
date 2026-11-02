@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchInvoices } from "../../src/features/invoice/invoiceSlice";
 import CreateInvoiceModal from "./Createinovices";
-import { MdMenu } from "react-icons/md";
+
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-import { useSidebar } from "../../Context/SidebarContext";
+
 
 const Invoices = () => {
-    const { sidebarOpen, setSidebarOpen } = useSidebar();
+   
   const [showModel, setShowModal] = useState(false)
   const dispatch = useDispatch();
   const { invoices, isLoading, isError, message } = useSelector((state) => state.invoices);
@@ -43,14 +43,7 @@ const formatAmount = (amount) => `$${amount.toFixed(2)}`;
       }
 
         <div className="flex justify-between items-center flex-wrap gap-4 mb-6">
-        <span>
-             {!sidebarOpen && (
-        <MdMenu
-          className="text-2xl cursor-pointer text-white/80 hover:text-white"
-          onClick={() => setSidebarOpen(true)}
-        />
-      )}
-           </span>
+       
  <h2 className="text-2xl sm:text-3xl font-display font-bold flex items-center gap-2"><FaFileInvoiceDollar className="text-[#a99cf9]" /> Invoices</h2>
           <button
           onClick={() => setShowModal(true)}

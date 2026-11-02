@@ -78,16 +78,12 @@ const fetchAllClient = async () => {
       <Sidebar sidebarOpen={sidebarOpen}
       setSidebarOpen ={setSidebarOpen}
       ></Sidebar>
- <div  className={`
-    flex-1 p-4 sm:p-6 overflow-y-auto
-    transition-all duration-300 ease-in-out
-    ${sidebarOpen ? "md:ml-0" : "md:-ml-60"}
-  `}>
+ <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
         <div className="flex gap-4 items-center mb-6 flex-wrap">
           <span
           onClick={()=>setSidebarOpen(!sidebarOpen)}
             className={`text-2xl transition-all ease-in-out duration-300 text-white/80 hover:text-white
-              ${sidebarOpen ? "hidden" : ""}`}><MdMenu /></span>
+              ${sidebarOpen ? "hidden" : "block"}`}></span>
           <span>
          <img
   src={user?.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "C")}&background=7c6cf6&color=fff`}

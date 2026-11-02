@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTasks, updateTask, updateTaskStatus } from "../../src/features/task/taskslice";
-import { MdMenu } from "react-icons/md";
 import { MdOutlineTaskAlt } from "react-icons/md";
-import { useSidebar } from "../../Context/SidebarContext";
+
 
 
 const Tasks = () => {
-   const { sidebarOpen, setSidebarOpen } = useSidebar();
+ 
   const dispatch = useDispatch();
   const { tasks,isError,isLoading,message} = useSelector((state) => state.tasks);
 
@@ -30,14 +29,7 @@ const Tasks = () => {
     <div className="min-h-screen text-white">
     
         <div className="flex gap-4 items-center mb-6">
-    <span>
-             {!sidebarOpen && (
-        <MdMenu
-          className="text-2xl cursor-pointer text-white/80 hover:text-white"
-          onClick={() => setSidebarOpen(true)}
-        />
-      )}
-         </span>
+   
           <h2 className="text-2xl font-display font-bold flex items-center gap-2">
             <MdOutlineTaskAlt className="text-[#22d3ee]" /> Tasks
           </h2>

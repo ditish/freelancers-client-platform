@@ -4,8 +4,6 @@ import API from "../../src/utiles/axiosConfigaxios";
 import { createTask, deleteTask, fetchTasks, updateTask } from "../../src/features/task/taskslice"
 import {fetchProjects} from "../../src/features/Project/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { useSidebar } from "../../Context/SidebarContext";
-import { MdMenu } from "react-icons/md";
 import { MdOutlineTaskAlt } from "react-icons/md";
 
 const ClientTasks = () => {
@@ -15,10 +13,9 @@ const [newFreelancerId, setNewFreelancerId] = useState("");
 
   const [editTask, setEditTask] = useState(null); // stores task being edited
 const [showEditForm, setShowEditForm] = useState(false);
-  const { sidebarOpen, setSidebarOpen } = useSidebar();
   const [openMenuId, setOpenMenuId] = useState(null);
   const [showForm, SetshowForm] = useState(false);
-  const [createdTask, SetcreatedTask] = useState(null);
+  const [ SetcreatedTask] = useState(null);
    const [title, setTitle] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
     const [projectId, setProjectId] = useState("");
@@ -126,14 +123,7 @@ const oldFreelancerId = assignTask.assignedTo?._id;
    <div className="min-h-screen text-white">
   {/* Header */}
       <div className="flex justify-between items-center flex-wrap gap-3 mb-6">
-        <span>
-           {!sidebarOpen && (
-                <MdMenu
-                  className="text-2xl cursor-pointer text-white/80 hover:text-white"
-                  onClick={() => setSidebarOpen(true)}
-                />
-              )}
-             </span>
+    
     <h2 className="text-2xl font-display font-bold flex items-center gap-2">
       <MdOutlineTaskAlt className="text-[#22d3ee]" /> My Tasks
     </h2>
