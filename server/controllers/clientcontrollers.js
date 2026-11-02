@@ -26,6 +26,22 @@ const getClients = async (req, res) => {
      return res.status(500).json({ success: false , message:"this is error:",error})
   }
 }
+// controller
+ const getMyFreelancers = async (req, res) => {
+  try {
+    const freelancerIds = await Project.distinct("freelancer", {
+      client: req.user._id,
+      freelancer: { $ne: null },
+    });
+    const freelancers = await User.find({ _id: { $in: freelancerIds } })
+      .select("name email avatar");
+    res.json({ freelancers });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
  
 
 
@@ -34,5 +50,6 @@ const getClients = async (req, res) => {
 
 module.exports = {
   getFreelancer,
-  getClients
+  getClients,
+  getMyFreelancers
 }

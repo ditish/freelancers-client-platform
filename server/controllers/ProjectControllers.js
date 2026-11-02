@@ -2,6 +2,7 @@
 const { default: mongoose } = require("mongoose");
 const Project = require("../model/project");
 const Task = require("../model/task");
+const user = require("../model/user");
 
 
 // get project from user
@@ -84,6 +85,7 @@ const create_user_project = async (req, res) => {
       description,
       
     })
+    await user.findByIdAndUpdate(req.user._id, { hasCreatedProject: true });
     await project.save();
     return res.status(200).json({ success: "true", message: "project created", project})
   

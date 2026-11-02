@@ -35,6 +35,7 @@ const userSchema = mongoose.Schema(
       enum: ["freelancer", "client"],   // fixed typo: was "eum"
       required: true,
     },
+    hasCreatedProject: { type: Boolean, default: false },
   clientType: {
   type: String,
   enum: ["individual", "company"],
