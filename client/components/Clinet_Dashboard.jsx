@@ -38,7 +38,7 @@ const ClientDashboard = () => {
 
   const fetchMyFreelancers = async () => {
     try {
-      const res = await API.get("/client/my-freelancers");
+      const res = await API.get("/my-freelancers");
       setAssignedFreelancers(res.data.freelancers.length || 0);
     } catch (error) {
       console.log(error);

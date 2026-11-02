@@ -39,9 +39,6 @@ const projectSlice = createSlice({
       state.isLoading = false;
       state.message = action.payload;
     },
-    setHasCreatedProject: (state) => {
-  if (state.user) state.user.hasCreatedProject = true;
-},
   },
 });
 

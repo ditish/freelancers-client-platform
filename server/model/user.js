@@ -36,6 +36,7 @@ const userSchema = mongoose.Schema(
       required: true,
     },
     hasCreatedProject: { type: Boolean, default: false },
+    hasBeenAssigned: { type: Boolean, default: false },
   clientType: {
   type: String,
   enum: ["individual", "company"],

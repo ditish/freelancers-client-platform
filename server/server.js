@@ -90,6 +90,7 @@ io.on("connection", (socket) => {
 app.get("/", (req, res) => res.send("API running"));
 app.use("/api", require("./routes/authRoutes"));
 app.use("/api", require("./routes/clientRoutes"));
+app.use("/api", require("./routes/freelancersRoutes"));
 app.use("/api/project", require("./routes/projectRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/invoices", require("./routes/invoiceRoutes"));
