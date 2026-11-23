@@ -76,12 +76,12 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-black text-white">
+    <div className="flex min-h-[100dvh] h-[100dvh] overflow-hidden bg-black text-white">
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-      <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+      <div className="min-w-0 flex-1 p-3 sm:p-5 lg:p-6 overflow-y-auto">
         {/* Header */}
-        <div className="flex gap-4 items-center mb-6 flex-wrap">
+        <div className="flex gap-3 sm:gap-4 items-center mb-5 sm:mb-6 flex-wrap">
           {/* Menu button: mobile only (desktop toggle lives in the sidebar) */}
           <span
             onClick={() => setSidebarOpen(true)}
@@ -129,8 +129,8 @@ const ClientDashboard = () => {
         </div>
 
         {/* Stats Cards + charts */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          <div className="glass-card p-6 rounded-xl">
+        <div className="grid min-w-0 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-5">
+          <div className="glass-card p-4 sm:p-5 lg:p-6 rounded-xl">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium text-white/60">Total Projects</h3>
               <FaBriefcase className="text-[#7c6cf6] text-xl" />
@@ -138,7 +138,7 @@ const ClientDashboard = () => {
             <p className="text-3xl font-display font-bold text-white">{totalProjects}</p>
           </div>
 
-          <div className="glass-card p-6 rounded-xl">
+          <div className="glass-card p-4 sm:p-5 lg:p-6 rounded-xl">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium text-white/60">Active Freelancers</h3>
               <FaUserTie className="text-[#22d3ee] text-xl" />
@@ -146,7 +146,7 @@ const ClientDashboard = () => {
             <p className="text-3xl font-display font-bold text-white">{assignedFreelancers}</p>
           </div>
 
-          <div className="glass-card p-6 rounded-xl">
+          <div className="glass-card p-4 sm:p-5 lg:p-6 rounded-xl">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium text-white/60">Pending Tasks</h3>
               <MdOutlineTaskAlt className="text-yellow-400 text-xl" />
@@ -154,7 +154,7 @@ const ClientDashboard = () => {
             <p className="text-3xl font-display font-bold text-white">{totalTasks}</p>
           </div>
 
-          <div className="glass-card p-6 rounded-xl">
+          <div className="glass-card p-4 sm:p-5 lg:p-6 rounded-xl">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium text-white/60">Pending Payments</h3>
               <FaFileInvoiceDollar className="text-red-400 text-xl" />

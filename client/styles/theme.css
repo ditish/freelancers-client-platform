@@ -1,0 +1,82 @@
+/* Global visual polish and persistent light theme overrides.
+   Dark is the default; the Sidebar theme switch sets data-theme="light". */
+:root { color-scheme: dark; }
+html, body, #root { min-height: 100%; }
+body { margin: 0; }
+* { -webkit-tap-highlight-color: transparent; }
+button, a, input, textarea, select { touch-action: manipulation; }
+button, a { transition: color .18s ease, background-color .18s ease, border-color .18s ease, transform .18s ease; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid #8b7cf6; outline-offset: 2px;
+}
+.glass-card, .glass-panel {
+  border: 1px solid rgba(148,163,184,.14);
+  background: rgba(20,24,38,.82);
+  box-shadow: 0 12px 32px rgba(0,0,0,.14);
+  backdrop-filter: blur(14px);
+}
+.glass-input {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(148,163,184,.2);
+  color: inherit;
+  min-width: 0;
+}
+.glass-input::placeholder { color: rgba(148,163,184,.7); }
+.app-sidebar { background: #080b14; }
+@media (max-width: 767px) {
+  .app-sidebar { padding: 1.25rem; }
+  .glass-card { border-radius: 1rem; }
+  input, textarea, select { font-size: 16px; }
+}
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="light"] body { background: #f4f6fb; color: #172033; }
+html[data-theme="light"] .bg-black { background-color: #f4f6fb !important; }
+html[data-theme="light"] .bg-\[\#0a0a0a\] { background-color: #eef1f8 !important; }
+html[data-theme="light"] .text-white { color: #172033 !important; }
+html[data-theme="light"] .text-white\/90 { color: #263248 !important; }
+html[data-theme="light"] .text-white\/80 { color: #344158 !important; }
+html[data-theme="light"] .text-white\/70 { color: #46536b !important; }
+html[data-theme="light"] .text-white\/60,
+html[data-theme="light"] .text-white\/50,
+html[data-theme="light"] .text-white\/40 { color: #64718a !important; }
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/5 { border-color: rgba(35,49,75,.12) !important; }
+html[data-theme="light"] .bg-white\/5,
+html[data-theme="light"] .bg-white\/10 { background-color: rgba(45,61,92,.06) !important; }
+html[data-theme="light"] .hover\:bg-white\/5:hover,
+html[data-theme="light"] .hover\:bg-white\/10:hover { background-color: rgba(45,61,92,.1) !important; }
+html[data-theme="light"] .glass-card,
+html[data-theme="light"] .glass-panel {
+  background: rgba(255,255,255,.92);
+  border-color: rgba(35,49,75,.1);
+  box-shadow: 0 12px 30px rgba(36,49,78,.07);
+}
+html[data-theme="light"] .glass-input {
+  background: #fff; border-color: #d8deea; color: #172033;
+}
+html[data-theme="light"] .glass-input::placeholder { color: #8792a6; }
+html[data-theme="light"] .app-sidebar { background: #fff; border-color: #e3e8f1; }
+html[data-theme="light"] .app-sidebar .text-white\/70 { color: #526079 !important; }
+html[data-theme="light"] .app-sidebar .text-white\/60 { color: #64718a !important; }
+html[data-theme="light"] .app-sidebar .bg-white\/10 { background: #edf0ff !important; }
+html[data-theme="light"] .app-sidebar .hover\:bg-white\/5:hover { background: #f1f3fa !important; }
+html[data-theme="light"] .bg-white.text-black { background: #263248 !important; color: #fff !important; }
+html[data-theme="light"] .text-black\/50,
+html[data-theme="light"] .text-black\/60 { color: #64718a !important; }
+html[data-theme="light"] .bg-black\/10 { background-color: rgba(35,49,75,.07) !important; }
+html[data-theme="light"] .bg-white\/5 { background-color: rgba(35,49,75,.05) !important; }
+
+.chat-shell { isolation: isolate; }
+.chat-list, .chat-panel { min-height: 0; }
+.chat-header { background: rgba(8,11,20,.92); backdrop-filter: blur(14px); }
+.chat-composer { background: rgba(8,11,20,.94); }
+.chat-messages { overscroll-behavior: contain; }
+.chat-shell .glass-card { border-radius: 1rem; }
+@media (max-width: 767px) {
+  .chat-shell { height: 100dvh; }
+  .chat-list { width: 100%; }
+  .chat-header { min-height: 64px; }
+  .chat-composer { padding-bottom: max(.75rem, env(safe-area-inset-bottom)); }
+}
+html[data-theme="light"] .chat-header,
+html[data-theme="light"] .chat-composer { background: rgba(255,255,255,.94); }
