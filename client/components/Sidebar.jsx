@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../styles/theme.css";
-import { MdCancel, MdMenu, MdSpaceDashboard, MdLogout, MdLightMode, MdDarkMode } from "react-icons/md";
+import { MdCancel, MdMenu, MdSpaceDashboard, MdLogout, MdDarkMode, MdLightMode } from "react-icons/md";
 import { FaBriefcase, FaBuilding, FaFileInvoiceDollar, FaUserTie } from "react-icons/fa6";
 import { MdOutlineTaskAlt } from "react-icons/md";
 import { Link, useNavigate , useLocation } from "react-router-dom";
@@ -34,15 +33,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { role } = useSelector((state) => state.auth);
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "dark";
-    return window.localStorage.getItem("freelancer-theme") || "dark";
-  });
 
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("freelancer-theme", theme);
-  }, [theme]);
+  const [theme, setTheme] = useState(() => {
+  return localStorage.getItem("freelancer-theme") || "dark";
+});
+//dark/bright theme
+useEffect(() => {
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme;
+
+  localStorage.setItem("freelancer-theme", theme);
+}, [theme]);
+
+const handleThemeToggle = () => {
+  setTheme((currentTheme) => {
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    // Apply theme immediately
+    document.documentElement.dataset.theme = newTheme;
+    document.documentElement.style.colorScheme = newTheme;
+
+    // Save theme for future refreshes
+    localStorage.setItem("freelancer-theme", newTheme);
+
+    return newTheme;
+  });
+};
 
   const handleLogout = () => {
     dispatch(logOutuser());
@@ -73,7 +89,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
       <aside
         className={`
-          app-sidebar bg-black border-r border-white/10 space-y-6 overflow-hidden shrink-0
+          bg-black border-r border-white/10 space-y-6 overflow-hidden shrink-0
           fixed md:relative top-0 left-0 h-full z-50
           transition-all duration-300 ease-in-out
           ${
@@ -106,19 +122,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
 
         {/* Theme switch */}
-        <button
-          type="button"
-          onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")}
-          className={`w-full ${rowBase} ${rowLayout} text-white/70 hover:text-white hover:bg-white/5`}
-          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-        >
-          {theme === "dark" ? <MdLightMode className="text-lg shrink-0" /> : <MdDarkMode className="text-lg shrink-0" />}
-          <span className={`text-sm font-medium ${labelClass}`}>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
-        </button>
+<button
+  type="button"
+  onClick={handleThemeToggle}
+  className={`w-full ${rowBase} ${rowLayout} text-white/70 hover:text-white hover:bg-white/5`}
+  title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+  aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+>
+  {theme === "dark" ? (
+    <MdLightMode className="text-lg shrink-0" />
+  ) : (
+    <MdDarkMode className="text-lg shrink-0" />
+  )}
+
+  <span className={`text-sm font-medium ${labelClass}`}>
+    {theme === "dark" ? "Light mode" : "Dark mode"}
+  </span>
+</button>
 
         {/* Nav Links */}
-        <nav className="flex flex-col space-y-1.5 mt-3">
+        <nav className="flex flex-col space-y-1.5 mt-6">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive =
